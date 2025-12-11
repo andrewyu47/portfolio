@@ -9,10 +9,10 @@ const config = {
   favicon: 'img/favicon.ico',
 
   // Set the production url of your site here
-  url: 'https://your-docusaurus-test-site.com',
+  url: 'andrewyu.app',
   baseUrl: '/',
 
-  organizationName: 'facebook', // Usually your GitHub org/user name.
+  organizationName: 'andrewyu47', // Usually your GitHub org/user name.
   projectName: 'docusaurus', // Usually your repo name.
 
   onBrokenLinks: 'throw',
