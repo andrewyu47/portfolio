@@ -22,7 +22,7 @@ function HomepageHeader() {
           <span style={{margin: '0 10px'}}></span>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/case-studies/splunk-ai">
+            to="/case-studies/">
             See Case Studies
           </Link>
         </div>
