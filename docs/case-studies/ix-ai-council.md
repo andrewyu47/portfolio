@@ -10,11 +10,11 @@ tags: [Leadership, AI, Governance, Splunk]
 
 **Founding a strategic governance body to transition an Information Experience (IX) organization from "AI Anxiety" to "AI Adoption."**
 
-> **Role:** Founder & Council Chair
+> **Role:** Founder & Council Lead
 > **Focus:** Change Management, Tool Governance, Workflow Integration
 > **Impact:** Upskilled 60+ Technical Writers & integrated AI into standard publication pipelines.
 
-![AI Council Strategy](https://via.placeholder.com/800x400?text=AI+Strategy+%26+Governance)
+![AI Council Strategy](aicouncil-hero.png)
 
 ## 📝 The Challenge: The "Wild West" of AI
 
