@@ -1,0 +1,57 @@
+---
+slug: project-sage
+title: Project SAGE
+authors: [me]
+tags: [ai agent, rag, product management, ux research, hackathon winner]
+---
+
+# Project SAGE: AI-Driven UX Optimization
+
+**"Selection Agent with Guided Explanations" — An award-winning AI framework that turns user confusion into actionable product insights.**
+
+> **Role:** Project Manager & Lead  
+> **Recognition:** 🏆 People's Choice Award & 2nd Place Overall (AI Hackathon)  
+> **Team:** Cross-functional leadership (Engineering, UX Research, Product Design, Tech Writing)
+
+![Sage Hero Image](/img/sage-hero.png)
+
+## The Problem: "Paper Cuts" in the Workflow
+
+In complex enterprise dashboards, users often encounter metrics, charts, or abbreviations they don't understand. We call these "Paper Cuts."
+
+When a user is confused, they usually:
+1.  **Break flow:** Open a new tab to search documentation.
+2.  **Context switch:** Ping a teammate on Slack.
+3.  **Give up:** Ignoring the feature entirely.
+
+For the Product Team, this creates a **Blind Spot**. We know users are struggling, but we don't know *exactly* which UI elements are causing the friction. We rely on lagging indicators like support tickets, often weeks after the frustration occurred.
+
+## The Solution
+
+We built **Sage**, a visitor-driven AI framework. Instead of a generic chatbot, Sage allows users to **draw a box** around any specific element in the UI to get an instant, context-aware explanation.
+
+But the real innovation isn't just the answer—it's the data we capture.
+
+### The "Confusion Map" Architecture
+
+Sage closes the loop between User Confusion and Product Improvement. Every time a user selects an area for help, we log that interaction as a "Confusion Signal."
+
+```mermaid
+graph TD
+    User[User] -->|Selects UI Element| DOM[DOM & HTML Context Capture]
+    
+    subgraph "The User Path (Immediate Value)"
+    DOM --> AI[RAG Agent]
+    AI --> Docs[Documentation Vector DB]
+    Docs --> AI
+    AI --> Answer[Contextual Explanation Popup]
+    User --> Answer
+    end
+    
+    subgraph "The Product Path (Long-term Value)"
+    DOM --> Pendo[Analytics Event]
+    Pendo --> Heatmap[Confusion Heatmap]
+    Heatmap --> Logic{Threshold Met?}
+    Logic -->|Yes| Jira[Auto-Create Jira Ticket]
+    Logic -->|No| Log[Log for Review]
+    end

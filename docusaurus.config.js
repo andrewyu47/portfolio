@@ -1,28 +1,29 @@
 // @ts-check
-const lightCodeTheme = require('prism-react-renderer').themes.github;
-const darkCodeTheme = require('prism-react-renderer').themes.dracula;
+// Note: type annotations allow type checking and IDEs autocompletion
+
+// --- FIX: UPDATED IMPORT STYLE FOR DOCUSAURUS V3 ---
+const {themes} = require('prism-react-renderer');
+const lightCodeTheme = themes.github;
+const darkCodeTheme = themes.dracula;
 
 /** @type {import('@docusaurus/types').Config} */
 const config = {
-  title: 'Portfolio',
-  tagline: 'Technical Leadership | AI Strategy | Content Design',
-  favicon: 'img/favicon.ico',
-
-  // Set the production url of your site here
-  url: 'andrewyu.app',
-  baseUrl: '/',
-
-  organizationName: 'andrewyu47', // Usually your GitHub org/user name.
-  projectName: 'docusaurus', // Usually your repo name.
-
+  // --- SITE SETTINGS ---
+  title: 'My Portfolio', // Change this to your actual name
+  tagline: 'Principal Technical Writer & Architect',
+  url: 'https://your-github-username.github.io', // Your production URL
+  baseUrl: '/', 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
+  favicon: 'img/favicon.ico',
 
-  i18n: {
-    defaultLocale: 'en',
-    locales: ['en'],
+  // --- MERMAID CONFIGURATION ---
+  markdown: {
+    mermaid: true,
   },
+  themes: ['@docusaurus/theme-mermaid'],
 
+  // --- PRESETS ---
   presets: [
     [
       'classic',
@@ -30,8 +31,6 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          // Use this to customize the sidebars
-          routeBasePath: 'docs',
         },
         blog: {
           showReadingTime: true,
@@ -43,34 +42,21 @@ const config = {
     ],
   ],
 
+  // --- THEME CONFIG ---
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'Home',
-        logo: {
-          alt: 'My Logo',
-          src: 'img/logo.svg',
-        },
+        title: 'My Portfolio',
         items: [
-          {
-            type: 'docSidebar',
-            sidebarId: 'tutorialSidebar',
-            position: 'left',
-            label: 'Case Studies',
-          },
-          {to: '/resume', label: 'Resume', position: 'left'},
-          {
-            href: 'https://github.com/',
-            label: 'GitHub',
-            position: 'right',
-          },
+          // This links to your new Case Studies folder
+          {to: '/case-studies', label: 'Case Studies', position: 'left'},
+          {href: 'https://github.com/your-repo', label: 'GitHub', position: 'right'},
         ],
       },
       footer: {
         style: 'dark',
-        links: [],
-        copyright: `Copyright © ${new Date().getFullYear()} My Portfolio. Built with Docusaurus.`,
+        copyright: `Copyright © ${new Date().getFullYear()} My Portfolio.`,
       },
       prism: {
         theme: lightCodeTheme,
