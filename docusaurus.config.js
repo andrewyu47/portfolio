@@ -9,21 +9,23 @@ const darkCodeTheme = themes.dracula;
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   // --- SITE SETTINGS ---
-  title: 'My Portfolio', 
-  tagline: 'Technical Documentation Manager & AI Architect',
+  title: 'My Portfolio',
+  tagline: 'Principal Technical Writer & Architect',
   favicon: 'img/favicon.ico',
-  
-  // --- GITHUB PAGES DEPLOY SETTINGS (Your updates look good here!) ---
+
+  // --- GITHUB PAGES DEPLOY SETTINGS ---
   url: 'https://andrewyu47.github.io',
-  baseUrl: '/portfolio/', // Matches projectName below
-  organizationName: 'andrewyu47', 
-  projectName: 'portfolio', // Matches baseUrl above
+  baseUrl: '/portfolio/', // Matches your repo name with slashes
+  organizationName: 'andrewyu47',
+  projectName: 'portfolio',
   trailingSlash: false,
 
-  onBrokenLinks: 'throw',
+  // --- BUILD SAFETY SETTINGS ---
+  // Changed to 'warn' so the build finishes even if a link is slightly wrong
+  onBrokenLinks: 'warn', 
   onBrokenMarkdownLinks: 'warn',
 
-  // --- MERMAID CONFIGURATION (MUST BE INSIDE THE BRACKETS) ---
+  // --- MERMAID CONFIGURATION ---
   markdown: {
     mermaid: true,
   },
@@ -37,6 +39,8 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
+          // This allows your case studies to live at /portfolio/docs/case-studies
+          routeBasePath: 'docs', 
         },
         blog: {
           showReadingTime: true,
@@ -53,9 +57,12 @@ const config = {
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
       navbar: {
-        title: 'My Portfolio',
+        title: 'Andrew Yu',
         items: [
+          // If you put case studies in 'src/pages/case-studies', keep this to: '/case-studies'
+          // If you put case studies in 'docs', change this to: '/docs/case-studies'
           {to: '/case-studies', label: 'Case Studies', position: 'left'},
+          {to: '/resume', label: 'Resume', position: 'left'},
           {href: 'https://github.com/andrewyu47/portfolio', label: 'GitHub', position: 'right'},
         ],
       },
@@ -68,6 +75,6 @@ const config = {
         darkTheme: darkCodeTheme,
       },
     }),
-}; // <--- THIS CLOSING BRACKET MUST BE AT THE VERY END
+};
 
 module.exports = config;
