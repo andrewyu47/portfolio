@@ -10,7 +10,7 @@ const darkCodeTheme = themes.dracula;
 const config = {
   // --- SITE SETTINGS ---
   title: 'My Portfolio', 
-  tagline: 'Principal Technical Writer & Architect',
+  tagline: 'Technical Documentation Manager & AI Architect',
   favicon: 'img/favicon.ico',
   
   // --- GITHUB PAGES DEPLOY SETTINGS (Your updates look good here!) ---
