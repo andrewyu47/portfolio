@@ -25,7 +25,7 @@ When Generative AI exploded, Splunk's Information Experience (IX) organization f
 
 ## 🛠️ The Solution: The IX AI Council
 
-I founded the **IX AI Council** to serve as the central governance and enablement body, bridging the gap between Engineering, Legal, and Content.
+I founded the **IX AI Council** to serve as the central governance and enablement body, bridging the gap between Engineering, Legal, and Content Experience.
 
 ### 1. Governance & Tool Selection
 We moved from ad-hoc usage to a sanctioned tech stack.
