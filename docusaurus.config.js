@@ -9,15 +9,21 @@ const darkCodeTheme = themes.dracula;
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   // --- SITE SETTINGS ---
-  title: 'My Portfolio', // Change this to your actual name
-  tagline: 'Technical Documentation Manager & Architect',
-  url: 'https://andrewyu47.github.io', // Your production URL
-  baseUrl: '/', 
+  title: 'My Portfolio', 
+  tagline: 'Principal Technical Writer & Architect',
+  favicon: 'img/favicon.ico',
+  
+  // --- GITHUB PAGES DEPLOY SETTINGS (Your updates look good here!) ---
+  url: 'https://andrewyu47.github.io',
+  baseUrl: '/portfolio/', // Matches projectName below
+  organizationName: 'andrewyu47', 
+  projectName: 'portfolio', // Matches baseUrl above
+  trailingSlash: false,
+
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  favicon: 'img/favicon.ico',
 
-  // --- MERMAID CONFIGURATION ---
+  // --- MERMAID CONFIGURATION (MUST BE INSIDE THE BRACKETS) ---
   markdown: {
     mermaid: true,
   },
@@ -49,20 +55,19 @@ const config = {
       navbar: {
         title: 'My Portfolio',
         items: [
-          // This links to your new Case Studies folder
           {to: '/case-studies', label: 'Case Studies', position: 'left'},
-          {href: 'https://github.com/andrewyu47/portfolio/tree/main/docs/case-studies', label: 'GitHub', position: 'right'},
+          {href: 'https://github.com/andrewyu47/portfolio', label: 'GitHub', position: 'right'},
         ],
       },
       footer: {
         style: 'dark',
-        copyright: `Copyright © ${new Date().getFullYear()} My Portfolio.`,
+        copyright: `Copyright © ${new Date().getFullYear()} Andrew Yu.`,
       },
       prism: {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
     }),
-};
+}; // <--- THIS CLOSING BRACKET MUST BE AT THE VERY END
 
 module.exports = config;
