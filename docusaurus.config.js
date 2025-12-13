@@ -10,12 +10,12 @@ const darkCodeTheme = themes.dracula;
 const config = {
   // --- SITE SETTINGS ---
   title: 'My Portfolio',
-  tagline: 'Principal Technical Writer & Architect',
+  tagline: 'Technical Documentation Manager & Architect',
   favicon: 'img/favicon.ico',
 
   // --- GITHUB PAGES DEPLOY SETTINGS ---
   url: 'https://andrewyu47.github.io',
-  baseUrl: '/portfolio/', // Matches your repo name with slashes
+  baseUrl: '/', // Matches your repo name with slashes
   organizationName: 'andrewyu47',
   projectName: 'portfolio',
   trailingSlash: false,
@@ -63,7 +63,7 @@ const config = {
           // If you put case studies in 'docs', change this to: '/docs/case-studies'
           {to: '/case-studies', label: 'Case Studies', position: 'left'},
           {to: '/resume', label: 'Resume', position: 'left'},
-          {href: 'https://github.com/andrewyu47/portfolio', label: 'GitHub', position: 'right'},
+          {href: 'https://github.com/andrewyu47/portfolio/case-studies', label: 'GitHub', position: 'right'},
         ],
       },
       footer: {
