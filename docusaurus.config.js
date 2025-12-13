@@ -10,8 +10,8 @@ const darkCodeTheme = themes.dracula;
 const config = {
   // --- SITE SETTINGS ---
   title: 'My Portfolio', // Change this to your actual name
-  tagline: 'Principal Technical Writer & Architect',
-  url: 'https://your-github-username.github.io', // Your production URL
+  tagline: 'Technical Documentation Manager & Architect',
+  url: 'https://andrewyu47.github.io', // Your production URL
   baseUrl: '/', 
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
@@ -51,7 +51,7 @@ const config = {
         items: [
           // This links to your new Case Studies folder
           {to: '/case-studies', label: 'Case Studies', position: 'left'},
-          {href: 'https://github.com/your-repo', label: 'GitHub', position: 'right'},
+          {href: 'https://github.com/andrewyu47/portfolio/tree/main/docs/case-studies', label: 'GitHub', position: 'right'},
         ],
       },
       footer: {
