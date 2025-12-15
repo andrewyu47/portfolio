@@ -11,7 +11,9 @@ tags: [Leadership, AI, Governance, Splunk]
 **Founding a strategic governance body to transition an Information Experience (IX) organization from "AI Anxious" to "AI Adoption."**
 
 > **Role:** Founder & Council Lead
+<br>
 > **Focus:** Change Management, Tool Governance, Workflow Integration
+<br>
 > **Impact:** Upskilled 60+ Technical Writers & integrated AI into standard publication pipelines.
 
 ![AI Council Strategy](/img/council-hero.png)
@@ -25,7 +27,7 @@ When Generative AI exploded, Splunk's Information Experience (IX) organization f
 
 ## 🛠️ The Solution: The IX AI Council
 
-I founded the **IX AI Council** to serve as the central governance and enablement body, bridging the gap between Engineering, Legal, and Content Experience.
+I founded the **IX AI Council** to serve as the central governance and enablement body, bridging the gap between Engineering, Product, and Content Experience.
 
 ### 1. Governance & Tool Selection
 We moved from ad-hoc usage to a sanctioned tech stack.
