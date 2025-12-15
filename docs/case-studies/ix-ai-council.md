@@ -8,7 +8,7 @@ tags: [Leadership, AI, Governance, Splunk]
 
 # IX AI Council: Operationalizing GenAI Strategy
 
-**Founding a strategic governance body to transition an Information Experience (IX) organization from "AI Anxiety" to "AI Adoption."**
+**Founding a strategic governance body to transition an Information Experience (IX) organization from "AI Anxious" to "AI Adoption."**
 
 > **Role:** Founder & Council Lead
 > **Focus:** Change Management, Tool Governance, Workflow Integration
@@ -29,7 +29,7 @@ I founded the **IX AI Council** to serve as the central governance and enablemen
 
 ### 1. Governance & Tool Selection
 We moved from ad-hoc usage to a sanctioned tech stack.
-* **Evaluated:** Audited enterprise tools (Writer.com, Jasper, Copilot) against security and style requirements.
+* **Evaluated:** Audited enterprise tools against security and style requirements.
 * **Defined:** Created the "Red/Yellow/Green" usage policy for data handling (e.g., "No proprietary code in public LLMs").
 
 ### 2. Prompt Engineering Library
@@ -49,8 +49,8 @@ flowchart LR
 
 ```
 
-### 4. 📊 The Impact
-The Council transformed our documentation culture over 6 months:
+### 4. 📊 The Impact (Ongoing)
+The Council transformed our documentation culture:
 
 **Velocity**: Increased content velocity by **25%** via GenAI workflows.
 
