@@ -56,3 +56,21 @@ graph TD
     Logic -->|Yes| Jira[Auto-Create Jira Ticket]
     Logic -->|No| Log[Log for Review]
     end
+
+### Visualizing Friction: The Heatmap Overlay
+
+While the RAG Agent solves the immediate problem for the individual, the architecture simultaneously aggregates these signals for the Product Team. 
+
+By feeding selection data into Pendo, Sage creates a **"Confusion Heatmap"** of our own product. Unlike traditional heatmaps that track clicks (engagement), this tracks *hesitation*. We can see exactly which button, label, or chart is causing the most friction, filtering out the noise to reveal high-fidelity patterns of struggle.
+
+### Automating the Feedback Loop
+
+The ultimate goal isn't just to answer questions—it's to eliminate the need for them. 
+
+Sage operationalizes this insight through threshold-based logic. If a specific UI element generates a high volume of queries (e.g., "What does 'Health Score' mean?"), the system triggers an automated workflow:
+
+1.  **Signal Detection:** The system identifies a "Hotspot" of confusion.
+2.  **Context Injection:** It captures the element ID, frequency of clicks, and user query topics.
+3.  **Ticket Generation:** It automatically creates a Jira ticket populated with this data.
+
+This process removes subjectivity from prioritization. Instead of debating what to fix, the engineering backlog becomes populated with tasks that are **quantifiably proven to be high-friction**, ensuring our development cycles are always directly aligned with verified user needs.
