@@ -63,7 +63,7 @@ const config = {
           // If you put case studies in 'docs', change this to: '/docs/case-studies'
           {to: '/case-studies', label: 'Case Studies', position: 'left'},
           {to: '/resume', label: 'Resume', position: 'left'},
-          {href: 'https://github.com/andrewyu47/portfolio/case-studies', label: 'GitHub', position: 'right'},
+          {href: 'https://github.com/andrewyu47/portfolio/', label: 'GitHub', position: 'right'},
         ],
       },
       footer: {
