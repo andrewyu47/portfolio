@@ -3,24 +3,28 @@ import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
+// HomepageFeatures import removed as requested
 
 import styles from './index.module.css';
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
   return (
-    <header className={clsx('hero hero--primary', styles.heroBanner)} style={{padding: '4rem 0', textAlign: 'center'}}>
+    // Applied styles.heroBanner
+    <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
         <h1 className="hero__title">
           Technical Leader synthesizing Language, Technology, and GenAI.
         </h1>
-        <p className="hero__subtitle" style={{maxWidth: '800px', margin: '0 auto', fontSize: '1.25rem', lineHeight: '1.6'}}>
+        {/* Applied styles.heroSubtitle */}
+        <p className={clsx('hero__subtitle', styles.heroSubtitle)}>
           I architect the systems that make AI safe, scalable, and semantically precise. 
           With over a decade of technical leadership at Cisco, Splunk, and Workday, 
           I specialize in RAG Architecture, Governance Frameworks, and Developer Experience 
           at enterprise scale.
         </p>
-        <div className={styles.buttons} style={{marginTop: '2rem'}}>
+        {/* Applied styles.heroButtons */}
+        <div className={styles.heroButtons}>
           <Link
             className="button button--secondary button--lg"
             to="/docs/case-studies/sage">
@@ -41,8 +45,8 @@ export default function Home() {
       <HomepageHeader />
       <main>
         {/* SAGE FEATURE SECTION */}
-        <section style={{padding: '4rem 0', backgroundColor: '#f5f6f7', color: 'black'}}> 
-        {/* Added color: black to ensure text is visible on light background if your theme is dark mode */}
+        {/* Applied styles.featureSection */}
+        <section className={styles.featureSection}> 
           <div className="container">
             <div className="row">
               <div className="col col--6">
@@ -61,17 +65,16 @@ export default function Home() {
                 </div>
               </div>
               <div className="col col--6">
-                {/* Ensure you have an image at static/img/sage-screen.png or this will show broken */}
+                {/* Applied styles.featureImage */}
                 <img 
                   src="/img/sage-hero.png" 
                   alt="Sage Interface" 
-                  style={{borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)'}} 
+                  className={styles.featureImage}
                 />
               </div>
             </div>
           </div>
         </section>
-
       </main>
     </Layout>
   );
