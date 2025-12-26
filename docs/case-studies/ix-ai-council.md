@@ -27,15 +27,15 @@ When Generative AI exploded, Splunk's Information Experience (IX) organization f
 
 I founded the **IX AI Council** to serve as the central governance and enablement body, bridging the gap between Engineering, Product, and Content Experience.
 
-### 1. Governance & Tool Selection
+### Governance & Tool Selection
 We moved from ad-hoc usage to a sanctioned tech stack.
 * **Evaluated:** Audited enterprise tools against security and style requirements.
 * **Defined:** Created the "Red/Yellow/Green" usage policy for data handling (e.g., "No proprietary code in public LLMs").
 
-### 2. Prompt Engineering Library
+### Prompt Engineering Library
 I architected a shared library of system prompts stored in Git, allowing writers to treat prompts as code. This standardized the output tone and ensured consistent results across 60+ staff members.
 
-### 3. The "Human-in-the-Loop" Framework
+### The "Human-in-the-Loop" Framework
 To quell anxiety and ensure quality, I architected a workflow where AI is the *drafter* and the Human is the *editor/publisher*.
 
 ```mermaid
@@ -49,7 +49,7 @@ flowchart LR
 
 ```
 
-### 4. The Impact (Ongoing)
+### The Impact (Ongoing)
 The Council transformed our documentation culture:
 
 **Velocity**: Increased content velocity by **25%** via GenAI workflows.
