@@ -9,7 +9,7 @@ const darkCodeTheme = themes.dracula;
 /** @type {import('@docusaurus/types').Config} */
 const config = {
   // --- SITE SETTINGS ---
-  title: 'Technical Documentation Manager & AI Strategist',
+  title: 'Content Engineer and AI Strategist',
   tagline: 'Manager, GenAI Content Strategy',
   favicon: 'img/favicon.ico',
 
