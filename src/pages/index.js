@@ -19,9 +19,11 @@ function HomepageHeader() {
           I specialize in RAG Architecture, Governance Frameworks, and Developer Experience 
           at enterprise scale.
         </p>
+      </div>
     </header>
   );
 }
+
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
