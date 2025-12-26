@@ -10,7 +10,7 @@ const darkCodeTheme = themes.dracula;
 const config = {
   // --- SITE SETTINGS ---
   title: 'My Portfolio',
-  tagline: 'Technical Documentation Manager & Architect',
+  tagline: 'Manager, GenAI Content Strategy',
   favicon: 'img/favicon.ico',
 
   // --- GITHUB PAGES DEPLOY SETTINGS ---
