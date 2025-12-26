@@ -64,7 +64,7 @@ export default function Home() {
               <div className="col col--6">
                 {/* Ensure you have an image at static/img/sage-screen.png or this will show broken */}
                 <img 
-                  src="/img/sage-screen.png" 
+                  src="/img/sage-hero.png" 
                   alt="Sage Interface" 
                   style={{borderRadius: '8px', boxShadow: '0 4px 12px rgba(0,0,0,0.1)'}} 
                 />

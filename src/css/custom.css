@@ -34,7 +34,7 @@
 
 /* Custom Hero Banner */
 .hero {
-  background-image: url('/img/hero-banner.jpg');
+  background-image: url('/img/hero-banner.png');
   background-size: cover;
   background-position: center;
   position: relative;
