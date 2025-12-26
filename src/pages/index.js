@@ -56,7 +56,7 @@ export default function Home() {
                 <div className={styles.buttons}>
                   <Link
                     className="button button--primary button--lg"
-                    to="/docs/case-studies/sage"> 
+                    to="/docs/case-studies/project-sage"> 
                     View Case Study
                   </Link>
                 </div>
