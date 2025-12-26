@@ -1,23 +1,44 @@
-/**
- * CSS files with the .module.css suffix will be treated as CSS modules
- * and scoped locally.
- */
+/* src/pages/index.module.css */
 
+/* --- Hero Section Overrides --- */
 .heroBanner {
   padding: 4rem 0;
   text-align: center;
-  position: relative;
-  overflow: hidden;
 }
 
-@media screen and (max-width: 996px) {
-  .heroBanner {
-    padding: 2rem;
-  }
+.heroSubtitle {
+  max-width: 800px;
+  margin: 0 auto;
+  font-size: 1.25rem;
+  line-height: 1.6;
 }
 
-.buttons {
+.heroButtons {
+  margin-top: 2rem;
   display: flex;
-  align-items: center;
   justify-content: center;
+  gap: 1rem; /* Adds space if you add more buttons later */
+}
+
+/* --- Feature Sections (Project Sage) --- */
+.featureSection {
+  padding: 4rem 0;
+  background-color: #f5f6f7;
+  color: #1c1e21; /* Dark gray for readability */
+}
+
+/* Optional: In Dark Mode, you might want this section to not be bright white/gray.
+   Uncomment below if you want it to blend in dark mode */
+/* [data-theme='dark'] .featureSection {
+  background-color: var(--ifm-background-surface-color);
+  color: var(--ifm-font-color-base);
+}
+*/
+
+.featureImage {
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  height: auto;
+  display: block;
 }
