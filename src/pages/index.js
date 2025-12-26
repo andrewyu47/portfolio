@@ -28,7 +28,7 @@ export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Home`}
+      title={`Andrew`}
       description="Technical Leader synthesizing Language, Technology, and GenAI">
       <HomepageHeader />
       <main>
