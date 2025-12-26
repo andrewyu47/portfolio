@@ -16,14 +16,14 @@ tags: [Leadership, AI, Governance, Splunk]
 
 ![AI Council Strategy](/img/council-hero.png)
 
-## 📝 The Challenge: The "Wild West" of AI
+## The Challenge: The "Wild West" of AI
 
 When Generative AI exploded, Splunk's Information Experience (IX) organization faced a critical juncture. We needed to scale content output without adding headcount, but faced three blockers:
 1.  **Fragmentation:** Individual writers were experimenting with unauthorized tools, creating security risks.
 2.  **Anxiety:** The team feared displacement rather than seeing enablement.
 3.  **Lack of Strategy:** We had no standard for *how* to use AI for documentation—only *that* we should.
 
-## 🛠️ The Solution: The IX AI Council
+## The Solution: The IX AI Council
 
 I founded the **IX AI Council** to serve as the central governance and enablement body, bridging the gap between Engineering, Product, and Content Experience.
 
@@ -49,7 +49,7 @@ flowchart LR
 
 ```
 
-### 4. 📊 The Impact (Ongoing)
+### 4. The Impact (Ongoing)
 The Council transformed our documentation culture:
 
 **Velocity**: Increased content velocity by **25%** via GenAI workflows.
