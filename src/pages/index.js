@@ -11,7 +11,7 @@ function HomepageHeader() {
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
         <h1 className="hero__title">
-          Technical Leader synthesizing Language, Technology, and GenAI.
+          Technical Leader synthesizing <br></br>Language, Technology, and GenAI.
         </h1>
         <p className={clsx('hero__subtitle', styles.heroSubtitle)}>
           I architect the systems that make AI safe, scalable, and semantically precise. 
