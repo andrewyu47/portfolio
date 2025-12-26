@@ -19,14 +19,6 @@ function HomepageHeader() {
           I specialize in RAG Architecture, Governance Frameworks, and Developer Experience 
           at enterprise scale.
         </p>
-        <div className={styles.heroButtons}>
-          <Link
-            className="button button--secondary button--lg"
-            to="/docs/case-studies/project-sage"> {/* <--- FIXED LINK HERE */}
-            View Case Studies
-          </Link>
-        </div>
-      </div>
     </header>
   );
 }
