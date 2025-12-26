@@ -3,31 +3,26 @@ import clsx from 'clsx';
 import Link from '@docusaurus/Link';
 import useDocusaurusContext from '@docusaurus/useDocusaurusContext';
 import Layout from '@theme/Layout';
-// HomepageFeatures import removed as requested
-
 import styles from './index.module.css';
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
   return (
-    // Applied styles.heroBanner
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
         <h1 className="hero__title">
           Technical Leader synthesizing Language, Technology, and GenAI.
         </h1>
-        {/* Applied styles.heroSubtitle */}
         <p className={clsx('hero__subtitle', styles.heroSubtitle)}>
           I architect the systems that make AI safe, scalable, and semantically precise. 
           With over a decade of technical leadership at Cisco, Splunk, and Workday, 
           I specialize in RAG Architecture, Governance Frameworks, and Developer Experience 
           at enterprise scale.
         </p>
-        {/* Applied styles.heroButtons */}
         <div className={styles.heroButtons}>
           <Link
             className="button button--secondary button--lg"
-            to="/docs/case-studies/sage">
+            to="/docs/case-studies/project-sage"> {/* <--- FIXED LINK HERE */}
             View Case Studies
           </Link>
         </div>
@@ -45,7 +40,6 @@ export default function Home() {
       <HomepageHeader />
       <main>
         {/* SAGE FEATURE SECTION */}
-        {/* Applied styles.featureSection */}
         <section className={styles.featureSection}> 
           <div className="container">
             <div className="row">
@@ -59,13 +53,12 @@ export default function Home() {
                 <div className={styles.buttons}>
                   <Link
                     className="button button--primary button--lg"
-                    to="/docs/case-studies/project-sage"> 
+                    to="/docs/case-studies/project-sage"> {/* This one was already correct */}
                     View Case Study
                   </Link>
                 </div>
               </div>
               <div className="col col--6">
-                {/* Applied styles.featureImage */}
                 <img 
                   src="/img/sage-hero.png" 
                   alt="Sage Interface" 
