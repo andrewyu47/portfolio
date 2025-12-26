@@ -22,7 +22,6 @@ function HomepageHeader() {
     </header>
   );
 }
-
 export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
