@@ -11,11 +11,10 @@ function HomepageHeader() {
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
         <h1 className="hero__title">
-           {/* The Headline */}
-          Technical Leader applying First Principles<br></br> to AI & Language.
+          {/* Added self-closing syntax <br /> for React best practice */}
+          Technical Leader applying First Principles<br /> to AI & Language.
         </h1>
         <p className={clsx('hero__subtitle', styles.heroSubtitle)}>
-           {/* The Hybrid Blurb */}
           I deconstruct complex user problems to their root causes, leveraging Systems Theory 
           to treat LLMs as probabilistic engines requiring rigorous governance. 
           With over a decade of leadership at <strong>Cisco, Splunk, and Workday</strong>, 
@@ -37,7 +36,7 @@ export default function Home() {
   const {siteConfig} = useDocusaurusContext();
   return (
     <Layout
-      title={`Andrew`}
+      title="Home" // Changed "Andrew" to "Home" so the tab reads: "Home | Andrew Yu"
       description="Technical Leader synthesizing Language, Technology, and GenAI">
       <HomepageHeader />
       <main>
@@ -52,10 +51,11 @@ export default function Home() {
                   I led the cross-functional team that built "SAGE," a RAG-based support agent that reduces ticket volume by 20%. 
                   It synthesizes live DOM signals with static documentation to provide instant resolution.
                 </p>
-                <div className={styles.buttons}>
+                {/* FIXED: Changed styles.buttons to styles.heroButtons to match your CSS */}
+                <div className={styles.heroButtons} style={{justifyContent: 'flex-start'}}>
                   <Link
                     className="button button--primary button--lg"
-                    to="/docs/case-studies/project-sage"> {/* This one was already correct */}
+                    to="/docs/case-studies/project-sage"> 
                     View Case Study
                   </Link>
                 </div>
