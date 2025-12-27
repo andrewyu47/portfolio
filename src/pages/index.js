@@ -11,14 +11,23 @@ function HomepageHeader() {
     <header className={clsx('hero hero--primary', styles.heroBanner)}>
       <div className="container">
         <h1 className="hero__title">
-          Technical Leader synthesizing <br></br>Language, Technology, and GenAI.
+           {/* The Headline */}
+          Technical Leader applying First Principles to AI & Language.
         </h1>
         <p className={clsx('hero__subtitle', styles.heroSubtitle)}>
-          I architect the systems that make AI safe, scalable, and semantically precise. 
-          With over a decade of technical leadership at Cisco, Splunk, and Workday, 
-          I specialize in RAG Architecture, Governance Frameworks, and Developer Experience 
-          at enterprise scale.
+           {/* The Hybrid Blurb */}
+          I deconstruct complex user problems to their root causes, leveraging Systems Theory 
+          to treat LLMs as probabilistic engines requiring rigorous governance. 
+          With over a decade of leadership at <strong>Cisco, Splunk, and Workday</strong>, 
+          I specialize in rapid prototyping, RAG pipelines, and driving roadmaps from lab to production.
         </p>
+        <div className={styles.heroButtons}>
+          <Link
+            className="button button--secondary button--lg"
+            to="/docs/case-studies/project-sage">
+            View Case Studies
+          </Link>
+        </div>
       </div>
     </header>
   );
