@@ -12,7 +12,7 @@ function HomepageHeader() {
       <div className="container">
         <h1 className="hero__title">
            {/* The Headline */}
-          Technical Leader applying First Principles to AI & Language.
+          Technical Leader applying First Principles<br></br> to AI & Language.
         </h1>
         <p className={clsx('hero__subtitle', styles.heroSubtitle)}>
            {/* The Hybrid Blurb */}
