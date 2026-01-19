@@ -62,7 +62,7 @@ export default function Home() {
               </div>
               <div className="col col--6">
                 <img 
-                  src="/img/sage-hero.png" 
+                  src="/img/Sage-Diagram.png" 
                   alt="Sage Interface" 
                   className={styles.featureImage}
                 />
