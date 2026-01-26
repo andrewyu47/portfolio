@@ -12,7 +12,7 @@ function HomepageHeader() {
       <div className="container">
         <h1 className="hero__title">
           {/* Added self-closing syntax <br /> for React best practice */}
-          Senior Technical Writer and AI Manager applying First Principles<br /> to AI & Language.
+          Senior Technical Writer and AI Manager<br /> applying First Principles to AI & Language.
         </h1>
         <p className={clsx('hero__subtitle', styles.heroSubtitle)}>
           I deconstruct complex user problems to their root causes, leveraging Systems Theory 
