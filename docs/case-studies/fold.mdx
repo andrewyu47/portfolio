@@ -1,0 +1,44 @@
+---
+slug: fold
+title: Fold
+authors: [me]
+tags: [nextjs, claude api, sqlite, drizzle, ai, student ministry]
+sidebar_position: 6
+---
+
+# Fold: AI-Powered Operations for Student Organizations
+
+**Event management, ride coordination, and attendee analytics for student organizations, all in one place and powered by Claude.**
+
+> **Role:** Solo Architect & Engineer  
+> **Stack:** Next.js 15, TypeScript, Turso (hosted SQLite), Drizzle ORM, Claude API, Tailwind CSS, Recharts
+
+## The Problem
+
+Student org leaders track attendance the way most teams track anything informal: a messy paste from a sign-in sheet, a few Instagram handles scribbled on a napkin, names half-remembered after the fact. The data piles up across spreadsheets, group chats, and Notion docs that nobody updates after week three. By the time a leader asks the obvious question, "who came to the last three events but went quiet this week?", the answer is buried in five places and answered by no one.
+
+Fold collapses that workflow into a single dashboard, and lets the leader ask the question in plain English instead of building a query.
+
+## What Fold Does
+
+- **Smart Intake.** Paste unstructured text — names, phone numbers, Instagram handles, however a co-leader happened to capture them — and Claude extracts structured student records. Duplicate detection happens in the same pass, so a typo doesn't create a phantom freshman.
+- **Events and Attendance.** Create an event, mark attendance with a quick-add form, and immediately see who was a first-timer, who invited whom, and how the night skewed across demographics.
+- **Students.** A searchable roster where every person carries their own health metrics: attendance frequency, who brought them, who they've brought, contact-attempt history. A "Gone Cold" tab surfaces anyone who hasn't shown up in 30+ days, so follow-up doesn't depend on someone remembering.
+- **Engagement Funnel.** Students move between stages, from "new" to "engaged," with automated sweeps that act on activity rather than a leader's memory. Filters surface stale responses, missing follow-ups, and people stuck in a stage too long.
+- **Ride Coordination.** Carpool sessions are first-class objects. Assign drivers and riders, respect seat constraints, and track separate sessions for there, back, and Sunday morning without rebuilding a spreadsheet every week.
+- **Natural Language Queries.** Ask "who came to the last 3 events but not this week" or "all freshmen who were invited by someone" and get the answer back as a table. The model translates the question into a validated SQL query against the schema.
+
+## How It Solves the Use Case
+
+The core insight is that leaders of student organizations are not data analysts and should not have to become them. The point of Fold is to remove the gap between *noticing something* and *doing something about it.*
+
+- **Sloppy in, structured out.** A leader pastes whatever they collected. Claude does the cleanup. Nobody has to enforce a format on volunteers.
+- **One source of truth across co-leaders.** The app lives on an always-on Mac and is shared with co-leaders over Tailscale. Everyone sees the same roster, the same funnel, the same gone-cold list. No more parallel spreadsheets.
+- **Plain-English answers to plain-English questions.** A leader asks the question they were already asking out loud. The answer comes back as a table, not a 500-row CSV waiting to be filtered.
+- **Follow-up becomes a workflow, not a memory test.** The funnel and gone-cold surfaces tell the leader *who* needs attention now, so the most valuable conversations happen with the right people instead of whoever happens to come to mind.
+
+The result: less time spent maintaining the system, more time spent on the relationships the system is supposed to support.
+
+## Architecture Notes
+
+Fold is a Next.js 15 app on the App Router, written end-to-end in TypeScript. Persistence is Turso (hosted SQLite) with Drizzle ORM for schema and migrations. The AI surface is Claude (Haiku for parsing and insights), called from server actions so prompts and parsing logic stay on the backend. Charts are Recharts; styling is Tailwind. The whole thing runs as a long-lived process on a Mac mini under PM2, exposed to a handful of co-leaders over Tailscale rather than the public internet.
