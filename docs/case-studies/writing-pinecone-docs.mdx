@@ -1,0 +1,29 @@
+---
+slug: writing-pinecone-docs
+title: Pinecone Search Documentation
+authors: [me]
+tags: [technical writing, documentation, sdk, api, rag, retrieval]
+sidebar_position: 6
+---
+
+# Pinecone Search Documentation
+
+**Sole-author SDK and API reference for Pinecone's vector database, written for humans and the AI assistants that increasingly read on their behalf.**
+
+> **Role:** Sole author  
+> **Collaborators:** Engineering (code samples and technical accuracy), Product (scope and audience), other writers (style and structural consistency)  
+> **Read it:** [docs.pinecone.io — Search Overview](https://docs.pinecone.io/guides/search/search-overview)
+
+## Process
+
+I start by reading the source code and recent PRs to establish the right mental model for the release — in this case, the full-text search rollout. The challenge is structuring the content so customers understand which tools to reach for at varying levels of complexity. I verify that initial plan with the engineer who built the feature before writing.
+
+Next, I draft the page with structured headings and metadata so it is retrievable by both humans and the AI assistants that increasingly read on their behalf. Finally, I ship the content through a PR-based review where engineering, product, and other writers weigh in.
+
+## Proud Of
+
+Every page is structured so an AI assistant can retrieve a single, clean answer that is also token-efficient. Headings, examples, and metadata are designed for retrieval as well as reading. The result is documentation that performs well in two adjacent loops: the developer scanning the page and the agent retrieving a chunk of it.
+
+## Would Improve
+
+I would add interactive, runnable examples directly to the page rather than linking out to a notebook. Engineers learn faster from "click run" than from "copy this and paste it elsewhere." Closing that gap would shorten time-to-first-query and reduce the silent failure cases where a developer never makes it to the linked notebook.
