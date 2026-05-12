@@ -12,12 +12,12 @@ function HomepageHeader() {
       <div className="container">
         <h1 className="hero__title">
           {/* Added self-closing syntax <br /> for React best practice */}
-          Product Manager and Senior Technical Writer<br /> applying First Principles to AI & Language.
+          AI Strategist and Senior Technical Writer<br /> applying First Principles to AI & Language.
         </h1>
         <p className={clsx('hero__subtitle', styles.heroSubtitle)}>
           I deconstruct complex user problems to their root causes, leveraging Systems Theory 
           to treat LLMs as probabilistic engines requiring rigorous governance. 
-          With over a decade of product leadership and development at <strong>Splunk and Workday</strong>, 
+          With over a decade of technical leadership and development at <strong>Splunk and Workday</strong>,
           I specialize in rapid prototyping, RAG pipelines, and driving roadmaps from lab to production.
         </p>
         <div className={styles.heroButtons}>
