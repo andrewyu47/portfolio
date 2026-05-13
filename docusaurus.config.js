@@ -13,9 +13,9 @@ const config = {
   tagline: 'Manager, GenAI Content Strategy',
   favicon: 'img/favicon.ico',
 
-  // --- GITHUB PAGES DEPLOY SETTINGS ---
-  url: 'https://andrewyu47.github.io',
-  baseUrl: '/', // Matches your repo name with slashes
+  // --- GITHUB PAGES DEPLOY SETTINGS (custom domain) ---
+  url: 'https://andrewyu.app',
+  baseUrl: '/',
   organizationName: 'andrewyu47',
   projectName: 'portfolio',
   trailingSlash: false,
@@ -56,19 +56,22 @@ const config = {
   themeConfig:
     /** @type {import('@docusaurus/preset-classic').ThemeConfig} */
     ({
+      colorMode: {
+        defaultMode: 'dark',
+        disableSwitch: true,
+        respectPrefersColorScheme: false,
+      },
       navbar: {
-        title: 'Andrew Yu',
+        title: 'andrew yu',
         items: [
-          // If you put case studies in 'src/pages/case-studies', keep this to: '/case-studies'
-          // If you put case studies in 'docs', change this to: '/docs/case-studies'
-          {to: '/case-studies', label: 'Case Studies', position: 'left'},
-          {to: '/resume', label: 'Resume', position: 'left'},
-          {href: 'https://github.com/andrewyu47/portfolio/', label: 'GitHub', position: 'right'},
+          {to: '/case-studies', label: 'Work', position: 'left'},
+          {to: '/resume', label: 'Résumé', position: 'left'},
+          {href: 'https://github.com/andrewyu47/portfolio/', label: 'github ↗', position: 'right'},
         ],
       },
       footer: {
         style: 'dark',
-        copyright: `Copyright © ${new Date().getFullYear()} Andrew Yu.`,
+        copyright: `© ${new Date().getFullYear()} andrew yu — built with docusaurus`,
       },
       prism: {
         theme: lightCodeTheme,
