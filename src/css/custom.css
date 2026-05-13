@@ -24,20 +24,20 @@
   --ifm-h1-font-size: 3rem;
   --ifm-line-height-base: 1.65;
 
-  /* Editorial palette — dark gray canvas + mint accent */
-  --ay-bg:        #0a0a0b;
-  --ay-bg-elev:   #111113;
-  --ay-bg-hi:     #18181b;
-  --ay-surface:   #111113;
-  --ay-surface-hi:#18181b;
-  --ay-border:    rgba(255,255,255,0.07);
+  /* Editorial palette — navy canvas + mint accent + slate text */
+  --ay-bg:        #0a192f;
+  --ay-bg-elev:   #112240;
+  --ay-bg-hi:     #1c2c4c;
+  --ay-surface:   #112240;
+  --ay-surface-hi:#16294f;
+  --ay-border:    rgba(255,255,255,0.08);
   --ay-border-hi: rgba(255,255,255,0.14);
 
-  --ay-slate-50:  #fafafa;
-  --ay-slate-100: #e5e5e5;
-  --ay-slate-300: #d4d4d8;
-  --ay-slate-400: #a1a1aa;
-  --ay-slate-500: #71717a;
+  --ay-slate-50:  #e6f1ff;
+  --ay-slate-100: #ccd6f6;
+  --ay-slate-300: #a8b2d1;
+  --ay-slate-400: #8892b0;
+  --ay-slate-500: #6b7693;
 
   --ay-text:        var(--ay-slate-300);
   --ay-text-bright: var(--ay-slate-50);
@@ -57,7 +57,7 @@ html,
   --ifm-background-surface-color: var(--ay-surface);
   --ifm-color-content: var(--ay-text);
   --ifm-color-content-secondary: var(--ay-text-muted);
-  --ifm-navbar-background-color: rgba(10,10,11,0.65);
+  --ifm-navbar-background-color: rgba(10,25,47,0.55);
   --ifm-navbar-link-color: var(--ay-text-muted);
   --ifm-navbar-link-hover-color: var(--ay-text-bright);
   --ifm-link-color: var(--ay-accent);
@@ -84,7 +84,7 @@ body {
 .navbar {
   backdrop-filter: saturate(180%) blur(14px);
   -webkit-backdrop-filter: saturate(180%) blur(14px);
-  background: rgba(10,10,11,0.65);
+  background: rgba(10,25,47,0.55);
   border-bottom: 1px solid var(--ay-border);
   box-shadow: none;
 }
