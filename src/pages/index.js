@@ -153,6 +153,13 @@ function ProjectItem({item}) {
 function LeftPane({active}) {
   return (
     <aside className={styles.left}>
+      <img
+        src="/img/headshot.png"
+        alt="Andrew Yu"
+        className={styles.avatar}
+        width={88}
+        height={88}
+      />
       <h1 className={styles.name}>Andrew Yu</h1>
       <p className={styles.role}>AI Strategist &amp; Senior Technical Writer</p>
       <p className={styles.tagline}>
