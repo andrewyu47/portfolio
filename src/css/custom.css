@@ -80,6 +80,15 @@ body {
 
 #__docusaurus { position: relative; z-index: 1; }
 
+/* ---------- Case-study (docs) pages: dark-grey canvas instead of navy ---------- */
+html.plugin-docs,
+html.plugin-docs body {
+  background: #1f1f22 !important;
+}
+html.plugin-docs .navbar {
+  background: rgba(31,31,34,0.85) !important;
+}
+
 /* ---------- Navbar ---------- */
 .navbar {
   backdrop-filter: saturate(180%) blur(14px);
