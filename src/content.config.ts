@@ -41,6 +41,8 @@ const work = defineCollection({
     heroFigure: z.string().optional(),
     /** Where a reader can check the work: repositories, live pages, source files. Shown as a Verify row. */
     verify: z.array(link).default([]),
+    /** One plain line for the Verify row when part of the work cannot be shown, saying why. */
+    verifyNote: z.string().optional(),
     /** Optional cover image in src/assets/work/, relative path. */
     cover: z.string().optional(),
     coverAlt: z.string().optional(),

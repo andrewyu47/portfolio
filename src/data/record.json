@@ -1,12 +1,12 @@
 [
   {
     "value": "103",
-    "label": "people taught to build with Claude Code",
+    "label": "people taught to build with Claude Code, with other instructors",
     "href": "#teach"
   },
   {
     "value": "89%",
-    "label": "task success for a small model once it had a curated docs file. Without it, 11%",
+    "label": "task success for a small model at Pinecone, after I gave it one curated docs file. Before, 11%",
     "href": "#measure"
   },
   {

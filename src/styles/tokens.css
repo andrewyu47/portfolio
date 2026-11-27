@@ -92,6 +92,9 @@
     --over-fill: var(--text);
     --over-edge: #2d8f95;
     --over-blend: normal;
+    /* The running head keeps the day teal with pale type. A full bar of the light night ink outshouts the headline. */
+    --band: #0b5f69;
+    --band-text: #edefea;
   }
 }
 :root[data-theme='dark'] {
@@ -109,6 +112,8 @@
   --over-fill: var(--text);
   --over-edge: #2d8f95;
   --over-blend: normal;
+  --band: #0b5f69;
+  --band-text: #edefea;
 }
 
 /* Code samples are set in the same inks as everything else (Shiki's css-variables theme). */

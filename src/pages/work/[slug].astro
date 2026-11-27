@@ -125,18 +125,23 @@ const jsonLd = {
               </ul>
             </div>
           )}
-          {checks.length > 0 && (
+          {(checks.length > 0 || d.verifyNote) && (
             <div class="rec rec--verify">
               <h2 class="field">Verify</h2>
-              <ul class="links">
-                {checks.map((l) => (
-                  <li>
-                    <a class="more" href={l.href}>
-                      {l.label}
-                    </a>
-                  </li>
-                ))}
-              </ul>
+              <div>
+                {checks.length > 0 && (
+                  <ul class="links">
+                    {checks.map((l) => (
+                      <li>
+                        <a class="more" href={l.href}>
+                          {l.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {d.verifyNote && <p class="verify-note">{d.verifyNote}</p>}
+              </div>
             </div>
           )}
         </div>
@@ -309,6 +314,15 @@ const jsonLd = {
   }
   .links {
     gap: 6px 28px;
+  }
+  .verify-note {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    max-width: 62ch;
+  }
+  .links + .verify-note {
+    margin-top: 8px;
   }
   .links .more {
     font-size: 0.875rem;

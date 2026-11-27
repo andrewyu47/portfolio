@@ -17,8 +17,8 @@ interface Props {
   class?: string;
 }
 const PRINTS = {
-  'room-capstone': { ratio: '2000 / 1042', cx: 0.9, cy: 0.5, r: 0.17 },
-  'room-capstone-tight': { ratio: '1220 / 840', cx: 0.84, cy: 0.52, r: 0.27 },
+  'room-capstone': { ratio: '2000 / 1042', cx: 0.9125, cy: 0.47, r: 0.086 },
+  'room-capstone-tight': { ratio: '1220 / 840', cx: 0.862, cy: 0.535, r: 0.136 },
 } as const;
 
 const { print, alt, class: className } = Astro.props;
@@ -68,8 +68,9 @@ const disc = {
     position: absolute;
     inset: 0;
     background: var(--ink);
-    -webkit-mask: var(--photo-mask) center / 100% 100% no-repeat;
-    mask: var(--photo-mask) center / 100% 100% no-repeat;
+    /* cover, so a page that sets a shorter frame crops the print instead of squeezing it */
+    -webkit-mask: var(--photo-mask) center / cover no-repeat;
+    mask: var(--photo-mask) center / cover no-repeat;
     mix-blend-mode: var(--blend);
     clip-path: inset(0 0 0 0);
     transition: clip-path 0.85s cubic-bezier(0.6, 0, 0.2, 1);

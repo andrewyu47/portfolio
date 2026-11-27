@@ -14,6 +14,12 @@
  */
 import dojo from '../../data/dojo.json';
 
+interface Props {
+  /** Leave the lesson and video totals off when the page already prints them beside the ladder. */
+  counts?: boolean;
+}
+const { counts = true } = Astro.props;
+
 const top = dojo.ladder.length - 1;
 const rungs = dojo.ladder.map((r) => ({ ...r, live: r.n === top }));
 const words = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven'];
@@ -44,10 +50,18 @@ const words = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'E
     }
   </ol>
   <figcaption id="ladder-cap">
-    <p class="ladder__count">
-      <span><b class="numeral">{dojo.record.lessons}</b> lessons</span>
-      <span><b class="numeral">{dojo.record.videos}</b> lesson videos</span>
-    </p>
+    {
+      counts && (
+        <p class="ladder__count">
+          <span>
+            <b class="numeral">{dojo.record.lessons}</b> lessons
+          </span>
+          <span>
+            <b class="numeral">{dojo.record.videos}</b> lesson videos
+          </span>
+        </p>
+      )
+    }
     <p class="ladder__key">
       <span class="key" aria-hidden="true"><i class="key__live"></i></span>
       <span>

@@ -1,15 +1,15 @@
 ---
 /**
- * The eval result from "The score that lied", drawn in the two inks.
- * Four documentation conditions across, task success up the side, one series per model:
- * the small model (Claude Haiku 4.5) in teal circles, the large model (Claude Sonnet 4.6)
- * in navy squares. The curated docs file is the point that matters, so it is marked in pink.
+ * The eval result from "The score that lied", drawn in the two inks as a dot plot.
+ * One row per documentation condition on a shared scale from 0 to 100. Each row carries
+ * two marks: a teal circle for the small model (Claude Haiku 4.5) and a navy square for
+ * the large model (Claude Sonnet 4.6), joined by a thin rule, with both values printed at
+ * the end of the row. The curated docs file is the row that matters, so it sits on pink.
  *
- * Numbers come only from the results table in src/content/work/the-score-that-lied.mdx
- * (pinecone-10 to pinecone-15 in the fact base). Each value is the share of 45 runs that passed.
+ * The four conditions have no order, so they are rows, not points along a line.
  *
- * Points and labels are HTML so the type stays at its real size on a phone. The two lines
- * that join each series are one SVG stretched to the plot, with strokes that do not scale.
+ * Numbers come only from the results table in src/content/work/the-score-that-lied.mdx.
+ * Each value is the share of 45 runs that passed.
  *
  *   <EvalChart />            beside the case study title
  *   <EvalChart compact />    on the work index: no caption
@@ -21,13 +21,11 @@ interface Props {
 const { compact = false, class: className } = Astro.props;
 
 const conditions = [
-  { name: 'No docs', lines: ['No docs'], small: 11, large: 84 },
-  { name: 'Curated docs file', lines: ['Curated', 'file'], small: 89, large: 100, key: true },
-  { name: 'Live docs through MCP', lines: ['MCP'], small: 4, large: 51 },
-  { name: 'Live docs through web fetch', lines: ['Web', 'fetch'], small: 18, large: 84 },
+  { name: 'No docs', small: 11, large: 84 },
+  { name: 'Curated docs file', short: 'Curated file', small: 89, large: 100, key: true },
+  { name: 'Live docs through MCP', short: 'MCP', small: 4, large: 51 },
+  { name: 'Live docs through web fetch', short: 'Web fetch', small: 18, large: 84 },
 ];
-const x = (i: number) => ((i + 0.5) / conditions.length) * 100;
-const line = (k: 'small' | 'large') => conditions.map((c, i) => `${x(i) * 4},${100 - c[k]}`).join(' ');
 
 const summary =
   'Task success on 15 developer tasks, by documentation condition. ' +
@@ -36,55 +34,41 @@ const summary =
 ---
 
 <figure class:list={['evalchart', { 'evalchart--compact': compact }, className]} data-print>
-  <p class="evalchart__key" aria-hidden="true">
+  <div class="ec" role="img" aria-label={summary}>
+    <div class="ec__row ec__row--head" aria-hidden="true">
+      <span></span>
+      <span class="ec__scale"><span>0</span><span>50</span><span>100%</span></span>
+      <span class="ec__v"><i class="mk mk--small"></i></span>
+      <span class="ec__v"><i class="mk mk--large"></i></span>
+    </div>
+    {
+      conditions.map((c, i) => (
+        <div class:list={['ec__row', { 'is-key': c.key }]} style={`--i:${i}`} aria-hidden="true">
+          {c.key && <span class="ec__band plate" />}
+          <span class="ec__name">{c.short ?? c.name}</span>
+          <span class="ec__track">
+            <span
+              class="ec__link"
+              style={`left:${Math.min(c.small, c.large)}%;width:${Math.abs(c.large - c.small)}%`}
+            />
+            <i class="mk mk--small" style={`left:${c.small}%`} />
+            <i class="mk mk--large" style={`left:${c.large}%`} />
+          </span>
+          <span class="ec__v">{c.small}%</span>
+          <span class="ec__v">{c.large}%</span>
+        </div>
+      ))
+    }
+  </div>
+  <p class="ec__key" aria-hidden="true">
     <span><i class="mk mk--small"></i>Small model, Claude Haiku 4.5</span>
     <span><i class="mk mk--large"></i>Large model, Claude Sonnet 4.6</span>
   </p>
-  <div class="evalchart__body">
-    <div class="evalchart__plot" role="img" aria-label={summary}>
-      <span class="grid grid--100" aria-hidden="true"><span class="grid__n">100%</span></span>
-      <span class="grid grid--50" aria-hidden="true"><span class="grid__n">50</span></span>
-      <span class="grid grid--0" aria-hidden="true"><span class="grid__n">0</span></span>
-      <div class="evalchart__area" aria-hidden="true">
-        <svg class="evalchart__lines" viewBox="0 0 400 100" preserveAspectRatio="none">
-          <polyline class="ln ln--large" points={line('large')}></polyline>
-          <polyline class="ln ln--small" points={line('small')}></polyline>
-        </svg>
-        {
-          conditions.map((c, i) => (
-            <>
-              {(['large', 'small'] as const).map((k) => (
-                <span
-                  class:list={['pt', `pt--${k}`, { 'pt--key': c.key }]}
-                  style={`left:${x(i)}%;bottom:${c[k]}%;--i:${i}`}
-                >
-                  {c.key && <span class="pt__mark plate" />}
-                  <i class={`mk mk--${k}`} />
-                  <span class="pt__v">{c[k]}%</span>
-                </span>
-              ))}
-            </>
-          ))
-        }
-      </div>
-    </div>
-    <ol class="evalchart__x" aria-hidden="true">
-      {
-        conditions.map((c) => (
-          <li class:list={{ 'is-key': c.key }}>
-            {c.lines.map((l) => (
-              <span>{l}</span>
-            ))}
-          </li>
-        ))
-      }
-    </ol>
-  </div>
   {
     !compact && (
       <figcaption>
-        Share of runs that passed. Each point is 45 runs: 15 tasks, three runs each. MCP and web fetch both read the
-        live docs.
+        Share of runs that passed. Each mark is 45 runs: 15 tasks, three runs each. MCP and web fetch both read the live
+        docs.
       </figcaption>
     )
   }
@@ -92,125 +76,80 @@ const summary =
 
 <style>
   .evalchart {
-    --plot-h: 236px;
-    --axis: 2.6rem;
-    --label-room: 2.9rem;
-    max-width: 520px;
+    container-type: inline-size;
   }
-  .evalchart--compact {
-    --plot-h: 172px;
-  }
-
-  /* The key: marker shapes as well as colors, so the series never depend on color alone. */
-  .evalchart__key {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 4px 18px;
-    margin: 0 0 18px;
-    font-family: var(--font-mono);
-    font-size: 0.8125rem;
-    line-height: 1.4;
-    color: var(--text);
-  }
-  .evalchart__key span {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-  }
-
-  .evalchart__body {
+  .ec {
     display: grid;
-    grid-template-columns: var(--axis) minmax(0, 1fr);
+    border-bottom: var(--rule);
   }
-  .evalchart__plot {
-    grid-column: 1 / -1;
+  .ec__row {
     position: relative;
-    height: var(--plot-h);
-    margin-top: 10px;
-  }
-
-  /* Gridlines at 0, 50 and 100, numbered in the axis gutter. */
-  .grid {
-    position: absolute;
-    left: var(--axis);
-    right: 0;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: minmax(7.5rem, 2.6fr) minmax(0, 5fr) 3.4rem 3.4rem;
+    align-items: center;
+    column-gap: 14px;
+    min-height: 44px;
+    padding: 0 10px;
     border-top: var(--rule-dash);
   }
-  .grid--100 {
-    top: 0;
+  .ec__row--head {
+    min-height: 30px;
+    border-top: 0;
+    border-bottom: var(--rule);
+    align-items: end;
+    padding-bottom: 6px;
   }
-  .grid--50 {
-    top: 50%;
+  .ec__row--head + .ec__row {
+    border-top: 0;
   }
-  .grid--0 {
-    top: 100%;
-    border-top: var(--rule);
+  .ec__name {
+    font-size: var(--step-small);
+    line-height: 1.25;
   }
-  .grid__n {
-    position: absolute;
-    right: calc(100% + 8px);
-    top: 0;
-    translate: 0 -50%;
+  .is-key .ec__name {
+    font-weight: 700;
+  }
+
+  /* The scale: three ticks over the track, and three hairlines down through every row. */
+  .ec__scale {
+    display: flex;
+    justify-content: space-between;
     font-family: var(--font-mono);
     font-size: 0.8125rem;
-    line-height: 1;
     color: var(--ink);
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
   }
-
-  .evalchart__area {
+  .ec__scale span:nth-child(2) {
+    translate: 6px 0;
+  }
+  .ec__track {
+    position: relative;
+    align-self: stretch;
+    background:
+      linear-gradient(var(--ink), var(--ink)) 0 0 / 1px 100% no-repeat,
+      linear-gradient(var(--ink), var(--ink)) 50% 0 / 1px 100% no-repeat,
+      linear-gradient(var(--ink), var(--ink)) 100% 0 / 1px 100% no-repeat;
+  }
+  .is-key .ec__track {
+    background-image:
+      linear-gradient(var(--over), var(--over)), linear-gradient(var(--over), var(--over)),
+      linear-gradient(var(--over), var(--over));
+  }
+  .ec__link {
     position: absolute;
-    inset: 0 var(--label-room) 0 var(--axis);
-  }
-  .evalchart__lines {
-    position: absolute;
-    inset: 0;
-    width: 100%;
-    height: 100%;
-    overflow: visible;
-  }
-  .ln {
-    fill: none;
-    stroke-width: 2;
-    vector-effect: non-scaling-stroke;
-    stroke-linejoin: round;
-  }
-  .ln--small {
-    stroke: var(--ink);
-  }
-  .ln--large {
-    stroke: var(--text);
-    stroke-dasharray: 5 4;
+    top: calc(50% - 1px);
+    height: 2px;
+    background: var(--text);
+    transform-origin: left center;
+    transition: transform 0.5s cubic-bezier(0.3, 0, 0.2, 1) calc(0.25s + var(--i, 0) * 0.16s);
   }
 
-  /* Printing on arrival: the two lines are drawn left to right, each point appears as
-     the line reaches it, and the pink rings land last (the shared .plate rule). */
-  .evalchart__lines {
-    clip-path: inset(-20% 0 -20% 0);
-    transition: clip-path 0.9s cubic-bezier(0.5, 0, 0.3, 1) 0.1s;
-  }
-  .pt .mk,
-  .pt__v {
-    transition: opacity 0.2s linear calc(0.15s + var(--i, 0) * 0.24s);
-  }
-  :global(.js) .evalchart:not([data-printed]) .evalchart__lines {
-    clip-path: inset(-20% 100% -20% 0);
-  }
-  :global(.js) .evalchart:not([data-printed]) .pt .mk,
-  :global(.js) .evalchart:not([data-printed]) .pt__v {
-    opacity: 0;
-  }
-  .evalchart :global(.plate) {
-    transition-delay: 1s;
-  }
-
-  /* Markers: a teal circle for the small model, a navy square for the large one. */
+  /* Marks: a teal circle for the small model, a navy square for the large one. */
   .mk {
     display: inline-block;
     flex: none;
-    width: 12px;
-    height: 12px;
+    width: 14px;
+    height: 14px;
   }
   .mk--small {
     border-radius: 50%;
@@ -219,82 +158,115 @@ const summary =
   .mk--large {
     background: var(--text);
   }
-
-  .pt {
+  .ec__track .mk {
     position: absolute;
-    width: 0;
-    height: 0;
+    top: 50%;
+    translate: -50% -50%;
+    box-shadow: 0 0 0 2px var(--stock);
+    transition: opacity 0.2s linear calc(0.15s + var(--i, 0) * 0.16s);
   }
-  .pt .mk {
-    position: absolute;
-    left: -6px;
-    top: -6px;
-    box-shadow: 0 0 0 2.5px var(--stock);
+  .is-key .ec__track .mk {
+    box-shadow: 0 0 0 2px var(--pink);
   }
-  .pt__mark {
-    position: absolute;
-    left: -13px;
-    top: -13px;
-    width: 26px;
-    height: 26px;
+  .is-key .mk--small {
+    background: var(--over);
     border-radius: 50%;
-    background: var(--pink);
+    outline: 2px solid var(--over);
+    outline-offset: 2px;
   }
-  .pt__v {
-    position: absolute;
-    left: 13px;
-    top: 0;
-    translate: 0 -55%;
-    padding: 0 3px;
-    background: var(--stock);
+  .is-key .mk--large {
+    background: var(--over);
+  }
+
+  .ec__v {
     font-family: var(--font-display);
     font-weight: 800;
     font-stretch: var(--w-shout);
-    font-size: 1.25rem;
-    line-height: 1;
-    color: var(--text);
+    font-size: 1.375rem;
     font-variant-numeric: tabular-nums;
-    white-space: nowrap;
+    text-align: right;
+    line-height: 1;
   }
-  .pt--key .pt__v {
-    left: 17px;
+  .ec__row--head .ec__v {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 4px;
   }
 
-  /* Condition names under the plot, centered on their points. */
-  .evalchart__x {
-    grid-column: 2;
-    list-style: none;
-    margin: 12px var(--label-room) 0 0;
-    padding: 0;
-    display: grid;
-    grid-template-columns: repeat(4, minmax(0, 1fr));
+  /* The row that matters is printed on the pink plate, with navy type over it. */
+  .ec__band {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--pink);
   }
-  .evalchart__x li {
-    display: grid;
-    justify-items: center;
-    text-align: center;
+  .is-key {
+    color: var(--over);
+  }
+
+  .ec__key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 22px;
+    margin-top: 12px;
     font-family: var(--font-mono);
     font-size: 0.8125rem;
-    line-height: 1.35;
-    color: var(--text);
-    white-space: nowrap;
+    line-height: 1.5;
   }
-  .evalchart__x li.is-key span {
-    text-decoration: underline;
-    text-decoration-color: var(--pink);
-    text-decoration-thickness: 3px;
-    text-underline-offset: 3px;
-    font-weight: 600;
+  .ec__key span {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .ec__key .mk {
+    width: 11px;
+    height: 11px;
   }
 
-  @media (max-width: 600px) {
-    .evalchart {
-      --plot-h: 210px;
-      --axis: 2.4rem;
-      --label-room: 2.6rem;
+  /* Printing on arrival: each row's two marks appear, the rule between them is drawn,
+     and the pink plate lands last (the shared .plate rule in global.css). */
+  :global(.js) .evalchart:not([data-printed]) .ec__track .mk {
+    opacity: 0;
+  }
+  :global(.js) .evalchart:not([data-printed]) .ec__link {
+    transform: scaleX(0);
+  }
+  .evalchart :global(.plate) {
+    transition-delay: 0.85s;
+  }
+
+  @container (max-width: 430px) {
+    .ec__row {
+      grid-template-columns: minmax(0, 1fr) 2.9rem 2.9rem;
+      grid-template-rows: auto auto;
+      row-gap: 4px;
+      padding: 8px 8px 10px;
     }
-    .evalchart__x li {
-      font-size: 0.8125rem;
+    .ec__row--head {
+      grid-template-rows: auto;
+      padding: 0 8px 6px;
+    }
+    .ec__row--head > span:first-child {
+      display: none;
+    }
+    .ec__row--head .ec__scale {
+      grid-column: 1;
+    }
+    .ec__name {
+      grid-column: 1;
+      grid-row: 1;
+    }
+    .ec__track {
+      grid-column: 1;
+      grid-row: 2;
+      height: 22px;
+    }
+    .ec__row:not(.ec__row--head) .ec__v {
+      grid-row: 1 / span 2;
+      align-self: center;
+    }
+    .ec__v {
+      font-size: 1.1875rem;
     }
   }
 </style>

@@ -187,7 +187,9 @@ samp {
 /* label | statement | figure */
 .row {
   display: grid;
-  grid-template-columns: minmax(0, 2.3fr) minmax(0, 4.2fr) minmax(0, 3.5fr);
+  /* The first column is exactly the page's label column (see --cols), so the text in
+     every section starts on one vertical line. */
+  grid-template-columns: calc((100% - var(--col-gap)) * 0.23) minmax(0, 4.2fr) minmax(0, 3.5fr);
   gap: var(--col-gap);
   padding: 34px 0;
   border-bottom: var(--rule-dash);
@@ -272,8 +274,8 @@ samp {
   gap: 6px 16px;
   flex-wrap: wrap;
   padding: 9px 14px;
-  background: var(--ink);
-  color: var(--stock);
+  background: var(--band, var(--ink));
+  color: var(--band-text, var(--stock));
   font-family: var(--font-mono);
   font-size: var(--step-label);
   font-weight: 600;
@@ -391,11 +393,11 @@ main > *:has(> .band:first-child) {
   gap: 6px 16px;
   flex-wrap: wrap;
   padding: 9px 14px;
-  background: var(--ink);
+  background: var(--band, var(--ink));
 }
 .sheet__head.label,
 .sheet__head.label strong {
-  color: var(--stock);
+  color: var(--band-text, var(--stock));
 }
 
 /* Field headings inside a sheet: Objective, You will need, Step 1, Checkpoint. */

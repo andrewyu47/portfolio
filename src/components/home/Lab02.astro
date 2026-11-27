@@ -25,7 +25,7 @@ const trace = oneTool as unknown as Trace;
     <div class="sheet">
       <div class="sheet__head label">
         <span>Lab 02 · How an agent actually works, one run</span>
-        <span>Time: 3 minutes</span>
+        <span>Time: 3 of 8 minutes</span>
       </div>
 
       <div class="g">
@@ -70,19 +70,19 @@ const trace = oneTool as unknown as Trace;
     background: var(--l-ground);
     scroll-margin-top: 16px;
   }
-  /* Night: the flood is the light teal ink itself with the type printed in the dark stock,
-     so the lab is the one bright sheet on a dark desk instead of a dim panel. */
+  /* Night: the flood stays the same deep teal with paper-coloured type, exactly as it is
+     printed by day. A full screen of the light night ink was a slab of glare. */
   @media (prefers-color-scheme: dark) {
     :global(:root:not([data-theme='light'])) .flood {
-      --l-ground: var(--ink);
-      --l-type: var(--stock);
-      --l-deep: var(--text);
+      --l-ground: #0b5f69;
+      --l-type: #edefea;
+      --l-deep: #0b1d43;
     }
   }
   :global(:root[data-theme='dark']) .flood {
-    --l-ground: var(--ink);
-    --l-type: var(--stock);
-    --l-deep: var(--text);
+    --l-ground: #0b5f69;
+    --l-type: #edefea;
+    --l-deep: #0b1d43;
   }
 
   /* Inside the flood the stock is the ground and both inks print in the paper colour. */
@@ -97,6 +97,9 @@ const trace = oneTool as unknown as Trace;
     --rule-heavy: 4px solid var(--l-type);
     --rule-dash: 1px dashed var(--l-type);
     --blend: normal;
+    /* Inside the flood the running head is the paper colour with teal type. */
+    --band: var(--l-type);
+    --band-text: var(--l-ground);
     max-width: var(--wrap);
     margin: 0 auto;
     padding: clamp(28px, 4vw, 52px) var(--gutter) clamp(40px, 5vw, 64px);

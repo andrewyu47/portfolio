@@ -26,8 +26,8 @@ const SRC = path.join(root, 'src/assets/room-capstone-source.jpg');
  * (the radius is a fraction of the width). Photo.astro places the same disc in CSS.
  */
 const PRINTS = [
-  { name: 'room-capstone', crop: { left: 0, top: 20, width: 1920, height: 1000 }, width: 2000, cell: 7, pink: { cx: 0.9, cy: 0.5, r: 0.17 } },
-  { name: 'room-capstone-tight', crop: { left: 700, top: 40, width: 1220, height: 840 }, width: 1220, cell: 6, pink: { cx: 0.84, cy: 0.52, r: 0.27 } },
+  { name: 'room-capstone', crop: { left: 0, top: 20, width: 1920, height: 1000 }, width: 2000, cell: 7, pink: { cx: 0.9125, cy: 0.47, r: 0.086 } },
+  { name: 'room-capstone-tight', crop: { left: 700, top: 40, width: 1220, height: 840 }, width: 1220, cell: 6, pink: { cx: 0.862, cy: 0.535, r: 0.136 } },
 ];
 
 const ANGLE = (45 * Math.PI) / 180;

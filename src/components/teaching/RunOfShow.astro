@@ -56,7 +56,7 @@ const capId = compact ? 'ros-cap-compact' : 'ros-cap';
                     {b.name}
                     {b.mine && (
                       <span class="chip block__mine">
-                        Mine<span class="visually-hidden">: the recordings show me presenting this block</span>
+                        Mine<span class="visually-hidden">: I presented this block, and it is on video</span>
                       </span>
                     )}
                   </NameTag>
@@ -76,8 +76,8 @@ const capId = compact ? 'ros-cap-compact' : 'ros-cap';
   </div>
   <figcaption id={capId}>
     The intensive on {dojo.record.dates}, block by block, in the order the session recordings and my run sheet show
-    them. The {mineCount} blocks marked Mine are the ones where the recordings show me presenting. Clock times are left out,
-    so every block is drawn the same size.
+    them. The {mineCount} blocks marked Mine are my sessions that are on video. Clock times are left out, so every block
+    is drawn the same size.
     {
       compact && (
         <>

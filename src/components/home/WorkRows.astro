@@ -3,8 +3,8 @@
  * The four kinds of work on the home page. Each row states its outcome first,
  * shows the evidence as a figure, and names where to go to check it.
  *
- * The rows do not share one shape. Teach is a count drawn as dots. Speak is two plain
- * sentences. Build is an index of things that exist and can be opened today, with the
+ * The rows do not share one shape. Teach is a count drawn as dots. Speak is a short list
+ * of dated rooms. Build is an index of things that exist and can be opened today, with the
  * planned labs on one line marked Next. Measure is a chart drawn to scale.
  */
 import { getCollection } from 'astro:content';
@@ -62,13 +62,20 @@ const built = [
       <p class="outcome-2">I gave a lightning talk at Splunk in 2022 and give lightning talks at Salesforce now.</p>
       <a class="more" href="/teaching#rooms">Talks and workshops</a>
     </div>
+    <figure class="venues">
+      <ul>
+        <li><span class="label">2022</span><span>Lightning talk at Splunk, “The Limitations of Language”</span></li>
+        <li><span class="label">Jul 2026</span><span>Claude Dojo intensive, two sessions on video</span></li>
+        <li><span class="label">2026</span><span>Lightning talks at Salesforce</span></li>
+      </ul>
+    </figure>
   </div>
 
   <div class="row row--build" id="build">
     <p class="verb">Build</p>
     <div class="build__say">
       <p class="outcome">
-        I build the labs I teach from. Four run on this site, which is also an MCP server an agent can read as tools. I
+        I build the labs I teach from. They run on this site, which is also an MCP server an agent can read as tools. I
         co-wrote the Claude Dojo curriculum: 49 lessons and 46 lesson videos.
       </p>
       <p class="outcome-2">I have built on Claude through Amazon Bedrock.</p>
@@ -149,7 +156,7 @@ const built = [
         </div>
         <div class="bar">
           <span class="bar__name">Docs file</span><span class="bar__track"
-            ><span class="bar__fill bar__fill--soft" style="--v:100%"></span></span
+            ><span class="bar__fill bar__fill--pink" style="--v:100%"></span></span
           ><span class="bar__val">100%</span>
         </div>
       </div>
@@ -160,7 +167,7 @@ const built = [
 
 <style>
   #work {
-    padding-top: clamp(40px, 3.4vw, 48px);
+    padding-top: clamp(56px, 6vw, 88px);
   }
   #work :global(.sec-head) {
     padding-bottom: 12px;
@@ -215,12 +222,25 @@ const built = [
     border-color: var(--ink);
   }
 
-  /* Speak: two plain sentences and nothing drawn. The statement takes the width of the row. */
-  .row--speak {
-    grid-template-columns: var(--cols);
+  /* Speak: the claim, and beside it the rooms with a date on file. */
+  .venues ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: var(--rule);
   }
-  .row--speak .outcome-2 {
-    max-width: none;
+  .venues li {
+    display: grid;
+    grid-template-columns: 5rem minmax(0, 1fr);
+    gap: 12px;
+    align-items: baseline;
+    padding: 9px 0;
+    border-bottom: var(--rule-dash);
+    font-size: var(--step-small);
+    line-height: 1.35;
+  }
+  .venues li:last-child {
+    border-bottom: 0;
   }
 
   /* Build: what exists, as an index that opens. The statement takes the middle column,
@@ -348,14 +368,10 @@ const built = [
   :global(.js) [data-print]:not([data-printed]) .bar__fill {
     width: 0;
   }
-  /* The one result that matters is the pink one. The large model's gain prints in teal outline. */
+  /* Teal is a run with no docs. Pink is the same run with the curated docs file. */
   .bar__fill--pink {
     background: var(--pink);
     mix-blend-mode: var(--blend);
-  }
-  .bar__fill--soft {
-    background: transparent;
-    border: 1.5px solid var(--ink);
   }
   .bar__val {
     font-family: var(--font-display);

@@ -1,0 +1,154 @@
+---
+/**
+ * The ownership model from "Who owns an agent skill after it ships", drawn as two rows.
+ *
+ * Source: one piece of guidance, kept by one writer, feeds both the docs page and the
+ * agent skill, so the two cannot drift apart.
+ * Proof: the same developer task is run twice, once without the skill and once with it,
+ * and the two outcomes are compared.
+ *
+ * The outlines are dashed because this is a proposal. It describes the idea in general
+ * terms and shows no internal detail.
+ */
+interface Props {
+  compact?: boolean;
+  class?: string;
+}
+const { compact = false, class: className } = Astro.props;
+const alt =
+  'The proposed model in two rows. Source: one piece of guidance, kept by one writer, feeds both the docs page and the agent skill. Proof: the same task is run without the skill and with the skill, and the outcomes are compared.';
+---
+
+<figure class:list={['own', { 'own--compact': compact }, className]} data-print="wipe">
+  <div class="own__rows" role="img" aria-label={alt}>
+    <div class="own__row" aria-hidden="true">
+      <p class="field">Source</p>
+      <div class="own__flow">
+        <span class="own__box own__box--solid">One piece of guidance, one writer</span>
+        <span class="own__fork">
+          <span class="own__box">The docs page</span>
+          <span class="own__box">The agent skill</span>
+        </span>
+      </div>
+    </div>
+    <div class="own__row" aria-hidden="true">
+      <p class="field">Proof</p>
+      <div class="own__flow">
+        <span class="own__box own__box--solid">One real developer task</span>
+        <span class="own__fork">
+          <span class="own__box">Run without the skill</span>
+          <span class="own__box own__box--key"><span class="own__plate plate"></span>Run with the skill</span>
+        </span>
+      </div>
+    </div>
+  </div>
+  {!compact && <figcaption>The model as I proposed it. Dashed outlines mark what it would produce.</figcaption>}
+</figure>
+
+<style>
+  .own {
+    container-type: inline-size;
+  }
+  .own__rows {
+    display: grid;
+    border-top: var(--rule);
+  }
+  .own__row {
+    display: grid;
+    grid-template-columns: 4.6rem minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    padding: 18px 0;
+    border-bottom: var(--rule-dash);
+  }
+  .own__row:last-child {
+    border-bottom: var(--rule);
+  }
+  .own__row .field {
+    margin: 0;
+  }
+  .own__flow {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 34px;
+    align-items: center;
+  }
+  .own__fork {
+    position: relative;
+    display: grid;
+    gap: 10px;
+  }
+  /* One rule leaves the source and splits to both outcomes. */
+  .own__fork::before {
+    content: '';
+    position: absolute;
+    left: -34px;
+    top: 25%;
+    bottom: 25%;
+    width: 17px;
+    border: 1.5px solid var(--ink);
+    border-right: 0;
+    translate: 17px 0;
+  }
+  .own__fork::after {
+    content: '';
+    position: absolute;
+    left: -34px;
+    top: 50%;
+    width: 17px;
+    border-top: 1.5px solid var(--ink);
+  }
+  .own__box {
+    position: relative;
+    isolation: isolate;
+    display: block;
+    padding: 9px 12px;
+    border: 1.5px dashed var(--ink);
+    font-size: var(--step-small);
+    line-height: 1.3;
+  }
+  .own__box--solid {
+    border-style: solid;
+    font-weight: 700;
+  }
+  .own__box--key {
+    border-style: solid;
+    border-color: var(--over);
+    color: var(--over);
+  }
+  .own__plate {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--pink);
+  }
+
+  @container (max-width: 380px) {
+    .own__flow {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .own__fork::before,
+    .own__fork::after {
+      display: none;
+    }
+  }
+  @media (max-width: 600px) {
+    .own__row {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .own__flow {
+      gap: 26px;
+    }
+    .own__fork::before {
+      left: -26px;
+      width: 13px;
+      translate: 13px 0;
+    }
+    .own__fork::after {
+      left: -26px;
+      width: 13px;
+    }
+  }
+</style>

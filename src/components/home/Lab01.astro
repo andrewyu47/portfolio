@@ -236,6 +236,9 @@ const [salesforce, dojo] = profile.roles;
     display: grid;
     grid-template-columns: minmax(0, 2.3fr) minmax(0, 5fr) minmax(0, 2.7fr);
     border-top: var(--rule);
+    /* The sheet is closed with a rule, the way the bottom of a handout is. */
+    border-bottom: var(--rule);
+    padding-bottom: 10px;
     /* The stamp starts oversized before it lands; it must never widen the page. */
     overflow-x: clip;
     overflow-clip-margin: 12px;
@@ -317,6 +320,37 @@ const [salesforce, dojo] = profile.roles;
   }
   .lab[data-state='right'] .lab__stamp-empty {
     opacity: 0;
+  }
+
+  /* On a desktop the whole exercise, from the question to its answer, has to sit above
+     the fold of a laptop screen, so the hero is kept short. */
+  @media (min-width: 1001px) {
+    .hero {
+      padding: clamp(20px, 2.6vw, 34px) 0 18px;
+    }
+    .hero__claim :global(h1) {
+      font-size: clamp(3rem, 5.9vw, 5.375rem);
+    }
+    .hero__side {
+      gap: 14px;
+      padding-top: calc(clamp(3rem, 5.9vw, 5.375rem) * 0.1);
+    }
+    .room :global(.photo) {
+      aspect-ratio: 1220 / 730;
+    }
+    .record a {
+      padding: 6px 0;
+    }
+    .record .numeral {
+      font-size: 1.875rem;
+    }
+    .instructor {
+      margin-top: 14px;
+      padding-top: 12px;
+    }
+    .lab > div {
+      padding-top: 16px;
+    }
   }
 
   @media (max-width: 1000px) {
@@ -435,6 +469,33 @@ const [salesforce, dojo] = profile.roles;
     }
     .lab__result {
       min-height: 0;
+    }
+    /* On a phone the question comes straight after the claim: the band at the top promises
+       a lab, so the lab is the next thing you reach. The room and the record follow it. */
+    :global(.lab01) {
+      display: flex;
+      flex-direction: column;
+    }
+    .hero {
+      display: contents;
+    }
+    .hero__claim {
+      order: 1;
+      padding-top: 22px;
+    }
+    .lab {
+      order: 2;
+      margin-top: 20px;
+    }
+    .hero__side {
+      order: 3;
+      margin-top: 18px;
+      padding-top: 20px;
+      border-top: var(--rule);
+    }
+    .instructor {
+      order: 4;
+      margin-top: 18px;
     }
   }
 </style>
