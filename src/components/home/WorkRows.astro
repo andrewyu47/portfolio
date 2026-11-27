@@ -75,8 +75,8 @@ const built = [
     <p class="verb">Build</p>
     <div class="build__say">
       <p class="outcome">
-        I build the labs I teach from. They run on this site, which is also an MCP server an agent can read as tools. I
-        co-wrote the Claude Dojo curriculum: 49 lessons and 46 lesson videos.
+        I build the labs I teach from. They run on this site, which is also an MCP server an agent can connect to. I
+        co-authored the Claude Dojo curriculum: 49 lessons and 46 lesson videos.
       </p>
       <p class="outcome-2">I have built on Claude through Amazon Bedrock.</p>
     </div>
@@ -121,7 +121,7 @@ const built = [
     <p class="verb">Measure</p>
     <div>
       <p class="outcome">
-        My first answer at Pinecone was a score that rated how agent-ready a doc looked. When my manager asked why I
+        At Pinecone I first built a score that rated how agent-ready a doc looked. When my manager asked why I
         trusted it, I scrapped it and built an eval that runs real developer tasks.
       </p>
       <a class="more" href="/work/the-score-that-lied">Read The score that lied</a>
@@ -400,14 +400,9 @@ const built = [
     .row {
       padding: 24px 0;
     }
-    /* A row label on a phone is a tag, so it never outweighs the section heading. */
+    /* On a phone the four verbs stay display subheads, so the section keeps its structure. */
     .verb {
-      font-family: var(--font-mono);
-      font-size: var(--step-label);
-      font-weight: 600;
-      letter-spacing: 0.06em;
-      text-transform: uppercase;
-      color: var(--ink);
+      font-size: 1.625rem;
     }
     .row--speak {
       grid-template-columns: 1fr;

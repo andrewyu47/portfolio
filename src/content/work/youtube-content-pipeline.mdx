@@ -19,7 +19,7 @@ verifyNote: "The repository is private."
 
 ## The problem
 
-A media team wanted more YouTube Shorts. Finding three or four short-worthy moments in a 45-minute video took longer than recording the video. Working out what was trending meant hours of scrolling with nothing written down. Clips analyzed last month were forgotten, and trends spotted two weeks ago weren't tracked.
+A media team wanted more YouTube Shorts. Finding three or four short-worthy moments in a 45-minute video took longer than recording the video. Working out what was trending meant hours of scrolling with nothing written down. Clips analyzed last month were forgotten, and trends spotted two weeks ago were not tracked.
 
 ## Two pipelines, one dashboard
 
@@ -29,7 +29,7 @@ The research pipeline scrapes what is performing on YouTube now, clusters the op
 
 ## Matching clips to trends
 
-The first version matched clips to trending topics by keyword, and it was bad. "Trust Through Time" matched "Pizza On Time." Keywords can't see that a clip about spiritual blindness belongs next to a trending video about cognitive biases.
+The first version matched clips to trending topics by keyword, and it was bad. "Trust Through Time" matched "Pizza On Time." Keywords cannot see that a clip about spiritual blindness belongs next to a trending video about cognitive biases.
 
 I replaced it with three layers that trade cost for accuracy. Pinecone embeddings narrow 200+ trending shorts to about 20 candidates per clip. Claude Haiku makes a quick yes or no call to remove false positives. Claude Sonnet scores the pairs that survive on theme, audience overlap, and angle. Matching stays under $0.10 per run.
 
