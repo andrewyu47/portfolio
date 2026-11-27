@@ -45,9 +45,9 @@ const built = [
       </p>
       <a class="more" href="/work/claude-dojo">Read about Claude Dojo</a>
     </div>
-    <figure>
+    <figure data-print>
       <div class="dots" role="img" aria-label={`${people} dots, one per person. ${intensive} are filled.`}>
-        {Array.from({ length: people }, (_, i) => <i class={i < intensive ? 'dot dot--in' : 'dot'} />)}
+        {Array.from({ length: people }, (_, i) => <i class={i < intensive ? 'dot dot--in' : 'dot'} style={`--i:${i}`} />)}
       </div>
       <figcaption>One dot per person. Filled dots came through the two-day intensive in July 2026.</figcaption>
     </figure>
@@ -124,7 +124,7 @@ const built = [
       </p>
       <a class="more" href="/work/ix-ai-council">Read about the IX AI Council</a>
     </div>
-    <figure>
+    <figure data-print>
       <div
         class="bars"
         role="img"
@@ -205,6 +205,14 @@ const built = [
     background: var(--pink);
     border-color: transparent;
     mix-blend-mode: var(--blend);
+    transition:
+      background-color 0.12s linear calc(0.2s + var(--i, 0) * 11ms),
+      border-color 0.12s linear calc(0.2s + var(--i, 0) * 11ms);
+  }
+  /* Printing on arrival: the room fills one person at a time. */
+  :global(.js) [data-print]:not([data-printed]) .dot--in {
+    background: transparent;
+    border-color: var(--ink);
   }
 
   /* Speak: two plain sentences and nothing drawn. The statement takes the width of the row. */
@@ -325,6 +333,20 @@ const built = [
     inset: 0 auto 0 0;
     width: var(--v);
     background: var(--ink);
+    transition: width 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0.15s);
+  }
+  /* Printing on arrival: each bar is drawn to its length, the pink one last. */
+  .bars .bar:nth-of-type(2) .bar__fill {
+    --d: 0.75s;
+  }
+  .bars .bar:nth-of-type(3) .bar__fill {
+    --d: 0.3s;
+  }
+  .bars .bar:nth-of-type(4) .bar__fill {
+    --d: 0.45s;
+  }
+  :global(.js) [data-print]:not([data-printed]) .bar__fill {
+    width: 0;
   }
   /* The one result that matters is the pink one. The large model's gain prints in teal outline. */
   .bar__fill--pink {

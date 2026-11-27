@@ -19,7 +19,7 @@ const rungs = dojo.ladder.map((r) => ({ ...r, live: r.n === top }));
 const words = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven'];
 ---
 
-<figure class="ladder" aria-labelledby="ladder-cap">
+<figure class="ladder" aria-labelledby="ladder-cap" data-print="wipe">
   <ol class="ladder__rungs" style={`--top:${top}`}>
     {
       rungs.map((r) => (

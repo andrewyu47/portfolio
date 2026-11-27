@@ -5,7 +5,7 @@
   "private": true,
   "description": "Andrew Yu's portfolio: a lab manual about teaching AI, with an MCP server built in.",
   "engines": {
-    "node": ">=22.23.4"
+    "node": "24.x"
   },
   "scripts": {
     "index": "node scripts/build-index.mjs",

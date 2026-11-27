@@ -698,6 +698,14 @@ pre.astro-code {
 .js [data-print].spot:not([data-printed])::before {
   transform: translate(11px, -7px);
 }
+/* A drawn figure that asks for it is pulled across in one pass, left to right. */
+[data-print='wipe'] {
+  clip-path: inset(-4% -2% -4% -2%);
+  transition: clip-path 0.95s cubic-bezier(0.5, 0, 0.25, 1);
+}
+.js [data-print='wipe']:not([data-printed]) {
+  clip-path: inset(-4% 102% -4% -2%);
+}
 
 /* ---------- Page transitions ---------- */
 

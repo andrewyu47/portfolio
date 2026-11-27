@@ -35,7 +35,7 @@ const summary =
   ' The curated docs file is the best condition for both models.';
 ---
 
-<figure class:list={['evalchart', { 'evalchart--compact': compact }, className]}>
+<figure class:list={['evalchart', { 'evalchart--compact': compact }, className]} data-print>
   <p class="evalchart__key" aria-hidden="true">
     <span><i class="mk mk--small"></i>Small model, Claude Haiku 4.5</span>
     <span><i class="mk mk--large"></i>Large model, Claude Sonnet 4.6</span>
@@ -56,7 +56,7 @@ const summary =
               {(['large', 'small'] as const).map((k) => (
                 <span
                   class:list={['pt', `pt--${k}`, { 'pt--key': c.key }]}
-                  style={`left:${x(i)}%;bottom:${c[k]}%`}
+                  style={`left:${x(i)}%;bottom:${c[k]}%;--i:${i}`}
                 >
                   {c.key && <span class="pt__mark plate" />}
                   <i class={`mk mk--${k}`} />
@@ -182,6 +182,27 @@ const summary =
   .ln--large {
     stroke: var(--text);
     stroke-dasharray: 5 4;
+  }
+
+  /* Printing on arrival: the two lines are drawn left to right, each point appears as
+     the line reaches it, and the pink rings land last (the shared .plate rule). */
+  .evalchart__lines {
+    clip-path: inset(-20% 0 -20% 0);
+    transition: clip-path 0.9s cubic-bezier(0.5, 0, 0.3, 1) 0.1s;
+  }
+  .pt .mk,
+  .pt__v {
+    transition: opacity 0.2s linear calc(0.15s + var(--i, 0) * 0.24s);
+  }
+  :global(.js) .evalchart:not([data-printed]) .evalchart__lines {
+    clip-path: inset(-20% 100% -20% 0);
+  }
+  :global(.js) .evalchart:not([data-printed]) .pt .mk,
+  :global(.js) .evalchart:not([data-printed]) .pt__v {
+    opacity: 0;
+  }
+  .evalchart :global(.plate) {
+    transition-delay: 1s;
   }
 
   /* Markers: a teal circle for the small model, a navy square for the large one. */

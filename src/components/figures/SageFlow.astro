@@ -18,7 +18,7 @@ interface Props {
 const { compact = false, class: className } = Astro.props;
 ---
 
-<figure class:list={['sage', { 'sage--compact': compact }, className]}>
+<figure class:list={['sage', { 'sage--compact': compact }, className]} data-print="wipe">
   <div class="sage__grid">
     <div class="node node--user node--s1 spot">
       <span class="node__lane">The user</span>

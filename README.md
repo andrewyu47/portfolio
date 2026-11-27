@@ -20,7 +20,7 @@ The site is built like a lab manual. The home page opens with a one-question lab
 
 ## Run it
 
-Requires Node 22.23 or later.
+Requires Node 24.
 
 ```sh
 npm install
