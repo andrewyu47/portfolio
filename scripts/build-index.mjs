@@ -50,7 +50,13 @@ export function mdxToText(body) {
   out = out.replace(/!\[([^\]]*)\]\([^)]*\)/g, '$1');
   out = out.replace(/\[([^\]]+)\]\([^)]*\)/g, '$1');
   // Emphasis and inline code markers.
-  out = out.replace(/(\*\*|__)(.*?)\1/g, '$2').replace(/(\*|_)(?=\S)(.*?)(?<=\S)\1/g, '$2').replace(/`([^`]+)`/g, '$1');
+  out = out
+    .replace(/(\*\*|__)(.*?)\1/g, '$2')
+    .replace(/\*(?=\S)(.*?)(?<=\S)\*/g, '$1')
+    // An underscore is emphasis only at the edges of a word. Inside one it is part of a
+    // name, such as search_portfolio or stop_reason, and has to survive.
+    .replace(/(?<![A-Za-z0-9_])_(?=\S)(.*?)(?<=\S)_(?![A-Za-z0-9_])/g, '$1')
+    .replace(/`([^`]+)`/g, '$1');
   // Headings keep their text on their own line.
   out = out.replace(/^#{1,6}\s+/gm, '');
   // Leftover JSX expressions.
