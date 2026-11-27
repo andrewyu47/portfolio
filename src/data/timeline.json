@@ -84,13 +84,13 @@
   {
     "when": "Jul 2026 to present",
     "title": "Salesforce",
-    "detail": "I teach AI to my coworkers.",
+    "detail": "I teach AI to my coworkers and give lightning talks.",
     "kind": "teaching"
   },
   {
     "when": "2022",
     "title": "The Limitations of Language",
-    "detail": "I gave a lightning talk at Splunk in 2022 and give lightning talks at Salesforce now.",
+    "detail": "A lightning talk I gave at Splunk.",
     "kind": "teaching"
   },
   {

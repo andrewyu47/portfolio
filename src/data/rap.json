@@ -4,7 +4,7 @@
  {"text":"and it's hard to keep all of it in your head.","start":4.54,"words":[4.54,4.62,4.76,4.98,5.12,5.36,5.54,5.62,5.74,5.86,5.98]},
  {"text":"So here's a little rap to lock in the fifteen essential terms.","start":7.28,"words":[7.28,7.38,7.58,7.64,7.86,8.12,8.24,8.48,8.56,8.66,9.12,9.58]},
  {"text":"Make sure you stretch those typing fingers before you start.","start":10.74,"words":[10.74,10.92,11.1,11.28,11.58,11.8,12.22,12.64,12.96,13.16]}]},
-{"id":"s01_terminal","start":16.32,"duration":10.8,"n":1,"term":"Terminal","definition":"The window where you type commands, also called the CLI, the command-line interface. It is where Claude Code started, and it also runs in VS Code, JetBrains, the desktop app, and the web.","lines":[
+{"id":"s01_terminal","start":16.32,"duration":10.8,"n":1,"term":"Terminal","definition":"The window where you type commands. Typing commands there is using the CLI, the command-line interface. Claude Code started there, and it also runs in VS Code, JetBrains, the desktop app, and the web.","lines":[
  {"text":"Number one, the Terminal, that black window on the screen,","start":16.52,"words":[16.52,16.88,17.04,17.2,17.72,17.9,18.24,18.58,18.7,18.82]},
  {"text":"you type in your commands and tell it just what you mean.","start":19.42,"words":[19.42,19.56,19.8,19.94,20.1,20.58,20.7,20.92,21.1,21.24,21.46,21.6]},
  {"text":"The fancy name for typing there is called the C L I,","start":22.1,"words":[22.1,22.26,22.6,22.78,22.92,23.27,23.46,23.6,23.8,23.94,23.94,23.94]},
