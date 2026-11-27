@@ -1,0 +1,104 @@
+---
+/**
+ * A photograph printed in two plates: the picture as a teal halftone, and a flat pink
+ * disc under the person it is about. Where the two overlap, the dots print navy.
+ * On dark paper the print keeps its own light stock, like a page pasted into a notebook,
+ * so a face never turns into a negative.
+ *
+ * The halftone is a mask made by scripts/make-photo.mjs. The disc is placed with the
+ * same numbers that script lists for the print.
+ *
+ *   <Photo print="room-capstone" alt="Andrew presenting beside a slide that reads ..." />
+ */
+interface Props {
+  /** Which print: a file name under /public/img, without the extension. */
+  print: 'room-capstone' | 'room-capstone-tight';
+  alt: string;
+  class?: string;
+}
+const PRINTS = {
+  'room-capstone': { ratio: '2000 / 1042', cx: 0.9, cy: 0.5, r: 0.17 },
+  'room-capstone-tight': { ratio: '1220 / 840', cx: 0.84, cy: 0.52, r: 0.27 },
+} as const;
+
+const { print, alt, class: className } = Astro.props;
+const p = PRINTS[print];
+const [w, h] = p.ratio.split(' / ').map(Number);
+// The disc: left, top and width as percentages of the print. The radius is a share of the width.
+const disc = {
+  left: (p.cx - p.r) * 100,
+  top: (p.cy - (p.r * w) / h) * 100,
+  width: p.r * 2 * 100,
+};
+---
+
+<div
+  class:list={['photo', className]}
+  role="img"
+  aria-label={alt}
+  data-print
+  style={`--photo-ratio:${p.ratio};--photo-mask:url('/img/${print}.png')`}
+>
+  <span class="photo__clip">
+    <span class="photo__disc plate" style={`left:${disc.left}%;top:${disc.top}%;width:${disc.width}%`}></span>
+  </span>
+  <span class="photo__ink"></span>
+</div>
+
+<style>
+  .photo {
+    position: relative;
+    width: 100%;
+    aspect-ratio: var(--photo-ratio);
+    isolation: isolate;
+    background: var(--stock);
+  }
+  .photo__clip {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+  .photo__disc {
+    position: absolute;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: var(--pink);
+  }
+  .photo__ink {
+    position: absolute;
+    inset: 0;
+    background: var(--ink);
+    -webkit-mask: var(--photo-mask) center / 100% 100% no-repeat;
+    mask: var(--photo-mask) center / 100% 100% no-repeat;
+    mix-blend-mode: var(--blend);
+    clip-path: inset(0 0 0 0);
+    transition: clip-path 0.85s cubic-bezier(0.6, 0, 0.2, 1);
+  }
+  /* Before the print comes into view, the teal plate has not been pulled yet. It wipes
+     across, and the pink disc lands after it (see "Printing on arrival" in global.css). */
+  :global(.js) .photo:not([data-printed]) .photo__ink {
+    clip-path: inset(0 100% 0 0);
+  }
+  /* Night: the print stays a print. Light stock, dark inks, plates that multiply. */
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .photo {
+      --stock: #edefea;
+      --ink: #0b5f69;
+      --pink: #ff4fa3;
+      --blend: multiply;
+    }
+  }
+  :global(:root[data-theme='dark']) .photo {
+    --stock: #edefea;
+    --ink: #0b5f69;
+    --pink: #ff4fa3;
+    --blend: multiply;
+  }
+  @media print {
+    .photo__ink,
+    .photo__disc {
+      print-color-adjust: exact;
+      -webkit-print-color-adjust: exact;
+    }
+  }
+</style>

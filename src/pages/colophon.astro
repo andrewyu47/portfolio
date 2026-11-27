@@ -1,0 +1,547 @@
+---
+/**
+ * Colophon: how the site is made. The one page where the print vocabulary is named.
+ * The first screen prints the ink rule it describes: a teal plate and a pink plate
+ * overlapping, so the overlap comes out navy on light paper and light on dark paper.
+ * Hex values come from src/styles/tokens.css. Type credits come from the license files
+ * in node_modules/@fontsource-variable/ (each names its project repository).
+ */
+import Base from '../layouts/Base.astro';
+import RunHead from '../components/RunHead.astro';
+import Overprint from '../components/Overprint.astro';
+
+const inks = [
+  { name: 'Stock', role: 'The paper.', day: '#edefea', night: '#0e1a1c', v: '--stock', edge: true },
+  { name: 'Teal', role: 'The working plate: rules, labels, diagrams, controls.', day: '#0b5f69', night: '#7fcfcf', v: '--ink' },
+  { name: 'Pink', role: 'The second plate: emphasis, data, stamps, marks made by hand.', day: '#ff4fa3', night: '#ff6fb5', v: '--pink' },
+  { name: 'Text', role: 'What the two plates make together: navy on light paper, near white on dark. All reading text.', day: '#0b1d43', night: '#eaf3f1', v: '--text' },
+];
+
+const faces = [
+  { name: 'Anybody', by: 'Etcetera Type Co.', repo: 'https://github.com/Etcetera-Type-Co/Anybody' },
+  { name: 'Literata', by: 'The Literata Project Authors, through Google Fonts', repo: 'https://github.com/googlefonts/literata' },
+  { name: 'Spline Sans Mono', by: 'Sorkin Type', repo: 'https://github.com/SorkinType/SplineSansMono' },
+];
+---
+
+<Base
+  title="Colophon"
+  description="How andrewyu.app is made: two inks on one stock, three typefaces, photographs printed by script, Astro on Vercel, and an MCP server."
+>
+  <RunHead left="Colophon" right="Astro 7 on Vercel" />
+
+  <header class="head">
+    <div class="head__claim">
+      <Overprint as="h1" text="Colophon" />
+      <p class="head__lede">How this site is made.</p>
+    </div>
+    <figure class="plates">
+      <div class="plates__draw" aria-hidden="true">
+        <span class="plates__teal"></span>
+        <span class="plates__pink plate"></span>
+        <span class="plates__lab plates__lab--teal">Teal</span>
+        <span class="plates__lab plates__lab--pink">Pink</span>
+        <span class="plates__lab plates__lab--both">Both</span>
+      </div>
+      <figcaption>
+        The two plates of this site, printed over each other. Where both print, light paper gets navy, the color of
+        every word here.
+      </figcaption>
+    </figure>
+  </header>
+
+  <section class="part" aria-labelledby="inks-h">
+    <h2 id="inks-h" class="part__h">Inks</h2>
+    <div class="part__body">
+      <p class="part__lede">
+        The site is set like a two-ink risograph print: one paper stock and two plates, teal and fluorescent pink. Where
+        the plates overlap they print navy, and every word you read is set in it.
+      </p>
+      <p class="part__text">
+        On dark paper the stock goes dark, the inks go light, and the plates add light instead of ink. Headlines there
+        are a plain light fill.
+      </p>
+      <table class="inks">
+        <thead>
+          <tr>
+            <th scope="col"><span class="visually-hidden">Swatch</span></th>
+            <th scope="col">Ink</th>
+            <th scope="col">Light paper</th>
+            <th scope="col">Dark paper</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            inks.map((i) => (
+              <tr>
+                <td class="inks__swatch">
+                  <span class:list={['swatch', { 'swatch--edge': i.edge }]} style={`background: var(${i.v})`} />
+                </td>
+                <td>
+                  <span class="inks__name">{i.name}</span>
+                  <span class="inks__role">{i.role}</span>
+                </td>
+                <td class="hex">{i.day}</td>
+                <td class="hex">{i.night}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+      <p class="part__note">
+        When a page loads, the pink plate starts a few pixels out of register and settles into place. If your system
+        asks for reduced motion, it is printed in place.
+      </p>
+    </div>
+  </section>
+
+  <section class="part" aria-labelledby="type-h">
+    <h2 id="type-h" class="part__h">Type</h2>
+    <div class="part__body">
+      <ul class="faces">
+        <li>
+          <div class="faces__set">
+            <p class="sp sp--shout">Now I teach AI</p>
+            <p class="sp sp--title">What I built, and when</p>
+            <p class="sp sp--figs">103 · 49 · 11% to 89%</p>
+          </div>
+          <p class="faces__use">
+            Anybody, for headlines and numbers, at two widths: condensed to shout, wider to name things.
+          </p>
+          <p class="faces__by">By <a href={faces[0].repo}>{faces[0].by}</a></p>
+        </li>
+        <li>
+          <div class="faces__set">
+            <p class="sp sp--body">I have worked in software since 2015, most of that time writing documentation.</p>
+            <p class="sp sp--italic">Same 15 tasks, three runs each. Only the docs changed.</p>
+          </div>
+          <p class="faces__use">Literata, roman and italic, for everything you read.</p>
+          <p class="faces__by">By <a href={faces[1].repo}>{faces[1].by}</a></p>
+        </li>
+        <li>
+          <div class="faces__set">
+            <p class="sp sp--label">Objective</p>
+            <p class="sp sp--code">search_portfolio(&#123; query: "live Claude Code teaching" &#125;)</p>
+          </div>
+          <p class="faces__use">Spline Sans Mono, for labels, captions, and code.</p>
+          <p class="faces__by">By <a href={faces[2].repo}>{faces[2].by}</a></p>
+        </li>
+      </ul>
+      <p class="part__note">
+        All three are variable fonts under the SIL Open Font License 1.1, served from this site through the Fontsource
+        packages.
+      </p>
+    </div>
+  </section>
+
+  <section class="part" aria-labelledby="photo-h">
+    <h2 id="photo-h" class="part__h">Photographs</h2>
+    <div class="part__body">
+      <p class="part__text">
+        Photographs are printed by script, not placed. <code>scripts/make-photo.mjs</code> turns a frame from a session
+        recording into a teal halftone, and a flat pink disc goes under the person the picture is about.
+        <code>scripts/make-portrait.mjs</code> does the same for the headshot. On dark paper both keep their own light
+        stock, so a face never prints as a negative.
+      </p>
+    </div>
+  </section>
+
+  <section class="part" aria-labelledby="stack-h">
+    <h2 id="stack-h" class="part__h">Stack</h2>
+    <div class="part__body">
+      <dl class="stack">
+        <dt>Framework</dt>
+        <dd>Astro 7, with React 19 for the interactive labs and MDX for the case studies and lessons.</dd>
+        <dt>Hosting</dt>
+        <dd>Vercel.</dd>
+        <dt>MCP server</dt>
+        <dd>
+          The site is also an MCP server at <code>/mcp</code>. It exposes three read-only tools,
+          <code>search_portfolio</code>, <code>get_case_study</code>, and <code>list_work</code>, built from the same
+          index as these pages.
+          <a class="more" href="/teaching/connect">Lab 03: Ask this site a question</a>
+        </dd>
+        <dt>Agent traces</dt>
+        <dd>
+          The agent lesson replays recorded API traces, message by message: a real agent loop run against those same
+          tools. The loop that recorded them was built with Claude Code and uses no agent framework.
+          <a class="more" href="/teaching/agent-loop">Lab 02: How an agent actually works</a>
+        </dd>
+      </dl>
+    </div>
+  </section>
+
+  <section class="part" aria-labelledby="process-h">
+    <h2 id="process-h" class="part__h">Process</h2>
+    <div class="part__body">
+      <p class="part__lede">
+        I built this site with Claude Code. A set of agents worked in parallel, each on its own pages, under one written
+        design brief. A reviewer that never saw the code critiqued every page from screenshots.
+      </p>
+      <p class="part__text">
+        Every factual claim was checked against a source file, and the ones I could not support were cut.
+      </p>
+      <a class="more" href="https://github.com/andrewyu47/portfolio">Read the source on GitHub</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* ---------- First screen: the title and the two plates ---------- */
+  .head {
+    display: grid;
+    grid-template-columns: minmax(0, 5.2fr) minmax(0, 4.8fr);
+    gap: clamp(24px, 4vw, 64px);
+    align-items: start;
+    padding: clamp(28px, 4.5vw, 64px) 0 clamp(36px, 5vw, 64px);
+    border-bottom: var(--rule);
+  }
+  .head :global(h1) {
+    font-size: var(--step-hero);
+  }
+  .head__lede {
+    margin-top: 18px;
+    font-size: var(--step-lede);
+    line-height: 1.4;
+  }
+
+  .plates {
+    display: grid;
+    gap: 14px;
+  }
+  .plates__draw {
+    position: relative;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+  }
+  .plates__teal,
+  .plates__pink {
+    position: absolute;
+    width: 62%;
+    height: 68%;
+  }
+  .plates__teal {
+    left: 0;
+    top: 0;
+    background: var(--ink);
+  }
+  .plates__pink {
+    right: 0;
+    bottom: 0;
+    background: var(--pink);
+  }
+  .plates__lab {
+    position: absolute;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  /* Each label sits on its own plate: stock on teal, navy on pink, stock on the overlap. */
+  .plates__lab--teal {
+    left: 14px;
+    top: 14px;
+    color: var(--stock);
+  }
+  .plates__lab--pink {
+    right: 14px;
+    bottom: 14px;
+    color: var(--over);
+  }
+  .plates__lab--both {
+    left: calc(38% + 14px);
+    top: calc(32% + 14px);
+    color: var(--stock);
+  }
+  .plates figcaption {
+    font-size: 0.8125rem;
+    max-width: 52ch;
+    color: var(--text-soft);
+  }
+
+  /* ---------- Sections ---------- */
+  .part {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: clamp(32px, 4vw, 52px) 0;
+    border-bottom: var(--rule-dash);
+  }
+  .part:last-child {
+    border-bottom: 0;
+  }
+  .part__h {
+    font-size: clamp(1.875rem, 3.1vw, 2.75rem);
+    font-stretch: var(--w-shout);
+    font-weight: 800;
+    line-height: 0.96;
+  }
+  .part__lede {
+    font-size: var(--step-lede);
+    line-height: 1.42;
+    max-width: 44ch;
+    text-wrap: pretty;
+  }
+  .part__text {
+    max-width: 62ch;
+    text-wrap: pretty;
+  }
+  .part__lede + .part__text {
+    margin-top: 16px;
+  }
+  .part__body > .more {
+    margin-top: 20px;
+  }
+  .part__note {
+    margin-top: 20px;
+    font-size: var(--step-small);
+    color: var(--text-soft);
+    max-width: 62ch;
+  }
+  .part code {
+    padding: 0 3px;
+  }
+
+  /* Inks: the table runs the full content column, so every rule ends on one line. */
+  .inks {
+    width: 100%;
+    margin-top: 28px;
+    border-collapse: collapse;
+  }
+  .inks th {
+    font-family: var(--font-mono);
+    font-size: var(--step-label);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    text-align: left;
+    color: var(--ink);
+    padding: 0 16px 8px 0;
+    border-bottom: var(--rule);
+    vertical-align: bottom;
+    white-space: nowrap;
+  }
+  .inks td {
+    padding: 14px 16px 14px 0;
+    border-bottom: var(--rule-dash);
+    vertical-align: top;
+  }
+  .inks tr:last-child td {
+    border-bottom: 0;
+  }
+  .inks__swatch {
+    width: 64px;
+  }
+  .swatch {
+    display: block;
+    width: 48px;
+    height: 32px;
+  }
+  .swatch--edge {
+    outline: 1.5px solid var(--ink);
+    outline-offset: -1.5px;
+  }
+  .inks__name {
+    display: block;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-stretch: var(--w-title);
+    font-size: 1.25rem;
+    line-height: 1.1;
+  }
+  .inks__role {
+    display: block;
+    margin-top: 4px;
+    font-size: var(--step-small);
+    line-height: 1.4;
+    color: var(--text-soft);
+  }
+  .hex {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    white-space: nowrap;
+    padding-top: 18px !important;
+  }
+
+  /* Type: each face shown in the roles it has on the site. */
+  .faces {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .faces li {
+    padding: 22px 0 24px;
+    border-bottom: var(--rule-dash);
+  }
+  .faces li:first-child {
+    padding-top: 0;
+  }
+  .faces li:last-child {
+    border-bottom: 0;
+  }
+  .faces__set {
+    display: grid;
+    gap: 8px;
+  }
+  .sp {
+    line-height: 1.05;
+  }
+  .sp--shout,
+  .sp--title,
+  .sp--figs {
+    font-family: var(--font-display);
+    font-weight: 800;
+  }
+  .sp--shout {
+    font-stretch: var(--w-shout);
+    font-size: clamp(2.5rem, 5vw, 4rem);
+    line-height: 0.95;
+  }
+  .sp--title {
+    font-stretch: var(--w-title);
+    font-weight: 700;
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+  }
+  .sp--figs {
+    font-stretch: var(--w-shout);
+    font-size: clamp(1.75rem, 3vw, 2.375rem);
+    font-variant-numeric: tabular-nums;
+  }
+  .sp--body,
+  .sp--italic {
+    font-family: var(--font-body);
+    font-size: clamp(1.375rem, 2.4vw, 1.875rem);
+    line-height: 1.25;
+    max-width: 34ch;
+  }
+  .sp--italic {
+    font-style: italic;
+  }
+  .sp--label {
+    font-family: var(--font-mono);
+    font-size: var(--step-label);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .sp--code {
+    font-family: var(--font-mono);
+    font-size: clamp(1rem, 1.6vw, 1.25rem);
+    overflow-wrap: anywhere;
+  }
+  .faces__use {
+    margin-top: 14px;
+    max-width: 56ch;
+  }
+  .faces__by {
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--ink);
+  }
+
+  /* Stack */
+  .stack {
+    display: grid;
+    grid-template-columns: minmax(0, 9rem) minmax(0, 1fr);
+    margin: 0;
+  }
+  .stack dt,
+  .stack dd {
+    padding: 14px 0;
+    border-bottom: var(--rule-dash);
+  }
+  .stack dt {
+    font-family: var(--font-mono);
+    font-size: var(--step-label);
+    font-weight: 500;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink);
+    padding-top: 18px;
+  }
+  .stack dd {
+    margin: 0;
+    line-height: 1.5;
+  }
+  .stack dd .more {
+    display: block;
+    width: fit-content;
+    margin-top: 8px;
+  }
+  .stack dt:first-of-type,
+  .stack dd:first-of-type {
+    padding-top: 0;
+  }
+  .stack dt:last-of-type,
+  .stack dd:last-of-type {
+    border-bottom: 0;
+  }
+
+  @media (max-width: 900px) {
+    .head {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+    .plates {
+      max-width: 520px;
+    }
+    .part {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+  }
+  @media (max-width: 600px) {
+    .inks thead {
+      display: none;
+    }
+    .inks tr {
+      display: grid;
+      grid-template-columns: 56px minmax(0, 1fr);
+      column-gap: 12px;
+      padding: 14px 0;
+      border-bottom: var(--rule-dash);
+    }
+    .inks tr:last-child {
+      border-bottom: 0;
+    }
+    .inks td {
+      padding: 0 !important;
+      border: 0;
+    }
+    .inks__swatch {
+      grid-row: span 3;
+      width: auto;
+    }
+    .hex {
+      margin-top: 6px;
+    }
+    .hex::before {
+      font-size: var(--step-label);
+      color: var(--ink);
+      letter-spacing: 0.04em;
+    }
+    .hex:nth-child(3)::before {
+      content: 'LIGHT ';
+    }
+    .hex:nth-child(4)::before {
+      content: 'DARK ';
+    }
+    .hex:nth-child(4) {
+      margin-top: 2px;
+    }
+    .stack {
+      grid-template-columns: 1fr;
+    }
+    .stack dt {
+      border-bottom: 0;
+      padding-bottom: 4px;
+    }
+    .stack dd {
+      padding-top: 0;
+    }
+  }
+</style>

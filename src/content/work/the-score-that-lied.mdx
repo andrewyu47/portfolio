@@ -1,0 +1,60 @@
+---
+title: "The score that lied"
+outcome: "A curated docs file took the small model from 11% to 89% on 15 real developer tasks. I found that out at Pinecone only after scrapping the readiness score I had built first."
+summary: "I scrapped a score that rated how agent-ready a doc looked and built an eval that runs real developer tasks through coding agents. One curated docs file beat the live docs on both models."
+org: "Pinecone"
+role: "Technical Writer (contract)"
+period: "2026"
+year: 2026
+area: "measure"
+order: 2
+featured: true
+heroFigure: "EvalChart"
+stack: ["Claude Code", "Claude Haiku 4.5", "Claude Sonnet 4.6", "MCP"]
+---
+
+## The wrong first answer
+
+The question was whether our docs were ready for AI agents. My first answer was a score that rated how agent-ready a doc page looked.
+
+My manager asked why I trusted it. I did not have a good answer. The score measured whether a page looked right to me, not whether an agent could use it to get work done. I had built it, which made me the last person likely to question it. I scrapped it.
+
+## What I built instead
+
+An eval that asks coding agents to do real Pinecone work and checks whether the code they write runs. Pass or fail, no partial credit.
+
+There are 15 developer tasks, such as creating an index or migrating a legacy one. Each task runs under four conditions:
+
+1. No docs. The agent works from what it already knows.
+2. A curated docs file. One short page that shows the right way to do common tasks.
+3. The live docs, through MCP.
+4. The live docs, through web fetch, the way a browser would load them.
+
+Every task ran three times per condition on two models, Claude Haiku 4.5 (the small model) and Claude Sonnet 4.6 (the large model). That is 360 runs.
+
+## What happened
+
+Each cell is the share of 45 runs that passed: 15 tasks, three runs each.
+
+| Condition | Small model | Large model |
+| :--- | ---: | ---: |
+| No docs | 11% | 84% |
+| **Curated docs file** | **89%** | **100%** |
+| Live docs through MCP | 4% | 51% |
+| Live docs through web fetch | 18% | 84% |
+
+The docs file was the only condition that clearly helped. The small model went from 5 passing runs out of 45 to 40 out of 45. The large model went from 84% to every run passing.
+
+The live docs did not help. Through MCP, both models did worse than with no docs at all. Through web fetch, the large model scored exactly what it scored with nothing, and the small model gained seven points.
+
+None of this says the live docs were badly written. They were written for people browsing a site, and they do that job. The docs file carries the same knowledge in a shape an agent can apply directly.
+
+## What it taught me
+
+The shape of what an agent reads mattered more than the channel it arrived through. The two channels did differ from each other, but the better one got the small model to 18%. The same knowledge in a different shape got it to 89%. My recommendation was to bring the patterns from the docs file into the regular docs, so an agent lands on them whatever route it takes.
+
+The small model gained the most. The large model already knew most of the answers. The small model knew almost none of them, and one page took it to nearly all. If more agent work runs on small models, that gap is where the writing pays off.
+
+I built a score, liked it, and did not check it against real work until my manager asked the obvious question.
+
+I later presented this work in my Salesforce interviews.

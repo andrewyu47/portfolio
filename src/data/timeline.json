@@ -1,0 +1,181 @@
+[
+  {
+    "when": "2012 to 2014",
+    "title": "University of California, Berkeley",
+    "detail": "B.A. English.",
+    "kind": "education"
+  },
+  {
+    "when": "Undated",
+    "title": "Product Management Specialization (Darden)",
+    "detail": "",
+    "kind": "certification"
+  },
+  {
+    "when": "Undated",
+    "title": "Databricks certification",
+    "detail": "",
+    "kind": "certification"
+  },
+  {
+    "when": "Jul 2026 to present",
+    "title": "Lead Technical Writer, Salesforce",
+    "detail": "I am on a three-person innovation team that ships quickstarts, starter kits, agent skills, and demos for developers.",
+    "kind": "role",
+    "href": "/work/salesforce",
+    "label": "Read about the Salesforce work",
+    "figure": { "value": "3", "caption": "people on the innovation team" }
+  },
+  {
+    "when": "2026 to present",
+    "title": "Director of AI Enablement, Claude Dojo",
+    "detail": "Claude Dojo is a nonprofit. With the other instructors I have taught 103 people to build with Claude Code.",
+    "kind": "role",
+    "href": "/work/claude-dojo",
+    "label": "Read about Claude Dojo",
+    "figure": { "value": "49", "caption": "lessons, co-authored" }
+  },
+  {
+    "when": "Feb 2026 to Jul 2026",
+    "title": "Technical Writer (contract), Pinecone",
+    "detail": "I built an eval that runs 15 real developer tasks through coding agents. With a curated docs file, the small model went from 11% to 89%.",
+    "kind": "role",
+    "href": "/work/the-score-that-lied",
+    "label": "Read The score that lied",
+    "more": [{ "label": "Read the Search docs write-up", "href": "/work/pinecone-search-docs" }],
+    "figure": { "value": "11% to 89%", "caption": "small model, curated docs file" }
+  },
+  {
+    "when": "May 2024 to Jan 2026",
+    "title": "Manager, Content Strategy and Knowledge Management, Splunk",
+    "detail": "I led a team of 6 technical writers across time zones.",
+    "kind": "role",
+    "href": "/work/ix-ai-council",
+    "label": "Read about the IX AI Council",
+    "more": [
+      { "label": "Read about SAGE", "href": "/work/sage" },
+      { "label": "Read about the DocOps workbench", "href": "/work/docops-governance-workbench" }
+    ],
+    "figure": { "value": "6", "caption": "technical writers led" }
+  },
+  {
+    "when": "Sep 2020 to May 2024",
+    "title": "Senior Staff Technical Writer, Splunk",
+    "detail": "I moved the docs to docs-as-code, and deployment frequency went up 30%.",
+    "kind": "role",
+    "figure": { "value": "+30%", "caption": "deployment frequency" }
+  },
+  {
+    "when": "Apr 2015 to Sep 2020",
+    "title": "Workday",
+    "detail": "I built content systems for 10,000+ users in Student Financials, a regulated product domain.",
+    "kind": "role",
+    "figure": { "value": "10,000+", "caption": "users in Student Financials" }
+  },
+  {
+    "when": "Jul 2026",
+    "title": "Claude Dojo intensive",
+    "detail": "About 70 people in one two-day hands-on Claude Code intensive on July 11 and 12, which I taught with the other instructors.",
+    "kind": "teaching",
+    "href": "/teaching",
+    "label": "See the teaching page",
+    "figure": { "value": "~70", "caption": "people in one room, two days" }
+  },
+  {
+    "when": "Jul 2026 to present",
+    "title": "Salesforce",
+    "detail": "I teach AI to my coworkers.",
+    "kind": "teaching"
+  },
+  {
+    "when": "2022",
+    "title": "The Limitations of Language",
+    "detail": "I gave a lightning talk at Splunk in 2022 and give lightning talks at Salesforce now.",
+    "kind": "teaching"
+  },
+  {
+    "when": "Undated",
+    "title": "Mental Models for Decision Making",
+    "detail": "I have given my workshop, Mental Models for Decision Making, to more than 200 conference attendees.",
+    "kind": "teaching",
+    "figure": { "value": "200+", "caption": "conference attendees" }
+  },
+  {
+    "when": "Ongoing",
+    "title": "Ministry",
+    "detail": "Years of teaching to live rooms.",
+    "kind": "teaching"
+  },
+  {
+    "when": "Apr 2026",
+    "title": "Fold",
+    "detail": "Events, attendance, and follow-up for a student ministry, with questions asked in plain English. The first version dates from April 2026, and I redesigned it in September 2026.",
+    "kind": "build",
+    "href": "/work/fold",
+    "label": "Read the case study"
+  },
+  {
+    "when": "Jul 2026",
+    "title": "Verse Blaster",
+    "detail": "A scripture memory game. You type the first letter of each word. 167 passages.",
+    "kind": "build",
+    "href": "https://verseblaster.andrewyu.app"
+  },
+  {
+    "when": "Jul 2026",
+    "title": "Personal operations system",
+    "detail": "Scheduled Claude Code jobs that write a morning brief and file my notes, and report their own failures the next morning.",
+    "kind": "build"
+  },
+  {
+    "when": "Aug 2026",
+    "title": "The Pilgrim's Road",
+    "detail": "A walking game where each Bible chapter is a station. Every asset was modeled by script in Blender, running headless.",
+    "kind": "build",
+    "href": "https://pilgrims-road.netlify.app"
+  },
+  {
+    "when": "Sep 2026",
+    "title": "Hook Scribe 2",
+    "detail": "A scripture memory app, rebuilt from scratch. A Galatians study section followed in October.",
+    "kind": "build",
+    "href": "https://hook-scribe.vercel.app",
+    "label": "Open the app"
+  },
+  {
+    "when": "Sep 2026",
+    "title": "Sword of Sanctuary",
+    "detail": "A scripture action game in three.js, built on 831 hand-written chapter hooks. Its 31 maps were made live in Blender through MCP.",
+    "kind": "build",
+    "href": "https://sword-of-sanctuary-3d.vercel.app"
+  },
+  {
+    "when": "Sep 2026",
+    "title": "Pixel Pals: Bible Isles",
+    "detail": "A Bible-flow game with six islands and 57 original creatures, modeled in Blender through MCP.",
+    "kind": "build",
+    "href": "https://pixel-pals-self.vercel.app"
+  },
+  {
+    "when": "Sep 2026",
+    "title": "Pal Kart",
+    "detail": "A kart racer with Bible-quiz item boxes, built by five parallel agents working from shared specs.",
+    "kind": "build",
+    "href": "https://pal-kart.vercel.app"
+  },
+  {
+    "when": "Oct 2026",
+    "title": "Sword of Sanctuary: Matthew",
+    "detail": "A survivors-style memory game for the Gospel of Matthew. You collect each chapter’s words as you play.",
+    "kind": "build",
+    "href": "https://sword-of-sanctuary-matthew.vercel.app"
+  },
+  {
+    "when": "Undated",
+    "title": "QuickRamp",
+    "detail": "Day-by-day onboarding plans for new hires at small medical clinics. I am a co-founder. Repository created April 2026.",
+    "kind": "build",
+    "href": "/work/quickramp",
+    "label": "Read the case study"
+  }
+]

@@ -1,0 +1,403 @@
+---
+/**
+ * The four kinds of work on the home page. Each row states its outcome first,
+ * shows the evidence as a figure, and names where to go to check it.
+ *
+ * The rows do not share one shape. Teach is a count drawn as dots. Speak is two plain
+ * sentences. Build is an index of things that exist and can be opened today, with the
+ * planned labs on one line marked Next. Measure is a chart drawn to scale.
+ */
+import { getCollection } from 'astro:content';
+import SectionHead from '../SectionHead.astro';
+import labs from '../../data/labs.json';
+
+const people = 103;
+const intensive = 70;
+// Until the labs repository is public and its nightly run has passed, the planned labs
+// stay one line marked Next and link nowhere.
+const labsLive = labs.status === 'live';
+
+// What exists today: the labs on this site, in order. Lab 01 is at the top of this page.
+const lessons = (await getCollection('lessons', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order,
+);
+const built = [
+  { no: '01', title: 'Who runs the tool?', href: '#lab-01', where: 'This page', minutes: 1 },
+  ...lessons.map((l, i) => ({
+    no: String(i + 2).padStart(2, '0'),
+    title: l.data.title,
+    href: `/teaching/${l.id}`,
+    where: l.id === 'connect' ? 'Over MCP' : (undefined as string | undefined),
+    minutes: l.data.minutes,
+  })),
+];
+---
+
+<section class="sec" id="work" aria-labelledby="work-h">
+  <SectionHead title="Work" id="work-h" />
+
+  <div class="row" id="teach">
+    <p class="verb">Teach</p>
+    <div>
+      <p class="outcome">
+        With other instructors, I taught {people} people to build with Claude Code, about {intensive} of them in one
+        two-day hands-on intensive.
+      </p>
+      <a class="more" href="/work/claude-dojo">Read about Claude Dojo</a>
+    </div>
+    <figure>
+      <div class="dots" role="img" aria-label={`${people} dots, one per person. ${intensive} are filled.`}>
+        {Array.from({ length: people }, (_, i) => <i class={i < intensive ? 'dot dot--in' : 'dot'} />)}
+      </div>
+      <figcaption>One dot per person. Filled dots came through the two-day intensive in July 2026.</figcaption>
+    </figure>
+  </div>
+
+  <div class="row row--speak" id="speak">
+    <p class="verb">Speak</p>
+    <div>
+      <p class="outcome">
+        I have given my workshop, Mental Models for Decision Making, to more than 200 conference attendees.
+      </p>
+      <p class="outcome-2">I gave a lightning talk at Splunk in 2022 and give lightning talks at Salesforce now.</p>
+      <a class="more" href="/teaching#rooms">Talks and workshops</a>
+    </div>
+  </div>
+
+  <div class="row row--build" id="build">
+    <p class="verb">Build</p>
+    <div class="build__say">
+      <p class="outcome">
+        I build the labs I teach from. Four run on this site, which is also an MCP server an agent can read as tools. I
+        co-wrote the Claude Dojo curriculum: 49 lessons and 46 lesson videos.
+      </p>
+      <p class="outcome-2">I have built on Claude through Amazon Bedrock.</p>
+    </div>
+    <div class="build__index">
+      <ol class="built" aria-label="Labs you can open now">
+        {
+          built.map((b) => (
+            <li>
+              <a href={b.href}>
+                <span class="built__no">Lab {b.no}</span>
+                <span class="built__title">{b.title}</span>
+                <span class="built__time">
+                  {b.where ? `${b.where}, ` : ''}
+                  {b.minutes} min
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ol>
+      {
+        labsLive ? (
+          <p class="next">
+            <span class="label">Also</span>
+            <a class="more" href="/work/launch-day-labs">
+              Six labs for the Claude platform, from a first Messages API call to skills, re-run every night
+            </a>
+          </p>
+        ) : (
+          <p class="next">
+            <span class="label">Next</span>
+            <span>
+              Six labs for the Claude platform, from a first Messages API call to skills. Not published yet.
+            </span>
+          </p>
+        )
+      }
+    </div>
+  </div>
+
+  <div class="row" id="measure">
+    <p class="verb">Measure</p>
+    <div>
+      <p class="outcome">
+        My first answer at Pinecone was a score that rated how agent-ready a doc looked. When my manager asked why I
+        trusted it, I scrapped it and built an eval that runs real developer tasks.
+      </p>
+      <a class="more" href="/work/the-score-that-lied">Read The score that lied</a>
+      <p class="outcome-2 council">
+        At Splunk I founded a council that moved 60+ technical writers onto approved AI tools, with a data policy and a
+        person reviewing every AI draft.
+      </p>
+      <a class="more" href="/work/ix-ai-council">Read about the IX AI Council</a>
+    </div>
+    <figure>
+      <div
+        class="bars"
+        role="img"
+        aria-label="Task success on 15 tasks, three runs each. Small model: 11 percent with no docs, 89 percent with the curated docs file. Large model: 84 percent with no docs, 100 percent with the docs file."
+      >
+        <p class="bars__group label">Small model</p>
+        <div class="bar">
+          <span class="bar__name">No docs</span><span class="bar__track"
+            ><span class="bar__fill" style="--v:11%"></span></span
+          ><span class="bar__val">11%</span>
+        </div>
+        <div class="bar">
+          <span class="bar__name">Docs file</span><span class="bar__track"
+            ><span class="bar__fill bar__fill--pink" style="--v:89%"></span></span
+          ><span class="bar__val">89%</span>
+        </div>
+        <p class="bars__group label">Large model</p>
+        <div class="bar">
+          <span class="bar__name">No docs</span><span class="bar__track"
+            ><span class="bar__fill" style="--v:84%"></span></span
+          ><span class="bar__val">84%</span>
+        </div>
+        <div class="bar">
+          <span class="bar__name">Docs file</span><span class="bar__track"
+            ><span class="bar__fill bar__fill--soft" style="--v:100%"></span></span
+          ><span class="bar__val">100%</span>
+        </div>
+      </div>
+      <figcaption>Same 15 tasks, three runs each. Only the docs changed.</figcaption>
+    </figure>
+  </div>
+</section>
+
+<style>
+  #work {
+    padding-top: clamp(40px, 3.4vw, 48px);
+  }
+  #work :global(.sec-head) {
+    padding-bottom: 12px;
+  }
+  .row {
+    padding: 22px 0 24px;
+  }
+  .row .outcome {
+    font-size: clamp(1.1875rem, 1.65vw, 1.4375rem);
+    line-height: 1.32;
+  }
+  .outcome + .more,
+  .outcome-2 + .more {
+    margin-top: 14px;
+  }
+  .outcome-2 {
+    margin-top: 12px;
+    font-size: var(--step-small);
+    line-height: 1.45;
+    max-width: 46ch;
+  }
+  .council {
+    max-width: none;
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: var(--rule-dash);
+  }
+
+  /* Teach: one dot per person, the grid as wide as the figure column. */
+  .dots {
+    display: grid;
+    grid-template-columns: repeat(24, 1fr);
+    gap: 4px;
+  }
+  .dot {
+    display: block;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    border: 1.5px solid var(--ink);
+  }
+  .dot--in {
+    background: var(--pink);
+    border-color: transparent;
+    mix-blend-mode: var(--blend);
+  }
+
+  /* Speak: two plain sentences and nothing drawn. The statement takes the width of the row. */
+  .row--speak {
+    grid-template-columns: var(--cols);
+  }
+  .row--speak .outcome-2 {
+    max-width: none;
+  }
+
+  /* Build: what exists, as an index that opens. The statement takes the middle column,
+     the index runs the full width of the two columns under it. */
+  .row--build {
+    grid-template-areas:
+      'verb say say'
+      '. index index';
+    row-gap: 14px;
+  }
+  .row--build > .verb {
+    grid-area: verb;
+  }
+  .build__say {
+    grid-area: say;
+  }
+  .build__say .outcome {
+    max-width: 52ch;
+  }
+  .build__index {
+    grid-area: index;
+  }
+  .built {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: var(--col-gap);
+    border-top: var(--rule);
+  }
+  .built li {
+    border-bottom: var(--rule-dash);
+  }
+  .built a {
+    display: grid;
+    grid-template-columns: 3.5rem minmax(0, 1fr) auto 1em;
+    gap: 2px 10px;
+    align-items: baseline;
+    padding: 8px 0 9px;
+    text-decoration: none;
+  }
+  .built a::after {
+    content: '\2192';
+    font-family: var(--font-mono);
+    color: var(--ink);
+    text-align: right;
+  }
+  .built__no {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .built__title {
+    font-size: 1rem;
+    line-height: 1.35;
+  }
+  .built__time {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .built a:hover .built__title,
+  .built a:focus-visible .built__title {
+    text-decoration: underline;
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  .next {
+    display: flex;
+    gap: 6px 16px;
+    align-items: baseline;
+    margin-top: 12px;
+    font-size: var(--step-small);
+    color: var(--text-soft);
+  }
+
+  /* Measure: bars drawn to scale, values set flush right on the figure's edge. */
+  .bars {
+    display: grid;
+    gap: 8px;
+  }
+  .bars__group {
+    margin-top: 6px;
+  }
+  .bars__group:first-child {
+    margin-top: 0;
+  }
+  .bar {
+    display: grid;
+    grid-template-columns: 5.6em minmax(0, 1fr) 3.4em;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+  }
+  .bar__track {
+    position: relative;
+    height: 24px;
+    border-left: var(--rule);
+  }
+  .bar__fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: var(--v);
+    background: var(--ink);
+  }
+  /* The one result that matters is the pink one. The large model's gain prints in teal outline. */
+  .bar__fill--pink {
+    background: var(--pink);
+    mix-blend-mode: var(--blend);
+  }
+  .bar__fill--soft {
+    background: transparent;
+    border: 1.5px solid var(--ink);
+  }
+  .bar__val {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-shout);
+    font-size: 1.25rem;
+    line-height: 1;
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+  }
+
+  @media (max-width: 900px) {
+    .row--speak {
+      grid-template-columns: 1fr 1fr;
+    }
+    .row--build {
+      grid-template-areas:
+        'verb say'
+        'index index';
+    }
+    .big {
+      text-align: left;
+    }
+  }
+  @media (max-width: 600px) {
+    .row {
+      padding: 24px 0;
+    }
+    /* A row label on a phone is a tag, so it never outweighs the section heading. */
+    .verb {
+      font-family: var(--font-mono);
+      font-size: var(--step-label);
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink);
+    }
+    .row--speak {
+      grid-template-columns: 1fr;
+    }
+    .row--build {
+      grid-template-areas:
+        'verb'
+        'say'
+        'index';
+    }
+    .built {
+      grid-template-columns: 1fr;
+    }
+    .built a {
+      grid-template-columns: 3.5rem minmax(0, 1fr) 1em;
+    }
+    .built a::after {
+      grid-column: 3;
+      grid-row: 1;
+    }
+    .built__time {
+      grid-column: 2;
+    }
+    .next {
+      flex-wrap: wrap;
+    }
+    .row figure {
+      margin-top: 18px;
+    }
+  }
+</style>

@@ -1,0 +1,36 @@
+---
+title: "SAGE"
+outcome: "A hackathon project at Splunk: draw a box around any part of a product screen, and an agent answers from the docs beside it."
+summary: "An in-product help agent that explains the exact element a user boxes, designed so every box also tells the product team where people get stuck."
+org: "Splunk"
+role: "Project lead"
+period: "Between 2020 and 2026"
+year: 2025
+area: "build"
+order: 10
+heroFigure: "SageFlow"
+metrics:
+  - value: "2nd"
+    label: "place overall at an AI hackathon, and the People's Choice Award"
+stack: ["RAG agent", "Docs vector database", "DOM context capture", "Pendo and Jira (designed)"]
+---
+
+## What it does
+
+SAGE stands for Selection Agent with Guided Explanations. In a complex enterprise dashboard, a user runs into a metric, a chart, or an abbreviation they don't understand. Instead of typing a question into a chatbot, they draw a box around it. SAGE captures the DOM and HTML context of the box, retrieves the matching documentation, and answers in a popup next to the element.
+
+I led the project and designed the architecture. It won the People's Choice Award and placed second overall at an AI hackathon.
+
+## The problem
+
+I call these moments paper cuts. A confused user opens a new tab to search the docs, asks a teammate, or stops using the feature. The product team hears about it later in a support ticket, often weeks after the frustration, and a ticket rarely says which button or label caused it.
+
+## Every box is also a signal
+
+The answer is the user's half. The design gives the product team the other half. Each box would be logged as an analytics event in Pendo, and together the boxes would map where people stop to ask. An ordinary heatmap records clicks. This one would record hesitation: the button, label, or chart people had to stop and ask about.
+
+## From repeated questions to a ticket
+
+When one element draws enough questions, such as "What does Health Score mean?", a threshold rule in the design opens a Jira ticket with the element ID, how often it was boxed, and the topics of the questions. The backlog would then fill with fixes that have a count behind them.
+
+The Pendo and Jira steps were designed, not built.

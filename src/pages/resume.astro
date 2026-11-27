@@ -1,0 +1,713 @@
+---
+/**
+ * /resume: the web resume, set as one sheet in the page grid.
+ * Section names sit in the label column and stay in view while their section scrolls;
+ * the two sections that carry a count print it large under the name.
+ * Teaching comes first because it is the work this resume is for.
+ * The print stylesheet at the bottom turns it into a one-page, black-on-white letter sheet.
+ * scripts/make-resume-pdf.mjs prints this page to public/resume/andrew-yu-resume.pdf.
+ *
+ * Rules from Andrew's resume rules: every bullet starts with a different verb, one line each
+ * in print, commas instead of dashes. No email and no phone on the site.
+ * Every number here is in the fact base or the settled list in AGENTS.md.
+ */
+import Base from '../layouts/Base.astro';
+import RunHead from '../components/RunHead.astro';
+import profile from '../data/profile.json';
+
+type Entry = { title: string; sub?: string; when: string; href?: string; bullets: string[] };
+type Project = { name: string; what: string; stack: string; href: string; bullets: string[] };
+
+const headline = 'Lead Technical Writer at Salesforce. Director of AI Enablement at Claude Dojo.';
+const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both-learned-limits-language-andrew-yu-kogmc/';
+
+const teaching: Entry[] = [
+  {
+    title: 'Claude Dojo two-day intensive',
+    when: 'Jul 2026, about 70 people',
+    bullets: ['Co-taught a two-day hands-on Claude Code intensive to about 70 attendees, technical and non-technical'],
+  },
+  {
+    title: 'Claude Dojo curriculum',
+    when: '49 lessons, 46 videos',
+    bullets: ['Co-authored the Claude Dojo curriculum, 49 lessons with labs and prompts, and 46 lesson videos'],
+  },
+  {
+    title: 'Mental Models for Decision Making',
+    sub: 'Workshop',
+    when: '200+ attendees',
+    bullets: ['Gave my workshop, Mental Models for Decision Making, to more than 200 conference attendees'],
+  },
+  {
+    title: 'Lightning talks',
+    when: 'Splunk 2022, Salesforce now',
+    bullets: [
+      'Presented “The Limitations of Language” at Splunk in 2022, and give lightning talks at Salesforce now',
+      'Train Salesforce coworkers to work with AI',
+    ],
+  },
+  {
+    title: 'LeCun, Lewis, and the Limits of Language',
+    sub: 'Essay',
+    when: 'LinkedIn',
+    href: essay,
+    bullets: ['Published an essay on why language models hallucinate, grown out of the Splunk talk'],
+  },
+];
+
+const experience: Entry[] = [
+  {
+    title: 'Salesforce',
+    sub: 'Lead Technical Writer',
+    when: 'Jul 2026 to present',
+    bullets: [
+      'Joined 3-person innovation team shipping quickstarts, starter kits, agent skills, and demos for developers',
+      'Proposed ownership model for agent skills: docs as the source, evals run with and without the docs as the proof',
+      'Write evals and agentic workflows, and work on AI strategy and role transformation for my organization',
+    ],
+  },
+  {
+    title: 'Claude Dojo',
+    sub: 'Director of AI Enablement, a nonprofit',
+    when: '2026 to present',
+    bullets: ['Direct AI enablement; with the other instructors, taught 103 people to build with Claude Code'],
+  },
+  {
+    title: 'Pinecone',
+    sub: 'Technical Writer (Contract)',
+    when: 'Feb 2026 to Jul 2026',
+    bullets: [
+      'Created four-condition eval of coding agents on 15 tasks; curated docs took the small model from 11% to 89%',
+      'Built AI-assisted CI/CD pipeline that drafts docs PRs from code changes',
+      'Collaborated with engineers, product managers, and other writers on PR-based reviews, verifying code samples',
+    ],
+  },
+  {
+    title: 'Splunk',
+    sub: 'Manager, Content Strategy and Knowledge Management',
+    when: 'May 2024 to Jan 2026',
+    bullets: [
+      'Led team of 6 technical writers across time zones in Agile sprints for engineering, product, and UX partners',
+      'Introduced GitHub PR workflow and a shared AI prompt library across engineering teams',
+      'Coached junior writers and gave feedback on engineer drafts for clarity, style, and structure',
+    ],
+  },
+  {
+    title: 'Splunk',
+    sub: 'Senior Staff Technical Writer',
+    when: 'Sep 2020 to May 2024',
+    bullets: [
+      'Moved docs to docs-as-code (Markdown, Git, CI/CD), increasing deployment frequency by 30%',
+      'Analyzed support tickets to redesign Developer Portal information architecture, reducing tickets by 20%',
+      'Produced Data Management onboarding guides for new developers',
+    ],
+  },
+  {
+    title: 'Workday',
+    when: 'Apr 2015 to Sep 2020',
+    bullets: ['Developed content systems for 10,000+ users across Student Financials, a regulated product domain'],
+  },
+];
+
+const projects: Project[] = [
+  {
+    name: 'SAGE (Selection Agent with Guided Explanations)',
+    what: "Hackathon People's Choice Award",
+    stack: 'Figma Make, Pinecone, Veo 3',
+    href: '/work/sage',
+    bullets: [
+      'Prototyped RAG agent that surfaces in-product docs at friction points and cites its sources for checking',
+    ],
+  },
+  {
+    name: 'DocOps Governance Workbench',
+    what: 'Automated Copy Compliance Tool',
+    stack: 'Python, LangChain',
+    href: '/work/docops-governance-workbench',
+    bullets: [
+      'Wired MCP and retrieval checks into CI that test docs against the live API spec and the style guide',
+      'Automated style and compliance scans in builds, cutting review time 40%',
+    ],
+  },
+  {
+    name: 'QuickRamp',
+    what: '0-to-1 Healthcare SaaS',
+    stack: 'Next.js, Claude API, Pinecone',
+    href: '/work/quickramp',
+    bullets: ['Co-founded clinic onboarding tool that writes day-by-day plans from each clinic’s own SOPs through retrieval'],
+  },
+  {
+    name: 'Automated YouTube Shorts Pipeline',
+    what: 'Video to vertical shorts',
+    stack: 'Python, PyTorch, FFmpeg, Claude API',
+    href: '/work/youtube-content-pipeline',
+    bullets: ['Combined PyTorch MTCNN face tracking and Silero VAD into ML pipeline for automated content extraction'],
+  },
+];
+
+const skills: { lead: string; text: string }[] = [
+  { lead: 'Claude Platform', text: 'Claude API, Tool Use, MCP, Agent SDK, Claude Code Skills, RAG, Evaluation Frameworks' },
+  { lead: 'AI coding tools', text: 'Claude Code daily, Cursor, Codex. Languages, AI-assisted: Python, TypeScript, React, SQL' },
+  { lead: 'Enablement', text: 'Hands-On Labs, Live Training, Curriculum Design, Demo Environments' },
+];
+
+const degree = { name: 'University of California, Berkeley', what: 'B.A. English', when: '2012 to 2014' };
+const certs = 'Product Management Specialization (Darden). Databricks certification.';
+
+const pdf = '/resume/andrew-yu-resume.pdf';
+const linkedin = profile.links.linkedin;
+const github = profile.links.github;
+const bare = (u: string) => u.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+---
+
+<Base title="Resume" description={`${profile.name}. ${headline} ${profile.location}.`}>
+  <RunHead left="Resume" right="Updated November 2026" class="cv__band" />
+
+  <article class="cv" aria-labelledby="cv-name">
+    <header class="cv__head">
+      <div class="cv__id">
+        <h1 id="cv-name" class="cv__name">{profile.name}</h1>
+        <p class="cv__line">{headline}</p>
+        <ul class="cv__links">
+          <li class="cv__where">{profile.location}</li>
+          <li><a href={linkedin} rel="me">{bare(linkedin)}</a></li>
+          <li><a href={github} rel="me">{bare(github)}</a></li>
+          <li><a href={profile.site}>{bare(profile.site)}</a></li>
+        </ul>
+      </div>
+      <div class="cv__get spot">
+        <a class="cv__pdf" href={pdf} download>Download the PDF</a>
+        <p class="cv__pdf-note">Letter size, set for printing.</p>
+      </div>
+    </header>
+
+    <section class="cv__sec" aria-labelledby="cv-teach">
+      <div class="cv__side">
+        <h2 id="cv-teach" class="cv__h">Teaching</h2>
+        <p class="cv__fig"><span class="cv__fig-n">103</span><span class="cv__fig-cap">people taught to build with Claude Code</span></p>
+      </div>
+      <div class="cv__body">
+        {
+          teaching.map((t) => (
+            <div class="job">
+              <p class="job__head">
+                <span class="job__who">
+                  <strong>{t.href ? <a href={t.href}>{t.title}</a> : t.title}</strong>
+                  {t.sub && <span class="job__role">, {t.sub}</span>}
+                </span>
+                <span class="job__when">{t.when}</span>
+              </p>
+              <ul class="bullets">
+                {t.bullets.map((b) => (
+                  <li>{b}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="cv__sec" aria-labelledby="cv-exp">
+      <div class="cv__side">
+        <h2 id="cv-exp" class="cv__h">Experience</h2>
+        <p class="cv__fig"><span class="cv__fig-n">2015</span><span class="cv__fig-cap">in software since</span></p>
+      </div>
+      <div class="cv__body">
+        {
+          experience.map((j) => (
+            <div class="job">
+              <p class="job__head">
+                <span class="job__who">
+                  <strong>{j.title}</strong>
+                  {j.sub && <span class="job__role">, {j.sub}</span>}
+                </span>
+                <span class="job__when">{j.when}</span>
+              </p>
+              <ul class="bullets">
+                {j.bullets.map((b) => (
+                  <li>{b}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="cv__sec" aria-labelledby="cv-proj">
+      <div class="cv__side">
+        <h2 id="cv-proj" class="cv__h">Projects</h2>
+      </div>
+      <div class="cv__body">
+        {
+          projects.map((p) => (
+            <div class="job">
+              <p class="job__head job__head--proj">
+                <span class="job__who">
+                  <strong>
+                    <a href={p.href}>{p.name}</a>
+                  </strong>
+                </span>
+                <span class="job__tag">
+                  <span class="job__what">{p.what}</span>
+                  <span class="job__stack">{p.stack}</span>
+                </span>
+              </p>
+              <ul class="bullets">
+                {p.bullets.map((b) => (
+                  <li>{b}</li>
+                ))}
+              </ul>
+            </div>
+          ))
+        }
+      </div>
+    </section>
+
+    <section class="cv__sec" aria-labelledby="cv-skills">
+      <div class="cv__side">
+        <h2 id="cv-skills" class="cv__h">Skills</h2>
+      </div>
+      <div class="cv__body">
+        <dl class="skills">
+          {
+            skills.map((s) => (
+              <>
+                <dt>{s.lead}</dt>
+                <dd>{s.text}</dd>
+              </>
+            ))
+          }
+        </dl>
+      </div>
+    </section>
+
+    <section class="cv__sec" aria-labelledby="cv-edu">
+      <div class="cv__side">
+        <h2 id="cv-edu" class="cv__h">Education</h2>
+      </div>
+      <div class="cv__body">
+        <p class="job__head">
+          <span class="job__who">
+            <strong>{degree.name}</strong><span class="job__role">, {degree.what}</span>
+          </span>
+          <span class="job__when">{degree.when}</span>
+        </p>
+        <p class="cv__certs">{certs}</p>
+      </div>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .cv {
+    padding-top: clamp(28px, 4.5vw, 60px);
+  }
+
+  /* ---------- Head ---------- */
+  .cv__head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(330px, 0.42fr);
+    gap: 24px clamp(28px, 4vw, 64px);
+    align-items: end;
+    padding-bottom: clamp(26px, 3vw, 40px);
+    border-bottom: var(--rule);
+  }
+  .cv__name {
+    font-size: var(--step-hero);
+    font-stretch: var(--w-shout);
+  }
+  .cv__line {
+    margin-top: 16px;
+    font-size: var(--step-lede);
+    line-height: 1.35;
+    max-width: 40ch;
+    text-wrap: pretty;
+  }
+  .cv__links {
+    list-style: none;
+    margin: 18px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 22px;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.6;
+  }
+  .cv__where {
+    color: var(--ink);
+  }
+
+  /* The one pink field: the PDF, which is what most visitors to this page came for. */
+  .cv__get {
+    display: grid;
+    gap: 10px;
+    align-content: end;
+    min-height: 168px;
+  }
+  .cv__pdf {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-shout);
+    font-size: clamp(1.875rem, 2.6vw, 2.375rem);
+    line-height: 0.95;
+    white-space: nowrap;
+    color: var(--over);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 6px;
+  }
+  .cv__pdf::after {
+    content: '\00a0\2193';
+  }
+  .cv__pdf-note {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+  }
+
+  /* ---------- Sections in the page grid ---------- */
+  .cv__sec {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: 30px 0 34px;
+    border-bottom: var(--rule);
+  }
+  .cv__sec:last-child {
+    border-bottom: 0;
+  }
+  .cv__side {
+    align-self: start;
+    position: sticky;
+    top: 20px;
+  }
+  .cv__h {
+    font-family: var(--font-mono);
+    font-size: var(--step-label);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    font-stretch: normal;
+    line-height: 1.5;
+    color: var(--ink);
+    padding-top: 4px;
+  }
+  .cv__fig {
+    display: grid;
+    gap: 6px;
+    margin-top: 14px;
+  }
+  .cv__fig-n {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-shout);
+    font-size: clamp(3rem, 5.2vw, 4.5rem);
+    line-height: 0.85;
+    font-variant-numeric: tabular-nums;
+  }
+  .cv__fig-cap {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    color: var(--ink);
+    max-width: 18ch;
+  }
+  .cv__body {
+    display: grid;
+    gap: 22px;
+    align-content: start;
+  }
+
+  .job__head {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 4px 20px;
+    flex-wrap: wrap;
+  }
+  .job__who {
+    font-family: var(--font-display);
+    font-stretch: var(--w-title);
+    font-size: 1.1875rem;
+    line-height: 1.2;
+  }
+  .job__who strong {
+    font-weight: 700;
+  }
+  .job__who a {
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  .job__role {
+    font-weight: 500;
+  }
+  .job__when,
+  .job__tag {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .job__when {
+    white-space: nowrap;
+  }
+  .job__tag {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 14px;
+  }
+  .job__what,
+  .job__stack {
+    white-space: nowrap;
+  }
+
+  .bullets {
+    list-style: none;
+    margin: 8px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 5px;
+    max-width: 66ch;
+  }
+  .bullets li {
+    position: relative;
+    padding-left: 18px;
+    font-size: var(--step-small);
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+  /* A small teal square: a marker, not a dash. */
+  .bullets li::before {
+    content: '';
+    position: absolute;
+    left: 2px;
+    top: 0.62em;
+    width: 5px;
+    height: 5px;
+    background: var(--ink);
+  }
+
+  /* Skills: a two-column table of label and list. */
+  .skills {
+    display: grid;
+    grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+    margin: 0;
+  }
+  .skills dt,
+  .skills dd {
+    margin: 0;
+    padding: 10px 0;
+    border-bottom: var(--rule-dash);
+  }
+  .skills dt {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--ink);
+    padding-top: 13px;
+  }
+  .skills dd {
+    font-size: var(--step-small);
+    line-height: 1.5;
+  }
+  .skills dt:first-of-type,
+  .skills dd:first-of-type {
+    padding-top: 0;
+  }
+  .skills dt:last-of-type,
+  .skills dd:last-of-type {
+    border-bottom: 0;
+  }
+
+  .cv__certs {
+    margin-top: 6px;
+    font-size: var(--step-small);
+    color: var(--text-soft);
+  }
+
+  @media (max-width: 860px) {
+    .cv__head {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+    .cv__get {
+      min-height: 0;
+      max-width: 460px;
+    }
+  }
+  @media (max-width: 600px) {
+    .cv__sec {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .cv__side {
+      position: static;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      border-bottom: var(--rule-dash);
+      padding-bottom: 12px;
+    }
+    .cv__fig {
+      margin-top: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .cv__fig-n {
+      font-size: 2.25rem;
+    }
+    .cv__fig-cap {
+      max-width: 13ch;
+    }
+    /* The date or fact always gets its own line on a phone. */
+    .job__head {
+      display: grid;
+      gap: 2px;
+    }
+    .skills {
+      grid-template-columns: 1fr;
+    }
+    .skills dt {
+      border-bottom: 0;
+      padding: 10px 0 2px;
+    }
+    .skills dd {
+      padding-top: 0;
+    }
+  }
+
+  /* ---------- Print: one page, black on white ---------- */
+  @media print {
+    @page {
+      size: letter;
+      margin: 0.36in 0.5in 0.3in;
+    }
+    :global(html),
+    :global(body) {
+      background: #fff !important;
+      color: #000 !important;
+    }
+    :global(body) {
+      font-size: 9.5pt;
+    }
+    :global(.nav),
+    :global(.footer),
+    :global(.skip),
+    :global(.cv__band),
+    .cv__get,
+    .cv__fig {
+      display: none !important;
+    }
+    :global(.wrap) {
+      max-width: none;
+      padding: 0;
+    }
+    .cv,
+    .cv * {
+      color: #000 !important;
+      text-decoration-color: #000 !important;
+    }
+    .cv {
+      padding: 0;
+    }
+    .cv__head {
+      grid-template-columns: 1fr;
+      padding-bottom: 6pt;
+      border-bottom: 2pt solid #000;
+      gap: 0;
+    }
+    .cv__name {
+      font-size: 22pt;
+    }
+    .cv__line {
+      margin-top: 2pt;
+      font-size: 10pt;
+      max-width: none;
+    }
+    .cv__links {
+      margin-top: 3pt;
+      font-size: 8pt;
+      line-height: 1.45;
+      gap: 0 12pt;
+    }
+    .cv__links a {
+      text-decoration: none;
+    }
+    .cv__sec {
+      grid-template-columns: 0.82in 1fr;
+      gap: 10pt;
+      padding: 4pt 0 5pt;
+      border-bottom: 0.75pt solid #000;
+      break-inside: avoid;
+    }
+    .cv__side {
+      position: static;
+    }
+    .cv__h {
+      font-size: 7.5pt;
+      padding-top: 2pt;
+    }
+    .cv__body {
+      gap: 4pt;
+    }
+    .bullets {
+      max-width: none;
+    }
+    .job__head--proj {
+      justify-content: flex-start;
+    }
+    .job__who {
+      font-size: 9.5pt;
+    }
+    .job__who a {
+      text-decoration: none;
+    }
+    .job__when,
+    .job__tag {
+      font-size: 8pt;
+    }
+    .job__tag {
+      gap: 0 6pt;
+    }
+    .job__what::after {
+      content: ' |';
+    }
+    .bullets {
+      margin-top: 1.5pt;
+      gap: 0.5pt;
+    }
+    .bullets li {
+      font-size: 8.4pt;
+      line-height: 1.24;
+      padding-left: 9pt;
+    }
+    /* Backgrounds do not print, so the marker is drawn as a border. */
+    .bullets li::before {
+      background: none;
+      width: 0;
+      height: 0;
+      border-top: 3pt solid #000;
+      border-left: 3pt solid #000;
+      top: 0.5em;
+      left: 1pt;
+    }
+    .skills {
+      grid-template-columns: 1.5in 1fr;
+    }
+    .skills dt,
+    .skills dd {
+      padding: 0.5pt 0;
+      border: 0;
+      font-size: 8.4pt;
+    }
+    .cv__certs {
+      margin-top: 1pt;
+      font-size: 8.75pt;
+    }
+  }
+</style>

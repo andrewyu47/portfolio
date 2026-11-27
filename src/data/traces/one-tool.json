@@ -1,0 +1,290 @@
+{
+  "id": "one-tool",
+  "title": "One tool call",
+  "question": "Has Andrew taught Claude Code to a live room?",
+  "recorded": true,
+  "recorded_at": "2026-11-26T03:26:25.330Z",
+  "model": "claude-opus-5-5",
+  "sdk": "@anthropic-ai/sdk 1.14.0",
+  "note": null,
+  "trips": [
+    {
+      "trip": 1,
+      "request": {
+        "model": "claude-opus-5-5",
+        "max_tokens": 16000,
+        "thinking": {
+          "type": "adaptive",
+          "display": "summarized"
+        },
+        "output_config": {
+          "effort": "low"
+        },
+        "system": "You answer questions about Andrew Yu using the tools provided. Answer briefly, and only from what the tools return. If a question is not about Andrew, answer it directly without using a tool.",
+        "tools": [
+          {
+            "name": "search_portfolio",
+            "description": "Search everything on Andrew Yu's portfolio (case studies, lessons, writing, and his career timeline) and return the most relevant passages with the page each came from. Use this first for any question about Andrew's experience, teaching, or projects. Returns up to 5 results, each with a title, a URL, and a short excerpt.",
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "What to look for, in plain words. For example: \"live Claude Code teaching\" or \"eval results\"."
+                }
+              },
+              "required": [
+                "query"
+              ],
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "get_case_study",
+            "description": "Return the full text of one case study, with its outcome, dates, role, and headline numbers. Use this after search_portfolio or list_work when a question needs more detail than an excerpt gives. Takes the slug of the case study, for example \"claude-dojo\".",
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "slug": {
+                  "type": "string",
+                  "description": "The case study slug, as returned by list_work or found in a result URL after /work/."
+                }
+              },
+              "required": [
+                "slug"
+              ],
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "list_work",
+            "description": "List every case study on Andrew Yu's portfolio with its slug, title, where the work happened, and a one-sentence outcome. Use this for an overview of his work, or to find the slug to pass to get_case_study.",
+            "input_schema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "Has Andrew taught Claude Code to a live room?"
+          }
+        ]
+      },
+      "response": {
+        "model": "claude-opus-5-5",
+        "id": "msg_011ChQpvCvhdT9uXf2m1EFj3",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "toolu_01L1VUQeDXbW75eGgrSNX8sE",
+            "name": "search_portfolio",
+            "input": {
+              "query": "live Claude Code teaching"
+            },
+            "caller": {
+              "type": "direct"
+            }
+          }
+        ],
+        "container": null,
+        "stop_reason": "tool_use",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 894,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 58,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global",
+          "speed": "standard"
+        },
+        "diagnostics": null
+      },
+      "duration_ms": 993,
+      "tool_runs": [
+        {
+          "tool_use_id": "toolu_01L1VUQeDXbW75eGgrSNX8sE",
+          "name": "search_portfolio",
+          "input": {
+            "query": "live Claude Code teaching"
+          },
+          "result": {
+            "query": "live Claude Code teaching",
+            "results": [
+              {
+                "title": "Teaching 103 people to build with Claude Code",
+                "kind": "case study",
+                "url": "https://andrewyu.app/work/claude-dojo",
+                "excerpt": "With other instructors, I taught 103 people to build with Claude Code, about 70 of them in one two-day hands-on intensive. At Claude Dojo, a nonprofit, I co-wrote a 49-lesson belt curriculum and taught at a two-day intensive where everyone set up Claude Code in the room and built their first Skill. Claude Dojo Director of AI Enablement 103 people taught to build with Claude Code. About 70 in the room for the two-day ..."
+              },
+              {
+                "title": "DocOps Governance Workbench",
+                "kind": "case study",
+                "url": "https://andrewyu.app/work/docops-governance-workbench",
+                "excerpt": "A workbench that checks developer docs against the live API spec and the style guide before they ship. Making our code examples match the real API cut integration support tickets by 20%. At Splunk, I built a Python workbench with two checks: an MCP engine that validates facts and security against the API spec, and a retrieval engine that enforces the style guide. Splunk Principal architect and engineer 20% fewer ..."
+              },
+              {
+                "title": "Ask this site a question",
+                "kind": "lesson",
+                "url": "https://andrewyu.app/teaching/connect",
+                "excerpt": "- What did Andrew's docs eval find? Say which model each number belongs to. - List Andrew's case studies and tell me which ones are about teaching. - How many people has Andrew taught to build with Claude Code? Give me the page that says so."
+              },
+              {
+                "title": "About Andrew Yu",
+                "kind": "profile",
+                "url": "https://andrewyu.app",
+                "excerpt": "Andrew Yu is a technical writer and AI educator in Seattle. He is Lead Technical Writer at Salesforce and Director of AI Enablement at Claude Dojo, a nonprofit where he and his fellow instructors have taught 103 people to build with Claude Code. Before that he wrote developer documentation at Pinecone and led a content strategy team at Splunk. He studied English at UC Berkeley, and he builds every day with Claude ..."
+              },
+              {
+                "title": "Career and education timeline",
+                "kind": "timeline",
+                "url": "https://andrewyu.app/path",
+                "excerpt": "2026 to present: Director of AI Enablement, Claude Dojo. Claude Dojo is a nonprofit. With the other instructors I have taught 103 people to build with Claude Code."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "trip": 2,
+      "request": {
+        "model": "claude-opus-5-5",
+        "max_tokens": 16000,
+        "thinking": {
+          "type": "adaptive",
+          "display": "summarized"
+        },
+        "output_config": {
+          "effort": "low"
+        },
+        "system": "You answer questions about Andrew Yu using the tools provided. Answer briefly, and only from what the tools return. If a question is not about Andrew, answer it directly without using a tool.",
+        "tools": [
+          {
+            "name": "search_portfolio",
+            "description": "Search everything on Andrew Yu's portfolio (case studies, lessons, writing, and his career timeline) and return the most relevant passages with the page each came from. Use this first for any question about Andrew's experience, teaching, or projects. Returns up to 5 results, each with a title, a URL, and a short excerpt.",
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "What to look for, in plain words. For example: \"live Claude Code teaching\" or \"eval results\"."
+                }
+              },
+              "required": [
+                "query"
+              ],
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "get_case_study",
+            "description": "Return the full text of one case study, with its outcome, dates, role, and headline numbers. Use this after search_portfolio or list_work when a question needs more detail than an excerpt gives. Takes the slug of the case study, for example \"claude-dojo\".",
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "slug": {
+                  "type": "string",
+                  "description": "The case study slug, as returned by list_work or found in a result URL after /work/."
+                }
+              },
+              "required": [
+                "slug"
+              ],
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "list_work",
+            "description": "List every case study on Andrew Yu's portfolio with its slug, title, where the work happened, and a one-sentence outcome. Use this for an overview of his work, or to find the slug to pass to get_case_study.",
+            "input_schema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "Has Andrew taught Claude Code to a live room?"
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "toolu_01L1VUQeDXbW75eGgrSNX8sE",
+                "name": "search_portfolio",
+                "input": {
+                  "query": "live Claude Code teaching"
+                },
+                "caller": {
+                  "type": "direct"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "tool_use_id": "toolu_01L1VUQeDXbW75eGgrSNX8sE",
+                "content": "{\"query\":\"live Claude Code teaching\",\"results\":[{\"title\":\"Teaching 103 people to build with Claude Code\",\"kind\":\"case study\",\"url\":\"https://andrewyu.app/work/claude-dojo\",\"excerpt\":\"With other instructors, I taught 103 people to build with Claude Code, about 70 of them in one two-day hands-on intensive. At Claude Dojo, a nonprofit, I co-wrote a 49-lesson belt curriculum and taught at a two-day intensive where everyone set up Claude Code in the room and built their first Skill. Claude Dojo Director of AI Enablement 103 people taught to build with Claude Code. About 70 in the room for the two-day ...\"},{\"title\":\"DocOps Governance Workbench\",\"kind\":\"case study\",\"url\":\"https://andrewyu.app/work/docops-governance-workbench\",\"excerpt\":\"A workbench that checks developer docs against the live API spec and the style guide before they ship. Making our code examples match the real API cut integration support tickets by 20%. At Splunk, I built a Python workbench with two checks: an MCP engine that validates facts and security against the API spec, and a retrieval engine that enforces the style guide. Splunk Principal architect and engineer 20% fewer ...\"},{\"title\":\"Ask this site a question\",\"kind\":\"lesson\",\"url\":\"https://andrewyu.app/teaching/connect\",\"excerpt\":\"- What did Andrew's docs eval find? Say which model each number belongs to. - List Andrew's case studies and tell me which ones are about teaching. - How many people has Andrew taught to build with Claude Code? Give me the page that says so.\"},{\"title\":\"About Andrew Yu\",\"kind\":\"profile\",\"url\":\"https://andrewyu.app\",\"excerpt\":\"Andrew Yu is a technical writer and AI educator in Seattle. He is Lead Technical Writer at Salesforce and Director of AI Enablement at Claude Dojo, a nonprofit where he and his fellow instructors have taught 103 people to build with Claude Code. Before that he wrote developer documentation at Pinecone and led a content strategy team at Splunk. He studied English at UC Berkeley, and he builds every day with Claude ...\"},{\"title\":\"Career and education timeline\",\"kind\":\"timeline\",\"url\":\"https://andrewyu.app/path\",\"excerpt\":\"2026 to present: Director of AI Enablement, Claude Dojo. Claude Dojo is a nonprofit. With the other instructors I have taught 103 people to build with Claude Code.\"}]}"
+              }
+            ]
+          }
+        ]
+      },
+      "response": {
+        "model": "claude-opus-5-5",
+        "id": "msg_011ChQpvGBfNuHfmQF2pMcVF",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "Yes. At Claude Dojo, a nonprofit where he's Director of AI Enablement, Andrew taught at a two-day hands-on intensive with other instructors. About 70 people were in the room. Everyone set up Claude Code there and built their first Skill.\n\nAltogether, he and the other instructors have taught 103 people to build with Claude Code. He also co-wrote Claude Dojo's 49-lesson curriculum.\n\nSource: [Teaching 103 people to build with Claude Code](https://andrewyu.app/work/claude-dojo)"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1794,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 184,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global",
+          "speed": "standard"
+        },
+        "diagnostics": null
+      },
+      "duration_ms": 1672,
+      "tool_runs": []
+    }
+  ]
+}

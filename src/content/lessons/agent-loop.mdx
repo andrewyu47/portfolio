@@ -1,0 +1,40 @@
+---
+title: How an agent actually works
+idea: An agent is a model in a loop that can ask for tools, and your code runs the loop.
+minutes: 8
+order: 2
+figure: AgentLoop
+---
+
+An agent is a model in a loop that can ask for tools. The model never runs anything. Your code keeps a list of messages, sends it, reads the reply, runs whatever tool the reply asks for, and sends the list again.
+
+This lesson steps through one run with the Claude API, message by message. The question was "Has Andrew taught Claude Code to a live room?" and the model had three tools that search this site.
+
+## The run, step by step
+
+1. A person asks a question. Your code starts a list with it as `messages[0]`, with role `user`. On a plain Messages API request like this one, that list is the only memory the conversation has.
+2. Your code sends the list to the model. In these requests the system prompt and the tool definitions go in their own fields, `system` and `tools`, beside the list. Neither one is a message.
+3. The model replies with a request, not a result. The reply holds a `tool_use` block that names `search_portfolio` and gives an input, and it ends with `stop_reason` `tool_use`. Your code adds the reply to the list as `messages[1]`.
+4. Your code runs the tool, because it is a tool you defined. It adds the result as `messages[2]`: a message with role `user` that carries a `tool_result` block, matched to the request by id.
+5. Your code sends the whole list again, all three messages. The model kept nothing from the first trip, so this request costs 1,794 input tokens, against 894 on trip 1. Prompt caching can make the repeated part cheaper.
+6. The reply ends with `stop_reason` `end_turn`. Your code stops looping and hands the answer to the person. If they ask a follow-up, your code adds this reply to the list first, as `messages[3]`.
+
+## Check yourself
+
+On the second trip, how many messages does your code send? All three. The model keeps nothing between trips, and on a plain request like these your code sends the whole list every time.
+
+A reply ends with `stop_reason` `tool_use`. Who runs the tool? Your code does, and then it sends the list again.
+
+## If it fails
+
+The model did not run the search, and it cannot. Its reply only names a tool and an input, and if your code never runs it, the loop stalls. That holds for tools you define, like `search_portfolio`. Anthropic's server tools, such as web search and code execution, run on Anthropic's side and come back already done. The model still runs nothing itself.
+
+The model does not remember the conversation either. On a plain request, the conversation lives in the list your code keeps. Drop a message from the list and, as far as the model knows, it never happened. Some platform features, such as message threads or Managed Agents, keep the list on Anthropic's side instead. Something still has to keep it.
+
+## How these runs were made
+
+Each run is a real exchange with the Claude API, saved exactly as sent and received. The loop that made them was built with Claude Code, with no agent framework, and is written out in full in `scripts/record-traces.mjs`. A loop for real use also checks for the stop reasons these runs never hit: `max_tokens`, `refusal` and `pause_turn`.
+
+## Next
+
+The same three tools are open to any MCP client. Lab 03 shows how to connect one and ask this site a question.

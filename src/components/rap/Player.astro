@@ -1,0 +1,547 @@
+---
+/**
+ * The lyric sheet that plays. Everything renders from src/data/rap.json.
+ *
+ * Without script it is a native <audio controls> element and the opening verse, and
+ * the glossary on the page carries the rest. With script, the native controls are
+ * hidden and the site's own controls take over:
+ *   - Play / Pause, and the elapsed time.
+ *   - The track: the whole song as a time line. Each cell is one section, as wide as
+ *     it is long, so the numbered terms are buttons spaced exactly as they fall in the
+ *     song. The pink rule underneath is how far the song has played.
+ *   - The stage: the current section's verse, printed large. The line being rapped
+ *     is set in full ink, and the word being rapped is underlined in pink. Word times
+ *     come from a transcription aligned to the written lyrics (see rap.json "source").
+ * Space toggles play while the player has focus. Section changes are announced politely.
+ */
+import rap from '../../data/rap.json';
+
+type Line = { text: string; start: number; words: number[] };
+type Section = {
+  id: string;
+  start: number;
+  duration: number;
+  n?: number;
+  term?: string;
+  definition?: string;
+  kind?: string;
+  lines: Line[];
+};
+const sections = rap.sections as Section[];
+const total = rap.duration;
+const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+const KIND: Record<string, string> = { intro: 'Intro', breather: 'Breather', outro: 'Outro' };
+const timing = JSON.stringify(sections.map((s) => ({ start: s.start, n: s.n ?? null, term: s.term ?? KIND[s.kind ?? ''] })));
+---
+
+<div class="player" data-player data-state="paused" tabindex="0" role="group" aria-label="Lyric sheet player" data-timing={timing}>
+  <div class="deck">
+    <button class="btn btn--primary play" type="button" data-play aria-label="Play the song" hidden>
+      <svg class="play__glyph" viewBox="0 0 16 16" aria-hidden="true">
+        <path class="g-play" d="M3.5 2 L13.5 8 L3.5 14 Z"></path>
+        <path class="g-pause" d="M3 2 H6.5 V14 H3 Z M9.5 2 H13 V14 H9.5 Z"></path>
+      </svg>
+      <span data-play-word>Play</span>
+    </button>
+    <p class="clock" aria-label="Elapsed time">
+      <span data-clock>0:00</span><span class="clock__of"> / {clock(total)}</span>
+    </p>
+    <p class="hint label needs-keyboard" hidden data-hint>Space plays and pauses</p>
+  </div>
+
+  <div class="track" data-track hidden>
+    <ol class="track__cells" aria-label="Jump to a term">
+      {
+        sections.map((s, i) =>
+          s.n ? (
+            <li style={`flex-grow:${s.duration}`} class="cell">
+              <button type="button" class="cell__btn" data-jump={i} aria-label={`Jump to ${s.n}, ${s.term}`} title={s.term}>
+                <span class="cell__n">{s.n}</span>
+              </button>
+            </li>
+          ) : (
+            <li style={`flex-grow:${s.duration}`} class="cell cell--gap" aria-hidden="true">
+              {s.kind !== 'breather' && <span class="cell__kind label">{KIND[s.kind ?? '']}</span>}
+            </li>
+          ),
+        )
+      }
+    </ol>
+    <div class="rail" aria-hidden="true"><span class="rail__ink plate" data-rail></span></div>
+  </div>
+
+  <div class="stage" data-stage>
+    {
+      sections.map((s, i) => (
+        <section class="verse" data-sec={i} data-current={i === 0 ? 'true' : undefined} aria-label={s.term ?? KIND[s.kind ?? '']}>
+          <header class="verse__head">
+            {s.n ? (
+              <>
+                <span class="verse__n numeral" aria-hidden="true">{String(s.n).padStart(2, '0')}</span>
+                <h3 class="verse__term">
+                  <span class="visually-hidden">{s.n}. </span>
+                  {s.term}
+                </h3>
+                <p class="verse__def">{s.definition}</p>
+              </>
+            ) : (
+              <>
+                <span class="verse__n numeral verse__n--none" aria-hidden="true">{clock(s.start)}</span>
+                <h3 class="verse__term verse__term--kind">{KIND[s.kind ?? '']}</h3>
+              </>
+            )}
+          </header>
+          <ol class:list={['verse__lines', { 'verse__lines--long': s.lines.length > 6 }]}>
+            {s.lines.map((l) => (
+              <li class="line" data-t={l.start}>
+                {l.text.split(' ').map((w, k) => (
+                  <>
+                    {k > 0 && ' '}
+                    <span class="w" data-t={l.words[k]}>
+                      {w}
+                    </span>
+                  </>
+                ))}
+              </li>
+            ))}
+          </ol>
+        </section>
+      ))
+    }
+  </div>
+
+  <p class="visually-hidden" aria-live="polite" data-announce></p>
+  <audio class="native" data-audio src={rap.audio} controls preload="metadata">
+    <a href={rap.audio}>Download the song (MP3)</a>
+  </audio>
+</div>
+
+<style>
+  .player {
+    outline-offset: 6px;
+  }
+  .player:focus-visible {
+    box-shadow: none;
+    outline: 2px dashed var(--ink);
+  }
+
+  /* Controls: one row, left-aligned with the content column. */
+  .deck {
+    display: flex;
+    align-items: center;
+    gap: 14px 22px;
+    flex-wrap: wrap;
+  }
+  .play {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    min-width: 7.5rem;
+    padding: 13px 20px 13px 16px;
+  }
+  .play[hidden] {
+    display: none;
+  }
+  .play__glyph {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+  }
+  .g-pause,
+  .player[data-state='playing'] .g-play {
+    display: none;
+  }
+  .player[data-state='playing'] .g-pause {
+    display: inline;
+  }
+  .clock {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 1.25rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+  }
+  .clock__of {
+    color: var(--ink);
+    font-weight: 500;
+  }
+  .hint {
+    margin-left: auto;
+  }
+  .hint kbd {
+    font-size: inherit;
+  }
+
+  /* The track: the song as a time line. */
+  .track {
+    margin-top: 22px;
+  }
+  .track[hidden] {
+    display: none;
+  }
+  .track__cells {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    border-left: var(--rule-dash);
+  }
+  .cell {
+    flex-basis: 0;
+    min-width: 2.375rem;
+    border-right: var(--rule-dash);
+  }
+  .cell__btn {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    width: 100%;
+    height: 100%;
+    min-height: 4rem;
+    padding: 6px 2px 8px 5px;
+    background: none;
+    border: 0;
+    cursor: pointer;
+    text-align: left;
+    color: var(--ink);
+  }
+  .cell__btn:hover {
+    background: var(--ink-tint);
+  }
+  .cell__n {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-stretch: var(--w-shout);
+    font-size: clamp(1.25rem, 2.1vw, 1.75rem);
+    line-height: 0.9;
+    letter-spacing: -0.02em;
+    font-variant-numeric: tabular-nums;
+  }
+  .cell__btn[aria-current='true'] {
+    background: var(--text);
+    color: var(--stock);
+  }
+  .cell--gap {
+    display: flex;
+    align-items: flex-end;
+    padding: 0 6px 8px;
+  }
+  .cell__kind {
+    color: var(--text-soft);
+    font-size: 0.6875rem;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .rail {
+    position: relative;
+    height: 10px;
+    border-top: var(--rule);
+  }
+  .rail__ink {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 6px;
+    width: 100%;
+    background: var(--pink);
+    transform-origin: 0 50%;
+    transform: scaleX(0);
+    -webkit-mask-size: 512px 512px;
+    mask-size: 512px 512px;
+    transition: none;
+  }
+
+  /* The stage: every section sits in the same cell, so the height never jumps. */
+  .stage {
+    display: grid;
+    margin-top: clamp(22px, 3vw, 36px);
+  }
+  .verse {
+    grid-area: 1 / 1;
+    display: grid;
+    grid-template-columns: minmax(0, 3.9fr) minmax(0, 6.1fr);
+    gap: clamp(20px, 3vw, 44px);
+    align-content: start;
+    visibility: hidden;
+  }
+  .verse[data-current='true'] {
+    visibility: visible;
+  }
+  .verse__head {
+    display: grid;
+    align-content: start;
+    gap: 10px;
+  }
+  .verse__n {
+    font-size: clamp(4rem, 8vw, 7rem);
+    color: var(--ink);
+  }
+  /* Intro, breather and outro carry a clock time, set smaller than a verse number.
+     Full-strength ink: a faded numeral fails contrast on both papers. */
+  .verse__n--none {
+    font-size: clamp(2.5rem, 4.4vw, 3.75rem);
+    color: var(--ink);
+  }
+  .verse__term {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-title);
+    font-size: clamp(1.875rem, 3.3vw, 2.875rem);
+    line-height: 0.98;
+  }
+  .verse__def {
+    margin-top: 6px;
+    font-size: var(--step-small);
+    line-height: 1.45;
+    color: var(--text-soft);
+    max-width: 34ch;
+  }
+
+  .verse__lines {
+    list-style: none;
+    margin: 0;
+    padding: 4px 0 0;
+    font-size: var(--step-lede);
+    line-height: 1.38;
+  }
+  .line {
+    color: var(--text-soft);
+    padding: 7px 0 7px;
+    border-bottom: var(--rule-dash);
+    border-bottom-color: transparent;
+  }
+  .verse__lines--long {
+    font-size: var(--step-body);
+  }
+  .verse__lines--long .line {
+    padding: 3px 0;
+    break-inside: avoid;
+  }
+  @media (min-width: 901px) {
+    /* The spoken outro runs nine lines; in two columns it takes the room of a verse. */
+    .verse__lines--long {
+      columns: 2;
+      column-gap: 28px;
+    }
+  }
+  .player[data-live] .line {
+    color: color-mix(in srgb, var(--text) 52%, transparent);
+  }
+  .player[data-live] .line.is-line {
+    color: var(--text);
+  }
+  .w {
+    text-decoration-line: underline;
+    text-decoration-color: transparent;
+    text-decoration-thickness: 4px;
+    text-underline-offset: 6px;
+    text-decoration-skip-ink: none;
+  }
+  .w.is-word {
+    text-decoration-color: var(--pink);
+  }
+
+  .native {
+    width: 100%;
+    margin-top: 20px;
+  }
+  .player[data-ready] .native {
+    display: none;
+  }
+
+  @media (max-width: 900px) {
+    .verse {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .verse__head {
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: end;
+      column-gap: 16px;
+    }
+    .verse__def {
+      grid-column: 1 / -1;
+      max-width: 52ch;
+    }
+    .verse__n {
+      font-size: clamp(3.25rem, 12vw, 4.5rem);
+    }
+  }
+
+  /* On a phone the time line is too narrow to tap, so the terms become a grid of
+     fifteen and the rail runs under it on its own. */
+  @media (max-width: 700px) {
+    .track__cells {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      border-left: 0;
+      border-top: var(--rule-dash);
+    }
+    .cell {
+      border-right: 0;
+      border-bottom: var(--rule-dash);
+    }
+    .cell:not(.cell--gap) {
+      border-left: var(--rule-dash);
+    }
+    .cell--gap {
+      display: none;
+    }
+    .cell__btn {
+      min-height: 3.5rem;
+      justify-content: center;
+      align-items: center;
+      padding: 6px 2px;
+    }
+    .cell__n {
+      font-size: 1.625rem;
+    }
+    .rail {
+      margin-top: 10px;
+    }
+    .hint {
+      margin-left: 0;
+    }
+    .verse__lines {
+      font-size: 1.125rem;
+    }
+    .verse__lines--long {
+      font-size: 1rem;
+    }
+  }
+</style>
+
+<script>
+  type T = { start: number; n: number | null; term: string };
+  for (const player of document.querySelectorAll<HTMLElement>('[data-player]')) {
+    const audio = player.querySelector<HTMLAudioElement>('[data-audio]')!;
+    const play = player.querySelector<HTMLButtonElement>('[data-play]')!;
+    const playWord = player.querySelector<HTMLElement>('[data-play-word]')!;
+    const clockEl = player.querySelector<HTMLElement>('[data-clock]')!;
+    const rail = player.querySelector<HTMLElement>('[data-rail]')!;
+    const announce = player.querySelector<HTMLElement>('[data-announce]')!;
+    const track = player.querySelector<HTMLElement>('[data-track]')!;
+    const hint = player.querySelector<HTMLElement>('[data-hint]')!;
+    const timing: T[] = JSON.parse(player.dataset.timing ?? '[]');
+    const total = Number(audio.duration) || 220.36;
+    const verses = [...player.querySelectorAll<HTMLElement>('[data-sec]')];
+    const jumps = [...player.querySelectorAll<HTMLButtonElement>('[data-jump]')];
+    const lines = verses.map((v) => [...v.querySelectorAll<HTMLElement>('.line')]);
+    const words = lines.map((ls) => ls.map((l) => [...l.querySelectorAll<HTMLElement>('.w')]));
+    const lineT = lines.map((ls) => ls.map((l) => Number(l.dataset.t)));
+    const wordT = words.map((ls) => ls.map((ws) => ws.map((w) => Number(w.dataset.t))));
+
+    // Take over from the native controls.
+    audio.controls = false;
+    play.hidden = false;
+    track.hidden = false;
+    hint.hidden = false;
+    hint.innerHTML = '<kbd>Space</kbd> plays and pauses';
+    player.dataset.ready = '';
+
+    const clock = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+    const lastAtOrBefore = (arr: number[], t: number) => {
+      let k = -1;
+      for (let i = 0; i < arr.length; i++) if (arr[i] <= t + 0.02) k = i;
+      return k;
+    };
+
+    let sec = 0;
+    let line: HTMLElement | null = null;
+    let word: HTMLElement | null = null;
+    let lastSecond = -1;
+
+    function render(t: number, opts: { announce?: boolean } = {}) {
+      // Section: the last one that has started. A verse's first line can start a hair before
+      // its section mark, so the line times count too.
+      let s = 0;
+      for (let i = 0; i < timing.length; i++) {
+        const begins = Math.min(timing[i].start, lineT[i][0] ?? timing[i].start);
+        if (begins <= t + 0.02) s = i;
+      }
+      if (s !== sec) {
+        verses[sec].removeAttribute('data-current');
+        verses[s].dataset.current = 'true';
+        sec = s;
+        if (opts.announce !== false) {
+          const x = timing[s];
+          announce.textContent = x.n ? `Number ${x.n}, ${x.term}` : x.term;
+        }
+      }
+      for (const b of jumps) {
+        if (Number(b.dataset.jump) === s) b.setAttribute('aria-current', 'true');
+        else b.removeAttribute('aria-current');
+      }
+      const li = Math.max(0, lastAtOrBefore(lineT[s], t));
+      const nextLine = lines[s][li];
+      if (nextLine !== line) {
+        line?.classList.remove('is-line');
+        nextLine.classList.add('is-line');
+        line = nextLine;
+      }
+      // The word: only while the line is actually being rapped, and not long after its last word.
+      const wi = lastAtOrBefore(wordT[s][li], t);
+      const lastW = wordT[s][li][wordT[s][li].length - 1];
+      const nextWord = wi >= 0 && t < lastW + 0.9 ? words[s][li][wi] : null;
+      if (nextWord !== word) {
+        word?.classList.remove('is-word');
+        nextWord?.classList.add('is-word');
+        word = nextWord;
+      }
+      const whole = Math.floor(t);
+      if (whole !== lastSecond) {
+        clockEl.textContent = clock(t);
+        lastSecond = whole;
+      }
+      rail.style.transform = `scaleX(${Math.min(1, t / (audio.duration || total))})`;
+    }
+
+    let raf = 0;
+    const loop = () => {
+      render(audio.currentTime);
+      raf = requestAnimationFrame(loop);
+    };
+    const setPlaying = (on: boolean) => {
+      player.dataset.state = on ? 'playing' : 'paused';
+      playWord.textContent = on ? 'Pause' : 'Play';
+      play.setAttribute('aria-label', on ? 'Pause the song' : 'Play the song');
+      cancelAnimationFrame(raf);
+      if (on) raf = requestAnimationFrame(loop);
+    };
+    const start = () => {
+      player.dataset.live = '';
+      audio.play().catch(() => setPlaying(false));
+    };
+    const toggle = () => (audio.paused ? start() : audio.pause());
+
+    audio.addEventListener('play', () => setPlaying(true));
+    audio.addEventListener('pause', () => setPlaying(false));
+    audio.addEventListener('ended', () => setPlaying(false));
+    audio.addEventListener('seeked', () => render(audio.currentTime));
+    play.addEventListener('click', toggle);
+
+    for (const b of jumps) {
+      b.addEventListener('click', () => {
+        const i = Number(b.dataset.jump);
+        const t = lineT[i][0];
+        player.dataset.live = '';
+        try {
+          audio.currentTime = t;
+        } catch {}
+        render(t);
+        start();
+      });
+    }
+
+    player.addEventListener('keydown', (e) => {
+      if (e.key !== ' ' && e.code !== 'Space') return;
+      const el = e.target as HTMLElement;
+      if (el.closest('button, audio, a')) return; // buttons keep their own Space
+      e.preventDefault();
+      toggle();
+    });
+
+    render(0, { announce: false });
+  }
+</script>

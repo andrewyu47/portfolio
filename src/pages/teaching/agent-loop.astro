@@ -1,0 +1,456 @@
+---
+/**
+ * /teaching/agent-loop: "How an agent actually works", the full lesson, set as a lab sheet.
+ *
+ * Every row of the sheet sits in the page grid: the field name in the label column,
+ * the work beside it. The figure is the AgentLoop island with all three runs and a
+ * switcher. "Check yourself" reuses the worksheet checkbox from Lab 01: tick an answer
+ * and the explanation prints under it, whichever box you ticked.
+ *
+ * The closing section says how the runs were produced, read from the trace files, so
+ * it stays true when the samples are replaced by recordings. Platform statements on
+ * this page (server tools, message threads, stop reasons, tool runner, Managed Agents)
+ * were checked against Anthropic's Claude API reference on 2026-11-26.
+ */
+import Base from '../../layouts/Base.astro';
+import Sheet from '../../components/Sheet.astro';
+import Overprint from '../../components/Overprint.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import AgentLoop from '../../components/explainer/AgentLoop';
+import type { Trace } from '../../components/explainer/trace';
+import oneTool from '../../data/traces/one-tool.json';
+import twoTools from '../../data/traces/two-tools.json';
+import noTool from '../../data/traces/no-tool.json';
+
+const traces = [oneTool, twoTools, noTool] as unknown as Trace[];
+const recorded = traces.filter((t) => t.recorded);
+const allRecorded = recorded.length === traces.length;
+const fmt = (iso: string | null) =>
+  iso
+    ? new Date(iso).toLocaleDateString('en-US', { timeZone: 'UTC', year: 'numeric', month: 'long', day: 'numeric' })
+    : 'an unknown date';
+const recordCmd = 'node --env-file=<file with ANTHROPIC_API_KEY> scripts/record-traces.mjs';
+
+const checks = [
+  {
+    q: 'On trip 2 of the one-tool run, how many messages does your code send?',
+    choices: [
+      { text: 'One, the tool result', right: false },
+      { text: 'All three', right: true },
+    ],
+    answer:
+      'All three: the question, the reply that asked for the tool, and the tool result. The model keeps nothing between trips. On a plain request like these, your code sends the whole list every time.',
+  },
+  {
+    q: 'A reply ends with stop_reason "tool_use". What happens next?',
+    choices: [
+      { text: 'The model runs the tool', right: false },
+      { text: 'Your code runs the tool', right: true },
+    ],
+    answer:
+      'Your code runs it, because it is a tool you defined. It adds the result to the list as a tool_result block in a "user" message and sends the list again. The reply was only a request.',
+  },
+  {
+    q: 'Where do the tool definitions go?',
+    choices: [
+      { text: 'In the list of messages', right: false },
+      { text: 'Beside the list, in every request', right: true },
+    ],
+    answer:
+      'Beside it. In these requests they go in the tools field on every trip, next to the system prompt in the system field. Neither one is a message.',
+  },
+];
+---
+
+<Base
+  title="How an agent actually works"
+  description="Step through one agent run with the Claude API, message by message: what your code sends, what the model replies, who runs the tool, and why the list only grows."
+>
+  <Sheet label="Lab 02 · How an agent actually works" meta="Time: 8 minutes" labelledby="al-title" class="lesson">
+    <header class="top">
+      <Overprint as="h1" id="al-title" text="How an agent actually works." />
+      <p class="lede">An agent is a model in a loop that can ask for tools. Your code runs the loop.</p>
+    </header>
+
+    <div class="g brief">
+      <h2 class="field">Objective</h2>
+      <p class="need">
+        Step through one exchange with the Claude API and say, at each step, what moves, who sends it, and what is in
+        the list.
+      </p>
+    </div>
+
+    <div class="g">
+      <h2 class="field">You will need</h2>
+      <p class="need">This page. Nothing to install, and no key.</p>
+    </div>
+
+    <div class="g g--figure">
+      <h2 class="field">Part 1 <span class="step__what">Step through a run</span></h2>
+      <div>
+        <p class="need step__lead">
+          Start with one tool call. Then try two, where the list grows twice, and none, where the loop ends on the first
+          trip.
+        </p>
+      </div>
+    </div>
+    <div class="figure">
+      <AgentLoop client:visible traces={traces} label="One agent run, three ways" />
+    </div>
+
+    <div class="g" id="check">
+      <h2 class="field">Part 2 <span class="step__what">Check yourself</span></h2>
+      <ol class="checks">
+        {
+          checks.map((c, i) => (
+            <li class="ck" data-ck data-state="idle">
+              <p class="ck__q">
+                <span class="ck__n">{i + 1}</span>
+                {c.q}
+              </p>
+              <div class="ck__choices" role="group" aria-label={c.q}>
+                {c.choices.map((ch) => (
+                  <button class="check" type="button" aria-pressed="false" data-right={String(ch.right)}>
+                    <span class="check__box">
+                      <svg class="check__mark" viewBox="0 0 44 44" aria-hidden="true">
+                        <path
+                          pathLength="1"
+                          d={ch.right ? 'M8 24 L18 35 L38 7' : 'M9 12 L35 36 M35 11 L10 37'}
+                        />
+                      </svg>
+                    </span>
+                    {ch.text}
+                  </button>
+                ))}
+              </div>
+              <div class="ck__a" aria-live="polite">
+                <p data-when="right">
+                  <strong>Right.</strong> {c.answer}
+                </p>
+                <p data-when="wrong">
+                  <strong>Not quite.</strong> {c.answer}
+                </p>
+              </div>
+            </li>
+          ))
+        }
+      </ol>
+    </div>
+
+    <div class="g" id="if-it-fails">
+      <h2 class="field">If it fails</h2>
+      <div class="fails">
+        <div class="fail">
+          <h3 class="title">“The model ran the search.”</h3>
+          <p>
+            It did not, and it cannot. Look at step 3 of the one-tool run: the reply holds a tool_use block, a tool name
+            and an input, and no result. The search runs in step 4, in your code. If your code never runs it, nothing happens
+            and the loop stalls.
+          </p>
+          <p>
+            That holds for tools you define, like search_portfolio. Anthropic’s server tools, such as web search and
+            code execution, run on Anthropic’s side and come back already done. The model still runs nothing itself.
+          </p>
+        </div>
+        <div class="fail">
+          <h3 class="title">“The model remembers what we said.”</h3>
+          <p>
+            It keeps nothing between trips. On a plain request like these, your code sends the whole list every time:
+            watch the message count on each send step. Drop a message from the list and the model has never seen it.
+          </p>
+          <p>
+            Some platform features, such as message threads or Managed Agents, keep the list on Anthropic’s side
+            instead. Something still has to keep it.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="g">
+      <h2 class="field">Run it yourself</h2>
+      <div>
+        <p class="need">
+          The loop that recorded these runs is in <code>scripts/record-traces.mjs</code>, and it needs an API key. You
+          do not have to write this loop yourself: the Anthropic SDK’s tool runner loops over tools you define, and with
+          Managed Agents, Anthropic runs the loop for you.
+        </p>
+        <a class="more" href="#how-made">How these runs were made</a>
+      </div>
+    </div>
+
+    <div class="g">
+      <h2 class="field">Next</h2>
+      <div>
+        <p class="need">
+          This lesson’s runs used three tools that search this site. You can call the same tools from your own client.
+        </p>
+        <a class="more" href="/teaching/connect">Lab 03: Ask this site a question</a>
+      </div>
+    </div>
+  </Sheet>
+
+  <section class="sec" id="how-made" aria-labelledby="made-h">
+    <SectionHead title="How these runs were made" id="made-h">
+      {allRecorded ? 'Recorded from the Claude API, request by request.' : 'Read this before you quote a number from it.'}
+    </SectionHead>
+    <div class="g g--plain">
+      <span></span>
+      <div class="prose">
+        {
+          allRecorded ? (
+            <>
+              <p>
+                Each run is a real exchange with the Claude API, saved exactly as sent and received. The loop that made
+                them was built with Claude Code, with no agent framework, and is written out in full in{' '}
+                <code>scripts/record-traces.mjs</code>, so it is the same loop this lesson teaches.
+              </p>
+              <table>
+                <thead>
+                  <tr>
+                    <th>Run</th>
+                    <th>Recorded (UTC)</th>
+                    <th>Model</th>
+                    <th>Trips</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {traces.map((t) => (
+                    <tr>
+                      <td>{t.title}</td>
+                      <td>{fmt(t.recorded_at)}</td>
+                      <td>
+                        <code>{t.model}</code>
+                      </td>
+                      <td>{t.trips.length}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+              <p>
+                Every reply in these runs ends with stop_reason "tool_use" or "end_turn". A loop for real use also
+                checks for max_tokens (the reply was cut off), refusal (do not run that turn’s tools) and pause_turn (a
+                server tool paused, so send the list again). The recorder stops if one of them appears. When a tool
+                fails, it sends the result back with is_error set to true.
+              </p>
+              <p>To record them again, from the repository root:</p>
+              <pre><code>{recordCmd}</code></pre>
+            </>
+          ) : (
+            <>
+              <p>
+                {recorded.length === 0
+                  ? 'These runs are samples, not recordings.'
+                  : `${traces.length - recorded.length} of these runs are samples, not recordings.`}{' '}
+                In a sample, the requests are real: the same model name, system prompt, tool definitions, and message
+                list a recording sends. The tool results are real too: the tools ran against this site’s index. The
+                model’s replies were written by hand in the exact shape the Messages API returns.
+              </p>
+              <p>
+                What a sample does not have: token counts, timings, message ids, and thinking blocks. Those only come
+                from a real response, so they are left empty rather than made up.
+              </p>
+              <p>
+                Recording replaces each sample with a real exchange in the same shape, and this page updates to say when
+                and on which model. The command, from the repository root:
+              </p>
+              <pre><code>{recordCmd}</code></pre>
+            </>
+          )
+        }
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .g {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: 24px 0;
+    border-top: var(--rule-dash);
+  }
+  .g > * {
+    min-width: 0;
+  }
+  .g > .field {
+    margin: 0;
+    padding-top: 4px;
+  }
+  .g--plain {
+    border-top: 0;
+    padding-top: 30px;
+  }
+  .brief {
+    border-top: var(--rule);
+  }
+  .top {
+    padding: clamp(26px, 4vw, 52px) 0 clamp(26px, 3.4vw, 40px);
+    display: grid;
+    gap: clamp(14px, 2vw, 22px);
+  }
+  .top :global(h1) {
+    font-size: var(--step-hero);
+    max-width: 14ch;
+  }
+  .lede {
+    max-width: 40ch;
+  }
+  .need {
+    max-width: 60ch;
+  }
+  .step__what {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-title);
+    font-size: 1.75rem;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--text);
+  }
+  .g--figure {
+    padding-bottom: 14px;
+  }
+  .step__lead {
+    padding-top: 4px;
+  }
+  .figure {
+    padding: 6px 0 36px;
+  }
+
+  /* Check yourself */
+  .checks {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .ck {
+    padding: 4px 0 20px;
+  }
+  .ck + .ck {
+    border-top: var(--rule-dash);
+    padding-top: 20px;
+  }
+  .ck__q {
+    display: flex;
+    gap: 12px;
+    font-size: clamp(1.0625rem, 1.4vw, 1.25rem);
+    line-height: 1.35;
+    max-width: 52ch;
+    margin-bottom: 12px;
+  }
+  .ck__n {
+    flex: none;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-shout);
+    font-size: 1.5rem;
+    line-height: 1;
+    color: var(--ink);
+    min-width: 1ch;
+  }
+  .ck__choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 34px;
+    padding-left: calc(1ch + 12px + 0.4em);
+  }
+  .ck__choices .check {
+    font-size: 1.125rem;
+  }
+  .ck__a {
+    padding-left: calc(1ch + 12px + 0.4em);
+    max-width: 62ch;
+    font-size: var(--step-small);
+    line-height: 1.45;
+  }
+  .ck__a p {
+    display: none;
+    margin-top: 12px;
+  }
+  .ck[data-state='right'] [data-when='right'],
+  .ck[data-state='wrong'] [data-when='wrong'] {
+    display: block;
+  }
+
+  /* If it fails: the two beliefs, side by side, a dashed rule between them. */
+  .fails {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+  }
+  .fail {
+    padding-right: 24px;
+  }
+  .fail + .fail {
+    padding: 0 0 0 24px;
+    border-left: var(--rule-dash);
+  }
+  .fail .title {
+    font-size: clamp(1.1875rem, 1.7vw, 1.4375rem);
+    margin-bottom: 10px;
+  }
+  .fail p {
+    max-width: 52ch;
+  }
+  .fail p + p {
+    margin-top: 10px;
+  }
+  .need + .more {
+    margin-top: 12px;
+  }
+
+  .prose pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+  }
+
+  @media (max-width: 900px) {
+    .fails {
+      grid-template-columns: 1fr;
+    }
+    .fail {
+      padding-right: 0;
+    }
+    .fail + .fail {
+      padding: 20px 0 0;
+      margin-top: 20px;
+      border-left: 0;
+      border-top: var(--rule-dash);
+    }
+  }
+
+  @media (max-width: 600px) {
+    .g {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .g > span:empty {
+      display: none;
+    }
+    .ck__choices,
+    .ck__a {
+      padding-left: 0;
+    }
+    .ck__choices {
+      flex-direction: column;
+      gap: 10px;
+    }
+  }
+</style>
+
+<script>
+  // Check yourself: tick a box and the explanation prints, whichever box you ticked.
+  for (const ck of document.querySelectorAll<HTMLElement>('[data-ck]')) {
+    const boxes = [...ck.querySelectorAll<HTMLButtonElement>('.check')];
+    for (const box of boxes) {
+      box.addEventListener('click', () => {
+        for (const other of boxes) other.setAttribute('aria-pressed', String(other === box));
+        ck.dataset.state = box.dataset.right === 'true' ? 'right' : 'wrong';
+      });
+    }
+  }
+</script>

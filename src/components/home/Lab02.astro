@@ -1,0 +1,180 @@
+---
+/**
+ * Lab 02 on the home page: "How an agent actually works".
+ *
+ * The one section of the home page that breaks the pale stock: a full-width flood of
+ * solid teal, with the type printed in the stock colour. The flood redefines the
+ * tokens for everything inside it (stock becomes the ground, ink and text become the
+ * paper colour, plates print flat), so the shared classes and the AgentLoop figure
+ * work inside it unchanged. On dark paper the flood is the light night teal with the
+ * type in the dark stock, so it still reads as a deliberate change.
+ *
+ * It opens with the site's one copyedit: a line of hype struck through in pink, with the
+ * plain definition set under it, each named in the label column. Screen readers hear
+ * "Struck out:" before the hype, so it is never read as Andrew's own claim.
+ */
+import AgentLoop from '../explainer/AgentLoop';
+import type { Trace } from '../explainer/trace';
+import oneTool from '../../data/traces/one-tool.json';
+
+const trace = oneTool as unknown as Trace;
+---
+
+<section class="flood" id="lab-02" aria-labelledby="lab02-def">
+  <div class="flood__in">
+    <div class="sheet">
+      <div class="sheet__head label">
+        <span>Lab 02 · How an agent actually works, one run</span>
+        <span>Time: 3 minutes</span>
+      </div>
+
+      <div class="g">
+        <h2 class="field">Objective</h2>
+        <p class="obj">Step through one agent run and see who runs the tool, and what gets sent on every trip.</p>
+      </div>
+
+      <div class="g g--edit">
+        <p class="field edit__tag">The hype, struck out</p>
+        <p class="edit__hype">
+          <del
+            ><span class="visually-hidden">Struck out: </span>Agentic AI is an autonomous digital workforce that thinks for
+            itself and acts across your entire enterprise, around the clock.</del
+          >
+        </p>
+        <p class="field edit__tag edit__tag--def">What I teach</p>
+        <p class="edit__def" id="lab02-def">An agent is a model in a loop that can ask for tools.</p>
+      </div>
+
+      <div class="fig">
+        <AgentLoop client:visible traces={[trace]} label="One agent run" />
+      </div>
+
+      <div class="g g--end">
+        <span></span>
+        <a class="more" href="/teaching/agent-loop">Take the full lesson, with two more runs and a self-check</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* Full bleed: out of the page wrap to the viewport edges. body clips horizontal overflow. */
+  .flood {
+    --l-ground: var(--ink);
+    --l-type: var(--stock);
+    --l-deep: var(--text);
+    position: relative;
+    width: 100vw;
+    margin-left: calc(50% - 50vw);
+    margin-top: var(--section);
+    background: var(--l-ground);
+    scroll-margin-top: 16px;
+  }
+  /* Night: the flood is the light teal ink itself with the type printed in the dark stock,
+     so the lab is the one bright sheet on a dark desk instead of a dim panel. */
+  @media (prefers-color-scheme: dark) {
+    :global(:root:not([data-theme='light'])) .flood {
+      --l-ground: var(--ink);
+      --l-type: var(--stock);
+      --l-deep: var(--text);
+    }
+  }
+  :global(:root[data-theme='dark']) .flood {
+    --l-ground: var(--ink);
+    --l-type: var(--stock);
+    --l-deep: var(--text);
+  }
+
+  /* Inside the flood the stock is the ground and both inks print in the paper colour. */
+  .flood__in {
+    --stock: var(--l-ground);
+    --stock-2: color-mix(in srgb, var(--l-ground) 78%, var(--l-deep));
+    --ink: var(--l-type);
+    --text: var(--l-type);
+    --text-soft: color-mix(in srgb, var(--l-type) 80%, transparent);
+    --ink-tint: color-mix(in srgb, var(--l-type) 16%, transparent);
+    --rule: 1.5px solid var(--l-type);
+    --rule-heavy: 4px solid var(--l-type);
+    --rule-dash: 1px dashed var(--l-type);
+    --blend: normal;
+    max-width: var(--wrap);
+    margin: 0 auto;
+    padding: clamp(28px, 4vw, 52px) var(--gutter) clamp(40px, 5vw, 64px);
+    color: var(--text);
+  }
+  .flood__in ::selection {
+    background: var(--pink);
+    color: var(--over);
+  }
+
+  .g {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: 20px 0;
+  }
+  .g > .field {
+    margin: 0;
+    padding-top: 3px;
+  }
+  .obj {
+    font-size: var(--step-lede);
+    line-height: 1.4;
+    max-width: 40ch;
+  }
+
+  /* The copyedit: each block named in the label column, so the point is read, not guessed. */
+  .g--edit {
+    padding: 6px 0 34px;
+    row-gap: 18px;
+    align-items: baseline;
+  }
+  .g--edit > .edit__tag {
+    margin: 0;
+  }
+  .edit__hype {
+    font-size: clamp(1.0625rem, 1.5vw, 1.25rem);
+    line-height: 1.55;
+    max-width: 52ch;
+    color: var(--text);
+  }
+  /* One thin marker stroke per line, sitting just above the middle of the lowercase. */
+  .edit__hype del {
+    text-decoration: line-through;
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 2px;
+  }
+  .edit__tag--def {
+    align-self: start;
+    padding-top: 0.6em;
+  }
+  .edit__def {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-shout);
+    font-size: var(--step-h2);
+    line-height: 0.98;
+    max-width: 17ch;
+    text-wrap: balance;
+  }
+
+  .fig {
+    padding-top: 4px;
+  }
+  .g--end {
+    padding: 18px 0 0;
+  }
+
+  @media (max-width: 600px) {
+    .g {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+    .g > span:empty {
+      display: none;
+    }
+    .g--edit {
+      padding-bottom: 24px;
+    }
+  }
+</style>

@@ -1,0 +1,94 @@
+---
+/**
+ * The fifteen terms with the sound off: each term, its one-line definition, and its
+ * verse exactly as written. Numbered because the song teaches them in this order,
+ * the order a learner meets them. Renders from src/data/rap.json.
+ */
+import rap from '../../data/rap.json';
+
+type Section = { n?: number; term?: string; definition?: string; lines: { text: string }[] };
+const terms = (rap.sections as Section[]).filter((s) => s.n);
+---
+
+<ol class="gloss">
+  {
+    terms.map((t) => (
+      <li class="term" id={`term-${t.n}`}>
+        <h3 class="term__name">
+          <span class="term__n numeral">{t.n}</span>
+          <span class="term__word">{t.term}</span>
+        </h3>
+        <div class="term__body">
+          <p class="term__def">{t.definition}</p>
+          <p class="term__verse">
+            {t.lines.map((l, i) => (
+              <>
+                {i > 0 && <br />}
+                {l.text}
+              </>
+            ))}
+          </p>
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .gloss {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .term {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: 22px 0 24px;
+    border-bottom: var(--rule-dash);
+  }
+  .term:last-child {
+    border-bottom: 0;
+  }
+  .term__name {
+    display: grid;
+    grid-template-columns: 2.6rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: 8px;
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-stretch: var(--w-title);
+    font-size: clamp(1.25rem, 1.9vw, 1.5rem);
+    line-height: 1.1;
+  }
+  .term__n {
+    font-size: 2rem;
+    color: var(--ink);
+  }
+  .term__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+    gap: 10px 36px;
+  }
+  .term__def {
+    max-width: 40ch;
+  }
+  .term__verse {
+    font-style: italic;
+    font-size: var(--step-small);
+    line-height: 1.5;
+    color: var(--text-soft);
+  }
+
+  @media (max-width: 900px) {
+    .term__body {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 600px) {
+    .term {
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+  }
+</style>

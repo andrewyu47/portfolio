@@ -1,0 +1,18 @@
+[
+  {
+    "value": "103",
+    "label": "people taught to build with Claude Code",
+    "href": "#teach"
+  },
+  {
+    "value": "89%",
+    "label": "task success for a small model once it had a curated docs file. Without it, 11%",
+    "href": "#measure"
+  },
+  {
+    "value": "6",
+    "label": "hands-on labs for the Claude platform, run again every night",
+    "href": "#build",
+    "requires": "labs-live"
+  }
+]

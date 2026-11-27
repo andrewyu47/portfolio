@@ -1,0 +1,267 @@
+---
+/**
+ * Dated entries from src/data/timeline.json, set three ways so the page does not repeat one row.
+ *
+ *   record  date | title, one sentence, named links | the result set large at the right (roles)
+ *   grid    two columns of short entries under a solid rule, the audience set large (teaching)
+ *   line    one line per entry on wide screens: date | name | what it is | link (builds)
+ *
+ * "Undated" entries leave the date empty rather than print the word on every row.
+ */
+export interface Entry {
+  when: string;
+  title: string;
+  detail?: string;
+  kind: string;
+  href?: string;
+  label?: string;
+  more?: { label: string; href: string }[];
+  figure?: { value: string; caption: string };
+}
+interface Props {
+  entries: Entry[];
+  density?: 'record' | 'line' | 'grid';
+  label: string;
+}
+const { entries, density = 'record', label } = Astro.props;
+
+const isExternal = (href: string) => /^https?:\/\//.test(href);
+// Outside links default to "Play it" (most builds are games); the host goes in the title attribute.
+const host = (href: string) => new URL(href).host;
+const linkText = (e: Entry) => e.label ?? (e.href && isExternal(e.href) ? 'Play it' : 'Read more');
+const undated = (e: Entry) => e.when === 'Undated';
+---
+
+<ol class:list={['rows', `rows--${density}`]} aria-label={label}>
+  {
+    entries.map((e) => (
+      <li class:list={['r', { 'r--fig': e.figure }]}>
+        <p class:list={['r__when', { 'r__when--none': undated(e) }]}>
+          {undated(e) ? <span class="visually-hidden">Undated</span> : e.when}
+        </p>
+        <div class="r__main">
+        <div class="r__body">
+          <p class="r__title">{e.title}</p>
+          {e.detail && <p class="r__detail">{e.detail}</p>}
+          {(e.href || e.more) && (
+            <p class="r__links">
+              {e.href && (
+                <a
+                  class:list={['more', { 'more--out': isExternal(e.href) }]}
+                  href={e.href}
+                  title={isExternal(e.href) ? host(e.href) : undefined}
+                >
+                  {linkText(e)}
+                  {isExternal(e.href) && <span class="visually-hidden">: {e.title}, at {host(e.href)}</span>}
+                </a>
+              )}
+              {e.more?.map((m) => (
+                <a class="more" href={m.href}>
+                  {m.label}
+                </a>
+              ))}
+            </p>
+          )}
+        </div>
+        {e.figure && (
+          <p class="r__fig">
+            <span class="r__fig-n">{e.figure.value}</span>
+            <span class="r__fig-cap">{e.figure.caption}</span>
+          </p>
+        )}
+        </div>
+      </li>
+    ))
+  }
+</ol>
+
+<style>
+  .rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .r {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: 22px 0 24px;
+    border-bottom: var(--rule-dash);
+  }
+  .r:last-child {
+    border-bottom: 0;
+  }
+
+  .r__when {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.6;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    padding-top: 3px;
+  }
+
+  .r__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-stretch: var(--w-title);
+    font-size: clamp(1.25rem, 1.9vw, 1.5rem);
+    line-height: 1.12;
+    text-wrap: balance;
+  }
+  .r__detail {
+    margin-top: 8px;
+    max-width: 60ch;
+    text-wrap: pretty;
+  }
+  .r__links {
+    margin-top: 12px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 22px;
+  }
+  /* External links name the host instead of an arrow into the site. */
+  .more--out::after {
+    content: '\00a0\2197';
+  }
+
+  /* The result, set large: condensed figures, flush right, with a mono caption under them. */
+  .r__fig {
+    display: grid;
+    justify-items: end;
+    align-content: start;
+    text-align: right;
+    gap: 6px;
+  }
+  .r__fig-n {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-shout);
+    font-size: clamp(2.25rem, 3.6vw, 3.25rem);
+    line-height: 0.9;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .r__fig-cap {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    color: var(--ink);
+    max-width: 22ch;
+  }
+
+  /* ---------- record: date | entry | result ---------- */
+  @media (min-width: 901px) {
+    .rows--record .r__main {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(10rem, 0.42fr);
+      gap: var(--col-gap);
+    }
+  }
+
+  /* ---------- grid: two columns of short entries ---------- */
+  .rows--grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: clamp(24px, 4vw, 56px);
+  }
+  .rows--grid .r {
+    display: block;
+    padding: 18px 0 32px;
+    border-bottom: 0;
+    border-top: var(--rule);
+  }
+  .rows--grid .r__when {
+    padding-top: 0;
+    margin-bottom: 8px;
+  }
+  .rows--grid .r__when--none {
+    display: none;
+  }
+  .rows--grid .r__main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 18px;
+  }
+  .rows--grid .r__detail {
+    max-width: 44ch;
+  }
+
+  /* ---------- line: one line per entry ---------- */
+  @media (min-width: 901px) {
+    .rows--line .r {
+      padding: 16px 0 17px;
+    }
+    .rows--line .r__body {
+      display: grid;
+      grid-template-columns: minmax(0, 2.6fr) minmax(0, 4.4fr) minmax(0, 2.2fr);
+      gap: var(--col-gap);
+      align-items: baseline;
+    }
+    .rows--line .r__title {
+      font-size: 1.25rem;
+    }
+    .rows--line .r__detail,
+    .rows--line .r__links {
+      margin-top: 0;
+    }
+    .rows--line .r__detail {
+      font-size: var(--step-small);
+      line-height: 1.5;
+    }
+    .rows--line .r__links {
+      justify-content: flex-end;
+    }
+    .rows--line .r__when {
+      padding-top: 2px;
+    }
+  }
+
+  @media (max-width: 900px) {
+    .rows--record .r--fig .r__fig {
+      margin-top: 14px;
+      justify-items: start;
+      text-align: left;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: baseline;
+      gap: 12px;
+    }
+    .rows--record .r__fig-cap {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .rows--grid {
+      grid-template-columns: 1fr;
+    }
+  }
+  @media (max-width: 600px) {
+    .rows--grid .r__main {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
+    .rows--grid .r__fig {
+      justify-items: start;
+      text-align: left;
+      grid-template-columns: auto minmax(0, 1fr);
+      align-items: baseline;
+      gap: 12px;
+    }
+    .rows--grid .r__fig-cap {
+      max-width: none;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .rows:not(.rows--grid) .r {
+      grid-template-columns: 1fr;
+      gap: 4px;
+      padding: 18px 0 20px;
+    }
+    .rows:not(.rows--grid) .r__when--none {
+      display: none;
+    }
+  }
+</style>

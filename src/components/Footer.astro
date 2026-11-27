@@ -1,0 +1,81 @@
+---
+/** Site footer: where to find Andrew, how the site was made, and the paper switch. */
+import profile from '../data/profile.json';
+---
+
+<footer class="footer">
+  <span class="label">{profile.name} · {profile.location}</span>
+  <ul>
+    <li><a href="/writing">Writing</a></li>
+    <li><a href="/teaching/connect">Ask this site (MCP)</a></li>
+    <li><a href={profile.links.github} rel="me">GitHub</a></li>
+    <li><a href={profile.links.linkedin} rel="me">LinkedIn</a></li>
+    <li><a href="/colophon">Colophon</a></li>
+    <li>
+      <button type="button" class="paper" data-paper-toggle aria-pressed="false">Dark paper</button>
+    </li>
+  </ul>
+</footer>
+
+<style>
+  .footer {
+    margin-top: clamp(64px, 8vw, 110px);
+    border-top: var(--rule);
+    padding: 22px 0 40px;
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 22px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  a,
+  .paper {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    text-underline-offset: 4px;
+  }
+  .paper {
+    background: none;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+  }
+  .paper:hover {
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 2px;
+  }
+</style>
+
+<script>
+  // The paper switch. Follows the system until the visitor chooses, then remembers the choice.
+  const root = document.documentElement;
+  const button = document.querySelector<HTMLButtonElement>('[data-paper-toggle]');
+  const systemDark = () => matchMedia('(prefers-color-scheme: dark)').matches;
+  const isDark = () => (root.dataset.theme ? root.dataset.theme === 'dark' : systemDark());
+  const paint = () => {
+    if (!button) return;
+    button.textContent = isDark() ? 'Light paper' : 'Dark paper';
+    button.setAttribute('aria-pressed', String(isDark()));
+  };
+  button?.addEventListener('click', () => {
+    const next = isDark() ? 'light' : 'dark';
+    root.dataset.theme = next;
+    try {
+      localStorage.setItem('paper', next);
+    } catch {
+      /* private mode: the choice lasts for this page only */
+    }
+    paint();
+  });
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', paint);
+  paint();
+</script>

@@ -1,0 +1,36 @@
+---
+title: Fifteen Claude Code terms, in one song
+idea: A rap I made with Claude for Claude Dojo that counts down the fifteen Claude Code terms a beginner meets first, in the order you meet them.
+minutes: 4
+order: 4
+---
+
+Fifteen new terms are hard to keep in your head after a full day of learning. So I made a rap with Claude for the people in Claude Dojo that counts down the fifteen Claude Code terms a beginner meets first, from the terminal to work surfaces, in the order a learner meets them. We played it for the room on Day 1 of the two-day intensive in July 2026, and then I walked them through the prompts that made it.
+
+The lesson page plays the song with a lyric sheet that follows it: the current verse is printed large, and the line being rapped is marked. Every term is also printed on the page, with its definition and its verse, for reading with the sound off. It ends with a five-question check.
+
+## How it was made
+
+I supplied the term list and the prompts, and Claude drafted and revised the lyrics. The shape came from a homemade hotkeys rap I had seen. I built a cheap proof of concept first, with slides made in code and my cloned voice reading over a drum loop, and generated the polished track with Suno from the lyrics only after the content was locked. The video is slides and word cards built with Claude Code and put together with ffmpeg.
+
+I asked whether the video could recreate the faces of the real people in the video that inspired it. Claude declined, because those people are private individuals, several of them children, who never agreed to it. I took the no, and the video uses original cards instead. A good AI workflow includes hearing "no" sometimes.
+
+Lyrics drafted by Claude from Andrew Yu's term list and prompts. Music generated with Suno from those lyrics. Video built with Claude Code.
+
+## The fifteen terms
+
+1. **Terminal.** The black window where you type commands. Its other name is the CLI, the command-line interface, and it is where Claude Code lives.
+2. **Agent.** More than a chatbot. You give it a goal, and it opens your files and does the work to see it through.
+3. **Token.** A little bit of text. Your words get chopped into tokens, and every token is billed, so tight prompts cost less.
+4. **Context window.** Where the conversation's memory lives. When it fills up, the early parts fade, so start a new session.
+5. **CLAUDE.md.** A file of your rules that Claude reads every session, so you write them down once.
+6. **Plan mode.** Claude writes out every step first and changes nothing until you give it the green light.
+7. **Checkpoints.** Save points. If a big change breaks things, you roll back to one.
+8. **Effort level.** How deeply Claude thinks. Turn it up for hard problems, knowing that deeper takes longer and costs more.
+9. **Skills.** A workflow on repeat: a recipe Claude follows for one kind of job, such as security or design.
+10. **Plugin.** A bundle you install: a box of ready skills in one download.
+11. **MCP.** The Model Context Protocol: one standard way to plug tools and systems into Claude.
+12. **Connector.** MCP in action: a hookup to an app like Gmail, Calendar, Slack, or Drive, so Claude can reach it.
+13. **Hook.** An automatic move. You set it up once, and a trigger fires it without you asking.
+14. **Subagents.** Helpers the main agent hands work to, such as one running the tests while another reads the code.
+15. **Work surfaces.** Three doors to the same Claude: Chat for quick questions, Cowork for desk work, and Code for software.

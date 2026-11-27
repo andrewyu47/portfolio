@@ -1,0 +1,502 @@
+---
+/**
+ * A case study, written up the way a lab report is. Top to bottom:
+ * the running head; the hero, with the claim (H1) and the deck on the left and the
+ * proof figure on the right, top-aligned with the H1; the plain facts (where, role,
+ * period); the record (results, stack, and where to verify the work); the body;
+ * what a learner can do now; and the previous and next case studies in `order` sequence.
+ *
+ * The hero figure is named in frontmatter (heroFigure) and looked up in
+ * src/components/figures/. A case study that names none, or names one that is not
+ * there yet, gets a one-column hero. On a phone the figure follows the deck.
+ *
+ * Every row under the hero sits in the page grid: a field name in the label column,
+ * the content beside it, so left edges line up down the whole report.
+ */
+import type { ImageMetadata } from 'astro';
+import { render } from 'astro:content';
+import { Image } from 'astro:assets';
+import Base from '../../layouts/Base.astro';
+import Overprint from '../../components/Overprint.astro';
+import RunHead from '../../components/RunHead.astro';
+import Metrics from '../../components/work/Metrics.astro';
+import PrevNext from '../../components/work/PrevNext.astro';
+import { publishedWork, areaName, type Work } from '../../components/work/sequence';
+import { figureFor } from '../../components/work/figures';
+import profile from '../../data/profile.json';
+
+export async function getStaticPaths() {
+  const all = await publishedWork();
+  return all.map((entry, i) => ({
+    params: { slug: entry.id },
+    props: { entry, prev: all[i - 1], next: all[i + 1], n: i + 1, total: all.length },
+  }));
+}
+
+interface Props {
+  entry: Work;
+  prev?: Work;
+  next?: Work;
+  n: number;
+  total: number;
+}
+const { entry, prev, next, n, total } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const Figure = figureFor(d.heroFigure);
+
+// Covers live in src/assets/work/. The frontmatter path is matched on its file name.
+const covers = import.meta.glob<{ default: ImageMetadata }>('/src/assets/work/*.{jpg,jpeg,png,webp,avif}', {
+  eager: true,
+});
+const coverName = d.cover?.split('/').pop();
+const cover = coverName
+  ? Object.entries(covers).find(([path]) => path.endsWith('/' + coverName))?.[1].default
+  : undefined;
+
+// Long titles step down a size so they stay a headline, not a paragraph.
+const titleSize = d.title.length > 34 ? 'long' : d.title.length > 18 ? 'mid' : 'short';
+
+// Where to check the work: the verify list first, then any older links.
+const checks = [...d.verify, ...d.links];
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: d.title,
+  description: d.outcome,
+  author: { '@type': 'Person', name: profile.name, url: profile.site },
+  url: new URL(`/work/${entry.id}`, profile.site).toString(),
+};
+---
+
+<Base title={d.title} description={d.outcome} jsonLd={jsonLd}>
+  <article class="case" aria-labelledby="case-title">
+    <RunHead left={`Case study · ${areaName(d.area)}`} right={`${n} of ${total}`} />
+
+    <header class:list={['hero', { 'hero--figure': Figure }]}>
+      <div class="hero__words">
+        <Overprint as="h1" id="case-title" text={d.title} class={`case__title case__title--${titleSize}`} />
+        <p class="case__deck">{d.outcome}</p>
+      </div>
+      {
+        Figure && (
+          <div class="hero__figure">
+            <Figure />
+          </div>
+        )
+      }
+    </header>
+
+    <div class="case__facts">
+      <a class="back label" href="/work">All case studies</a>
+      <dl class="facts">
+        <div>
+          <dt class="field">Where</dt>
+          <dd>{d.org}</dd>
+        </div>
+        <div>
+          <dt class="field">Role</dt>
+          <dd>{d.role}</dd>
+        </div>
+        <div>
+          <dt class="field">Period</dt>
+          <dd>{d.period}</dd>
+        </div>
+      </dl>
+    </div>
+
+    {
+      (d.metrics.length > 0 || d.stack.length > 0 || checks.length > 0) && (
+        <div class="case__record">
+          {d.metrics.length > 0 && (
+            <div class="rec rec--metrics">
+              <h2 class="field">Results</h2>
+              <Metrics metrics={d.metrics} />
+            </div>
+          )}
+          {d.stack.length > 0 && (
+            <div class="rec">
+              <h2 class="field">Stack</h2>
+              <ul class="stack">
+                {d.stack.map((s) => (
+                  <li>{s}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {checks.length > 0 && (
+            <div class="rec rec--verify">
+              <h2 class="field">Verify</h2>
+              <ul class="links">
+                {checks.map((l) => (
+                  <li>
+                    <a class="more" href={l.href}>
+                      {l.label}
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )
+    }
+
+    {
+      cover && (
+        <figure class="case__cover">
+          <Image src={cover} alt={d.coverAlt ?? ''} widths={[640, 960, 1280]} sizes="(max-width: 600px) 100vw, 900px" />
+        </figure>
+      )
+    }
+
+    <div class="case__body">
+      <div class="prose">
+        <Content />
+      </div>
+    </div>
+
+    {
+      d.learnerOutcome && (
+        <section class="case__learner" aria-labelledby="learner-h">
+          <h2 id="learner-h">What a learner can do now</h2>
+          <p>{d.learnerOutcome}</p>
+        </section>
+      )
+    }
+
+    <PrevNext prev={prev} next={next} />
+  </article>
+</Base>
+
+<style>
+  .case {
+    padding-top: clamp(20px, 3vw, 36px);
+  }
+
+  /* ---------- Hero: the claim and its proof ---------- */
+
+  .hero {
+    padding-top: clamp(32px, 4.4vw, 60px);
+  }
+  .hero--figure {
+    display: grid;
+    grid-template-columns: minmax(0, 5.4fr) minmax(0, 4.6fr);
+    gap: clamp(28px, 4vw, 56px);
+    align-items: start;
+  }
+  .hero__figure {
+    min-width: 0;
+    /* Sits on the cap height of the first line of the title. */
+    padding-top: 0.5rem;
+  }
+  .hero :global(.case__title) {
+    max-width: 18ch;
+  }
+  .hero :global(.case__title--short) {
+    font-size: var(--step-hero);
+  }
+  .hero :global(.case__title--mid) {
+    font-size: clamp(2.5rem, 5.4vw, 4.75rem);
+  }
+  .hero :global(.case__title--long) {
+    font-size: clamp(2.25rem, 4.4vw, 4rem);
+    max-width: 16ch;
+  }
+  .hero--figure :global(.case__title--short) {
+    font-size: clamp(2.875rem, 5.9vw, 5.5rem);
+  }
+  .hero--figure :global(.case__title--mid) {
+    font-size: clamp(2.5rem, 4.8vw, 4.25rem);
+  }
+  .hero--figure :global(.case__title--long) {
+    font-size: clamp(2.125rem, 3.9vw, 3.5rem);
+  }
+  .case__deck {
+    margin-top: clamp(18px, 2.2vw, 28px);
+    max-width: 34ch;
+    font-size: var(--step-outcome);
+    line-height: 1.32;
+    font-variation-settings: 'opsz' 36;
+  }
+  .hero--figure .case__deck {
+    max-width: 30ch;
+  }
+
+  /* ---------- Plain facts ---------- */
+
+  .case__facts {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    margin-top: clamp(40px, 5.4vw, 72px);
+    padding: 14px 0 16px;
+    border-top: var(--rule);
+  }
+  .back {
+    align-self: start;
+    padding-top: 1px;
+    text-decoration: underline;
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  .back::before {
+    content: '\2190\00a0';
+  }
+  /* The same three tracks as a three-number results row, so the columns line up. */
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--col-gap);
+    margin: 0;
+  }
+  .facts dt {
+    margin-bottom: 2px;
+  }
+  .facts dd {
+    margin: 0;
+    font-size: var(--step-small);
+    line-height: 1.4;
+  }
+
+  /* ---------- Results, stack, verify ---------- */
+
+  .case__record {
+    border-top: var(--rule-dash);
+  }
+  .rec {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: 16px 0;
+    border-bottom: var(--rule-dash);
+  }
+  .rec:last-child {
+    border-bottom: var(--rule);
+  }
+  .rec .field {
+    margin: 0;
+    padding-top: 2px;
+  }
+  .rec--metrics {
+    padding: 22px 0 26px;
+  }
+  .rec--metrics .field {
+    padding-top: 6px;
+  }
+
+  .stack,
+  .links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .stack {
+    gap: 4px 0;
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.5;
+  }
+  /* The separator hangs off the end of each item, so a wrapped line never starts with one. */
+  .stack li:not(:last-child)::after {
+    content: '\00b7';
+    padding: 0 0.7em;
+    color: var(--ink);
+  }
+  .links {
+    gap: 6px 28px;
+  }
+  .links .more {
+    font-size: 0.875rem;
+  }
+
+  /* ---------- Cover ---------- */
+
+  .case__cover {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    margin-top: clamp(36px, 5vw, 64px);
+  }
+  .case__cover :global(img) {
+    grid-column: 2;
+    width: 100%;
+    height: auto;
+    border-top: var(--rule);
+    border-bottom: var(--rule);
+  }
+
+  /* ---------- Body ---------- */
+
+  .case__body {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    margin-top: clamp(40px, 5.4vw, 76px);
+  }
+  .case__body .prose {
+    grid-column: 2;
+  }
+  /* The first heading of the body sits at the top, not two lines down. */
+  .case__body .prose > :global(:first-child) {
+    margin-top: 0;
+  }
+  .case__body .prose :global(img) {
+    width: 100%;
+    height: auto;
+    margin: 0.4em 0;
+    border-top: var(--rule);
+    border-bottom: var(--rule);
+  }
+  /* Tables run the full width of the reading column; one rule per row, not per cell. */
+  .case__body .prose :global(table) {
+    width: 100%;
+    max-width: 100%;
+    margin-top: 1.4em;
+  }
+  .case__body .prose :global(th),
+  .case__body .prose :global(td) {
+    white-space: normal;
+  }
+  .case__body .prose :global(td) {
+    font-variant-numeric: tabular-nums lining-nums;
+    border-bottom: 0;
+    vertical-align: baseline;
+  }
+  .case__body .prose :global(tbody tr) {
+    border-bottom: var(--rule-dash);
+  }
+  .case__body .prose :global(td[style*='right']),
+  .case__body .prose :global(th[style*='right']) {
+    width: 8.5em;
+  }
+  .case__body .prose :global(td[style*='right']) {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-stretch: var(--w-title);
+    font-size: 1.25rem;
+    line-height: 1.2;
+  }
+  /* The winning row is set bold in the Markdown; it also gets a pink rule under it. */
+  .case__body .prose :global(tbody tr:has(strong)) {
+    border-bottom: 3px solid var(--pink);
+  }
+  .case__body .prose :global(tr:has(strong) td[style*='right']) {
+    font-weight: 900;
+  }
+  .case__body .prose :global(a) {
+    overflow-wrap: anywhere;
+  }
+  .case__body .prose :global(pre) {
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .case__body .prose :global(h2 + p),
+  .case__body .prose :global(h3 + p) {
+    margin-top: 0.7em;
+  }
+  .case__body .prose :global(blockquote p + p) {
+    margin-top: 0.6em;
+  }
+
+  /* ---------- What a learner can do now ---------- */
+
+  .case__learner {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    margin-top: var(--section);
+    padding-top: 18px;
+    border-top: var(--rule-heavy);
+  }
+  .case__learner h2 {
+    font-weight: 700;
+    font-stretch: var(--w-title);
+    font-size: clamp(1.25rem, 1.8vw, 1.5rem);
+    line-height: 1.1;
+    max-width: 16ch;
+  }
+  .case__learner p {
+    font-size: var(--step-outcome);
+    line-height: 1.32;
+    max-width: 40ch;
+  }
+
+  /* ---------- Smaller screens ---------- */
+
+  @media (max-width: 900px) {
+    .hero--figure {
+      grid-template-columns: 1fr;
+    }
+    .hero__figure {
+      padding-top: 0;
+      max-width: 560px;
+    }
+    .hero--figure .case__deck {
+      max-width: 34ch;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .case__facts,
+    .rec,
+    .case__cover,
+    .case__body,
+    .case__learner {
+      grid-template-columns: 1fr;
+    }
+    .case__facts {
+      gap: 12px;
+      margin-top: 36px;
+    }
+    .facts {
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 10px 18px;
+    }
+    .facts > div:nth-child(2) {
+      grid-column: 1 / -1;
+      grid-row: 2;
+    }
+    .back {
+      order: 2;
+    }
+    .rec {
+      gap: 8px;
+    }
+    .rec--metrics {
+      gap: 14px;
+    }
+    .case__cover :global(img),
+    .case__body .prose {
+      grid-column: 1;
+    }
+    .hero {
+      padding-top: 26px;
+    }
+    .hero :global(.case__title--short),
+    .hero--figure :global(.case__title--short) {
+      font-size: clamp(2.75rem, 12vw, 3.5rem);
+    }
+    .hero :global(.case__title--mid),
+    .hero--figure :global(.case__title--mid) {
+      font-size: clamp(2.25rem, 9.6vw, 3rem);
+    }
+    .hero :global(.case__title--long),
+    .hero--figure :global(.case__title--long) {
+      font-size: clamp(1.875rem, 8.4vw, 2.5rem);
+    }
+    .case__deck {
+      font-size: 1.25rem;
+    }
+    .case__learner {
+      gap: 12px;
+    }
+    .case__learner h2 {
+      max-width: none;
+    }
+  }
+</style>

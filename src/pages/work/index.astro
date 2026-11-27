@@ -1,0 +1,102 @@
+---
+/**
+ * The work index. The full case studies (featured) come first, each with the figure
+ * that sits beside its title on its own page. The rest are compact rows in two groups:
+ * work done in a job, then personal projects. Every row says it opens before anyone hovers.
+ * It is set in the page grid: a label column, then the content.
+ */
+import Base from '../../layouts/Base.astro';
+import RunHead from '../../components/RunHead.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import IndexEntry from '../../components/work/IndexEntry.astro';
+import FeatureEntry from '../../components/work/FeatureEntry.astro';
+import { publishedWork } from '../../components/work/sequence';
+
+const entries = await publishedWork();
+const featured = entries.filter((e) => e.data.featured);
+const rest = entries.filter((e) => !e.data.featured);
+const groups = [
+  { id: 'at-work', name: 'At work', entries: rest.filter((e) => e.data.org !== 'Personal project') },
+  { id: 'personal', name: 'Personal projects', entries: rest.filter((e) => e.data.org === 'Personal project') },
+].filter((g) => g.entries.length > 0);
+---
+
+<Base
+  title="Work"
+  description="Case studies by Andrew Yu: teaching people to build with AI, measuring what helps coding agents, and building the tools."
+>
+  <div class="work-index">
+    <RunHead left="Work" right={`${entries.length} case studies`} />
+
+    <section class="intro" aria-labelledby="work-h">
+      <SectionHead title="Case studies" id="work-h" as="h1">
+        Open a case study for how it was done and the links that back it up.
+      </SectionHead>
+
+      {
+        entries.length === 0 ? (
+          <p class="empty">The case studies are being written up. The home page has the short version.</p>
+        ) : (
+          <ul class="features">
+            {featured.map((entry) => (
+              <FeatureEntry entry={entry} />
+            ))}
+          </ul>
+        )
+      }
+    </section>
+
+    {
+      groups.map((g) => (
+        <section class="group" id={g.id} aria-labelledby={`${g.id}-h`}>
+          <h2 class="group__head" id={`${g.id}-h`}>
+            {g.name}
+          </h2>
+          <ul class="group__list">
+            {g.entries.map((entry) => (
+              <IndexEntry entry={entry} showOrg={g.id !== 'personal'} />
+            ))}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+</Base>
+
+<style>
+  .work-index {
+    padding-top: clamp(20px, 3vw, 36px);
+  }
+  .intro {
+    padding-top: clamp(32px, 4.4vw, 60px);
+  }
+
+  .features {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .group {
+    margin-top: clamp(40px, 5vw, 64px);
+    scroll-margin-top: 16px;
+  }
+  .group__head {
+    padding-bottom: 12px;
+    border-bottom: var(--rule);
+    font-weight: 700;
+    font-stretch: var(--w-title);
+    font-size: clamp(1.375rem, 2vw, 1.75rem);
+    line-height: 1.1;
+  }
+  .group__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .empty {
+    padding-top: 24px;
+    color: var(--text-soft);
+  }
+</style>

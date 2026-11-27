@@ -1,0 +1,98 @@
+---
+/**
+ * Not found. A sheet with nothing printed on it, and the three places a visitor
+ * most likely meant to go.
+ */
+import Base from '../layouts/Base.astro';
+import Sheet from '../components/Sheet.astro';
+import Overprint from '../components/Overprint.astro';
+
+const ways = [
+  { href: '/', name: 'Home', what: 'The short version, with a one-minute lab.' },
+  { href: '/work', name: 'Work', what: 'Case studies.' },
+  { href: '/teaching', name: 'Teaching', what: 'Claude Dojo, and labs you can take on this site.' },
+];
+---
+
+<Base title="Page not found" noindex>
+  <Sheet label="Page 404" meta="Not found" labelledby="nf-h" class="nf">
+    <div class="nf__body">
+      <div class="nf__claim">
+        <Overprint as="h1" id="nf-h" text="Nothing is printed at this address." />
+        <p class="nf__why">The link may be old, or the address may have a typo. One of these is probably what you wanted.</p>
+      </div>
+      <ul class="nf__ways spot" aria-label="Where to go instead">
+        {
+          ways.map((w) => (
+            <li>
+              <a href={w.href}>{w.name}</a>
+              <span>{w.what}</span>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </Sheet>
+</Base>
+
+<style>
+  .nf__body {
+    display: grid;
+    grid-template-columns: minmax(0, 6.3fr) minmax(0, 3.7fr);
+    gap: clamp(24px, 4vw, 64px);
+    align-items: end;
+    padding: clamp(32px, 6vw, 88px) 0 clamp(20px, 3vw, 36px);
+  }
+  .nf__claim :global(h1) {
+    font-size: var(--step-hero);
+  }
+  .nf__why {
+    margin-top: 22px;
+    font-size: var(--step-lede);
+    line-height: 1.4;
+    max-width: 36ch;
+  }
+  /* The one pink field: the three ways out, navy type on pink. */
+  .nf__ways {
+    list-style: none;
+    margin: 0;
+  }
+  .nf__ways li {
+    padding: 12px 0 13px;
+    border-bottom: 1px dashed var(--over);
+  }
+  .nf__ways li:first-child {
+    padding-top: 0;
+  }
+  .nf__ways li:last-child {
+    border-bottom: 0;
+    padding-bottom: 0;
+  }
+  .nf__ways a {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-title);
+    font-size: 1.75rem;
+    line-height: 1;
+    color: var(--over);
+  }
+  .nf__ways a::after {
+    content: '\00a0\2192';
+    font-family: var(--font-mono);
+    font-size: 1rem;
+    font-weight: 500;
+  }
+  .nf__ways span {
+    display: block;
+    margin-top: 6px;
+    font-size: var(--step-small);
+    line-height: 1.4;
+    color: var(--over);
+  }
+  @media (max-width: 900px) {
+    .nf__body {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+  }
+</style>

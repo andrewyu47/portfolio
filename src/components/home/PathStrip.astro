@@ -1,0 +1,281 @@
+---
+/**
+ * The short path on the home page: one plain sentence, then the degree and each employer
+ * drawn to scale on one year axis, so five months looks like five months and five years
+ * like five years. The present job is the one bar printed in pink.
+ *
+ * Reads src/data/timeline.json, which another part of the build writes. Entries are
+ * { when, title, detail?, kind? }. Only the degree (kind "education", a B.A.) and roles
+ * dated to the month ("Apr 2015 to Sep 2020", "Jul 2026 to present") are drawn. Roles at
+ * one employer share a bar. If nothing can be drawn, the section still stands.
+ */
+type Entry = { when: string; title: string; detail?: string; kind?: string };
+
+const found = import.meta.glob<Entry[] | { entries: Entry[] }>('../../data/timeline.json', {
+  eager: true,
+  import: 'default',
+});
+const raw = Object.values(found)[0];
+const all: Entry[] = (Array.isArray(raw) ? raw : (raw?.entries ?? [])).filter(
+  (e) => e && typeof e.when === 'string' && typeof e.title === 'string',
+);
+
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const now = new Date();
+const nowY = now.getFullYear() + now.getMonth() / 12;
+// "Apr 2015" -> 2015.25, "2014" -> 2014 (or its end, 2015, when it closes a range).
+const at = (s: string, end = false): number | null => {
+  if (/present/i.test(s)) return nowY;
+  const m = s.trim().match(/^(?:([A-Z][a-z]{2}) )?(\d{4})$/);
+  if (!m) return null;
+  if (m[1]) return Number(m[2]) + MONTHS.indexOf(m[1]) / 12 + (end ? 1 / 12 : 0);
+  return Number(m[2]) + (end ? 1 : 0);
+};
+
+type Span = { name: string; roles: string[]; when: string; from: number; to: number; current: boolean };
+const spans: Span[] = [];
+
+const degree = all.find((e) => e.kind === 'education' && /B\.A\./.test(e.detail ?? ''));
+if (degree) {
+  const [a, b] = degree.when.split(' to ');
+  const from = at(a ?? '');
+  const to = at(b ?? a ?? '', true);
+  if (from && to) {
+    spans.push({
+      name: degree.title.replace('University of California, ', 'UC '),
+      roles: [(degree.detail ?? '').replace(/\.$/, '')],
+      when: degree.when,
+      from,
+      to,
+      current: false,
+    });
+  }
+}
+
+const byOrg = new Map<string, Span>();
+for (const e of all) {
+  if (e.kind !== 'role' || !/^[A-Z][a-z]{2} \d{4} to /.test(e.when)) continue;
+  const [a, b] = e.when.split(' to ');
+  const from = at(a);
+  const to = at(b, true);
+  if (!from || !to) continue;
+  const parts = e.title.split(', ');
+  const org = parts.pop()!;
+  const role = parts.join(', ');
+  const s = byOrg.get(org);
+  if (s) {
+    if (from < s.from) {
+      s.from = from;
+      if (role) s.roles.unshift(role);
+    } else if (role) s.roles.push(role);
+    s.to = Math.max(s.to, to);
+    s.current ||= /present/i.test(b);
+  } else {
+    byOrg.set(org, { name: org, roles: role ? [role] : [], when: '', from, to, current: /present/i.test(b) });
+  }
+}
+// The written range for each employer, rebuilt from the merged span.
+const label = (y: number, current: boolean) =>
+  current ? 'present' : `${MONTHS[Math.round((y - Math.floor(y)) * 12 - 1 + 12) % 12]} ${Math.floor(y - 0.001)}`;
+for (const s of byOrg.values()) {
+  const startM = MONTHS[Math.round((s.from - Math.floor(s.from)) * 12)];
+  s.when = `${startM} ${Math.floor(s.from)} to ${label(s.to, s.current)}`;
+  spans.push(s);
+}
+spans.sort((a, b) => a.from - b.from);
+
+const y0 = spans.length ? Math.floor(Math.min(...spans.map((s) => s.from))) : 0;
+const y1 = Math.floor(nowY) + 1;
+const pct = (y: number) => ((y - y0) / (y1 - y0)) * 100;
+const years = Array.from({ length: y1 - y0 + 1 }, (_, i) => y0 + i);
+---
+
+<section class="sec path" id="path" aria-labelledby="path-h">
+  <div class="path__top">
+    <h2 id="path-h">Path</h2>
+    <p class="path__line">
+      I studied English at UC Berkeley and have worked in software since 2015, most of that time writing documentation.
+      Teaching people to build with AI grew out of that work.
+    </p>
+  </div>
+
+  {
+    spans.length > 0 && (
+      <figure class="gantt">
+        <ol class="lanes">
+          {spans.map((s) => {
+            const left = pct(s.from);
+            const width = Math.max(pct(s.to) - left, 0.6);
+            const flip = left > 55;
+            return (
+              <li class:list={['lane', { 'lane--flip': flip, 'lane--now': s.current }]}>
+                <p class="lane__text" style={flip ? '' : `--at:${left.toFixed(2)}%`}>
+                  <span class="lane__name">{s.name}</span>
+                  <span class="lane__when">{s.when}</span>
+                  {s.roles.length > 0 && <span class="lane__roles">{s.roles.join(', then ')}</span>}
+                </p>
+                <span
+                  class:list={['lane__bar', { plate: s.current }]}
+                  style={`left:${left.toFixed(2)}%;width:${width.toFixed(2)}%`}
+                  aria-hidden="true"
+                />
+              </li>
+            );
+          })}
+        </ol>
+        <div class="axis" aria-hidden="true">
+          {years.map((y) => (
+            <span
+              class:list={['axis__tick', { 'axis__tick--minor': (y - y0) % 4 !== 0 }]}
+              style={`left:${pct(y).toFixed(2)}%`}
+            >
+              <span>{y}</span>
+            </span>
+          ))}
+        </div>
+        <figcaption>To scale, {y0} to today, by month.</figcaption>
+      </figure>
+    )
+  }
+
+  <p class="path__links">
+    <a class="more" href="/path">The full path</a>
+    <a class="more" href="/resume">Resume</a>
+  </p>
+</section>
+
+<style>
+  .path__top {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+  }
+  .path h2 {
+    font-size: var(--step-h2);
+    padding-top: 2px;
+  }
+  .path__line {
+    font-size: var(--step-lede);
+    line-height: 1.4;
+    max-width: 44ch;
+  }
+
+  /* The chart runs the full measure, from the page's left edge, not the content column. */
+  .gantt {
+    margin-top: clamp(28px, 3.4vw, 44px);
+    border-top: var(--rule);
+    padding-top: 6px;
+  }
+  .lanes {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .lane {
+    position: relative;
+    padding: 12px 0 0;
+  }
+  .lane + .lane {
+    border-top: var(--rule-dash);
+  }
+  .lane__text {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 2px 12px;
+    padding-left: var(--at, 0);
+    margin-bottom: 8px;
+  }
+  .lane--flip .lane__text {
+    justify-content: flex-end;
+    text-align: right;
+  }
+  .lane__name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-title);
+    font-size: 1.125rem;
+    line-height: 1.15;
+  }
+  .lane__when {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--ink);
+  }
+  .lane__roles {
+    flex-basis: 100%;
+    font-size: 0.9375rem;
+    line-height: 1.35;
+    color: var(--text-soft);
+  }
+  .lane__bar {
+    position: relative;
+    display: block;
+    height: 12px;
+    margin-bottom: 12px;
+    background: var(--ink);
+  }
+  .lane--now .lane__bar {
+    background: var(--pink);
+  }
+
+  .axis {
+    position: relative;
+    height: 30px;
+    border-top: var(--rule);
+  }
+  .axis__tick {
+    position: absolute;
+    top: 0;
+    width: 0;
+    height: 7px;
+    border-left: 1.5px solid var(--ink);
+  }
+  .axis__tick span {
+    position: absolute;
+    top: 9px;
+    left: 0;
+    translate: -50% 0;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .axis__tick:first-child span {
+    translate: 0 0;
+  }
+  .axis__tick:last-child span {
+    translate: -100% 0;
+  }
+  .gantt figcaption {
+    margin-top: 4px;
+  }
+
+  .path__links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 28px;
+    margin-top: 22px;
+  }
+
+  @media (max-width: 900px) {
+    .path__top {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+  }
+  @media (max-width: 600px) {
+    /* On a phone every label starts at the left edge; the bars keep their scale. */
+    .lane__text {
+      padding-left: 0;
+    }
+    .lane--flip .lane__text {
+      justify-content: flex-start;
+      text-align: left;
+    }
+    /* A label every fourth year, so the years never run into each other. */
+    .axis__tick--minor span {
+      display: none;
+    }
+  }
+</style>

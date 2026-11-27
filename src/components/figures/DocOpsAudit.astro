@@ -1,0 +1,125 @@
+---
+/**
+ * What the DocOps Governance Workbench changed in one audit run, redrawn from its own
+ * governance log (the screenshot in src/assets/work/docops-workbench.webp, sample
+ * Splunk Enterprise data). Each row: the kind of fix, what the draft said, what the
+ * workbench wrote instead. The security fix, the one a reviewer would most want caught,
+ * carries the pink mark.
+ *
+ * Only fixes shown in that screenshot appear here. The run fixed five issues; the
+ * roadmap date fix is left out because it needs the release calendar to make sense.
+ */
+interface Props {
+  compact?: boolean;
+  class?: string;
+}
+const { compact = false, class: className } = Astro.props;
+
+const rows = [
+  { tag: 'Logic', was: 'port=80', now: 'port=8089' },
+  { tag: 'Security', was: "password='changeme'", now: "token from SPLUNK_TOKEN", key: true },
+  { tag: 'Logic', was: 'version 1.3.0, end of life', now: 'version 1.4.2' },
+  { tag: 'Style', was: 'passive voice', now: 'rewritten in active voice' },
+];
+---
+
+<figure class:list={['audit', { 'audit--compact': compact }, className]}>
+  <table class="audit__table">
+    <caption class="visually-hidden">Fixes the workbench made in one audit run on sample data</caption>
+    <thead>
+      <tr>
+        <th scope="col">Fix</th>
+        <th scope="col">Draft said</th>
+        <th scope="col">Workbench wrote</th>
+      </tr>
+    </thead>
+    <tbody>
+      {
+        rows.map((r) => (
+          <tr class:list={{ 'is-key': r.key }}>
+            <th scope="row">{r.tag}</th>
+            <td>
+              <del>{r.was}</del>
+            </td>
+            <td>
+              {r.key ? <span class="audit__now">{r.now}</span> : r.now}
+            </td>
+          </tr>
+        ))
+      }
+    </tbody>
+  </table>
+  {
+    !compact && (
+      <figcaption>
+        From the governance log of one audit run on sample Splunk Enterprise data. That run fixed five issues.
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  .audit {
+    max-width: 540px;
+  }
+  .audit__table {
+    width: 100%;
+    border-collapse: collapse;
+    border-top: var(--rule-heavy);
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    line-height: 1.4;
+  }
+  .audit__table th,
+  .audit__table td {
+    text-align: left;
+    vertical-align: top;
+    padding: 10px 12px 11px 0;
+    border-bottom: var(--rule-dash);
+  }
+  .audit__table tr:last-child > * {
+    border-bottom: var(--rule);
+  }
+  .audit__table thead th {
+    padding-top: 9px;
+    font-size: var(--step-label);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    border-bottom: var(--rule);
+  }
+  .audit__table tbody th {
+    width: 6.6em;
+    font-size: var(--step-label);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink);
+    padding-top: 12px;
+  }
+  .audit__table td:last-child {
+    padding-right: 0;
+  }
+  .audit__table del {
+    color: var(--text-soft);
+    text-decoration-color: var(--ink);
+    text-decoration-thickness: 1.5px;
+    overflow-wrap: anywhere;
+  }
+  .audit__table td {
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+  .audit__now {
+    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 4px;
+    text-underline-offset: 4px;
+  }
+
+  .audit--compact .audit__table {
+    font-size: 0.8125rem;
+  }
+</style>

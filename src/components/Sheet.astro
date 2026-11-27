@@ -1,0 +1,30 @@
+---
+/**
+ * A lab sheet: a heavy top rule and a running head, like the top of a printed handout.
+ * The running head carries what a real handout carries: what this sheet is on the left,
+ * one fact about it (time, date, status) on the right.
+ *
+ * Only interactive labs are set as sheets. Reading sections use SectionHead and no frame.
+ *
+ *   <Sheet label="Lab 01 · Who runs the tool?" meta="Time: 1 minute">
+ *     ...
+ *   </Sheet>
+ */
+interface Props {
+  label: string;
+  meta?: string;
+  as?: 'article' | 'section' | 'div';
+  labelledby?: string;
+  class?: string;
+  id?: string;
+}
+const { label, meta, as: Tag = 'article', labelledby, class: className, id } = Astro.props;
+---
+
+<Tag class:list={['sheet', className]} aria-labelledby={labelledby} id={id}>
+  <div class="sheet__head label">
+    <span>{label}</span>
+    {meta && <span>{meta}</span>}
+  </div>
+  <slot />
+</Tag>

@@ -1,0 +1,454 @@
+---
+/**
+ * The home page hero. It is a lab sheet, because writing labs is the job:
+ * the claim beside a print of the room it was made in, who is making it, two results
+ * on record, and a one-question lab the visitor can finish in the first screen.
+ *
+ * The print's pink disc is the one pink field of this screen.
+ */
+import Sheet from '../Sheet.astro';
+import Overprint from '../Overprint.astro';
+import Portrait from '../Portrait.astro';
+import Photo from '../Photo.astro';
+import Stamp from '../Stamp.astro';
+import profile from '../../data/profile.json';
+import recordAll from '../../data/record.json';
+import labs from '../../data/labs.json';
+
+// A line on the record that depends on the labs repository only shows once that
+// repository is public and its nightly run has passed (labs.json status "live").
+type RecordLine = { value: string; label: string; href: string; requires?: string };
+const record = (recordAll as RecordLine[]).filter((r) => r.requires !== 'labs-live' || labs.status === 'live');
+const [salesforce, dojo] = profile.roles;
+---
+
+<Sheet label="Lab 01 · Who runs the tool?" meta="Time: 1 minute" labelledby="thesis" class="lab01" id="lab-01">
+  <div class="hero">
+    <div class="hero__claim">
+      <Overprint as="h1" id="thesis" text={profile.thesis} />
+      <p class="lede">{profile.support}</p>
+    </div>
+
+    <div class="instructor">
+        <Portrait size="64px" disc={false} />
+        <p class="instructor__line">
+          <span class="field">Instructor</span>
+          <span class="instructor__text"
+            ><strong>{profile.name}</strong>. {salesforce.title} at {salesforce.org}, and {dojo.title} at {dojo.org}, a
+            nonprofit.</span
+          >
+        </p>
+    </div>
+
+    <div class="hero__side">
+      <figure class="room">
+        <Photo
+          print="room-capstone-tight"
+          alt="Andrew at a microphone beside a screen whose slide reads: Build a tool that proves you can already do the job."
+        />
+        <figcaption>
+          <span>The capstone kickoff at the Claude Dojo intensive, <span class="nowrap">July 11, 2026.</span></span>
+          <a class="more" href="/work/claude-dojo#clip">Watch 55 seconds</a>
+        </figcaption>
+      </figure>
+
+      <ul class="record" aria-label="On record">
+        {
+          record.map((r) => (
+            <li>
+              <a href={r.href}>
+                <span class="numeral">{r.value}</span>
+                <span class="record__what">{r.label}</span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </div>
+  </div>
+
+  <div class="lab" data-state="idle" data-lab01>
+    <div class="lab__brief">
+      <h2 class="field">Objective</h2>
+      <p>Find out who runs the tool when an agent uses one: the model or your code.</p>
+      <h2 class="field">You will need</h2>
+      <p>This page. Nothing to install.</p>
+    </div>
+
+    <div class="lab__step">
+      <h2 class="field">Step 1</h2>
+      <p class="lab__q">
+        You send a model one question and one tool it may use, <code>search_portfolio</code>. Who runs the search?
+      </p>
+      <div class="lab__choices" role="group" aria-label="Who runs the search?">
+        <button class="check" type="button" data-pick="model" aria-pressed="false">
+          <span class="check__box"
+            ><svg class="check__mark" viewBox="0 0 44 44" aria-hidden="true"
+              ><path pathLength="1" d="M9 12 L35 36 M35 11 L10 37"></path></svg
+            ></span
+          >
+          The model
+        </button>
+        <button class="check" type="button" data-pick="code" aria-pressed="false">
+          <span class="check__box"
+            ><svg class="check__mark" viewBox="0 0 44 44" aria-hidden="true"
+              ><path pathLength="1" d="M8 24 L18 35 L38 7"></path></svg
+            ></span
+          >
+          Your code
+        </button>
+      </div>
+      <div class="lab__result" aria-live="polite">
+        <p data-when="idle">Tick one to reach the checkpoint.</p>
+        <p data-when="right">
+          <strong>Expected output.</strong> The model only replies with a request to call the tool. Your code runs it and
+          sends the result back. That holds for tools you define, like this one. Anthropic's server tools, such as web
+          search, run on Anthropic's side, and the model still runs nothing itself. <a href="#lab-02">Lab 02</a> shows
+          every message.
+        </p>
+        <p data-when="wrong">
+          <strong>If it fails.</strong> That is the common first guess. The model never runs anything on its own. Try the
+          other box, or step through <a href="#lab-02">Lab 02</a> and watch who does what.
+        </p>
+      </div>
+    </div>
+
+    <div class="lab__checkpoint">
+      <h2 class="field">Checkpoint</h2>
+      <div class="lab__stamp-slot">
+        <span class="lab__stamp-empty label" aria-hidden="true">Stamp<br />goes here</span>
+        <Stamp lines={['Checkpoint', 'passed']} small="Lab 01" label="Checkpoint passed" class="lab__stamp" />
+      </div>
+    </div>
+  </div>
+</Sheet>
+
+<style>
+  /* The claim on the left, the room on the right. The print's top edge sits on the
+     headline's cap line, so the two read as one statement. */
+  .hero {
+    display: grid;
+    grid-template-columns: minmax(0, 6.1fr) minmax(0, 3.9fr);
+    gap: 0 clamp(24px, 3.4vw, 52px);
+    grid-template-rows: auto 1fr;
+    align-items: start;
+    padding: clamp(26px, 4vw, 52px) 0 clamp(22px, 2vw, 26px);
+  }
+  .hero__claim {
+    grid-column: 1;
+    grid-row: 1;
+  }
+  .instructor {
+    grid-column: 1;
+    grid-row: 2;
+    align-self: end;
+  }
+  .hero__side {
+    grid-column: 2;
+    grid-row: 1 / span 2;
+  }
+  .nowrap {
+    white-space: nowrap;
+  }
+  .hero__claim :global(h1) {
+    font-size: var(--step-hero);
+  }
+  .lede {
+    margin-top: clamp(18px, 2vw, 26px);
+  }
+
+  .instructor {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-top: clamp(20px, 2vw, 26px);
+    padding-top: 16px;
+    border-top: var(--rule);
+  }
+  .instructor__line {
+    font-size: var(--step-small);
+    line-height: 1.4;
+    max-width: 46ch;
+  }
+  .instructor__line .field {
+    display: block;
+    margin: 0 0 2px;
+  }
+  .instructor__text strong {
+    font-weight: 700;
+  }
+
+  .hero__side {
+    display: grid;
+    gap: 18px;
+    /* Lands the print's top edge on the cap line of the first headline line. */
+    padding-top: calc(var(--step-hero) * 0.1);
+  }
+  .room figcaption {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 4px 16px;
+    margin-top: 10px;
+    font-size: 0.8125rem;
+    color: var(--text);
+  }
+  .room figcaption .more {
+    white-space: nowrap;
+  }
+
+  .record {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border-top: var(--rule);
+  }
+  .record li + li {
+    border-top: var(--rule-dash);
+  }
+  .record a {
+    display: grid;
+    grid-template-columns: 4.6rem minmax(0, 1fr);
+    gap: 14px;
+    align-items: center;
+    padding: 9px 0;
+    text-decoration: none;
+  }
+  .record .numeral {
+    font-size: 2.125rem;
+    color: var(--ink);
+  }
+  .record__what {
+    font-size: var(--step-small);
+    line-height: 1.3;
+  }
+  .record a:hover .record__what,
+  .record a:focus-visible .record__what {
+    text-decoration: underline;
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+
+  /* The lab itself */
+  .lab {
+    display: grid;
+    grid-template-columns: minmax(0, 2.3fr) minmax(0, 5fr) minmax(0, 2.7fr);
+    border-top: var(--rule);
+    /* The stamp starts oversized before it lands; it must never widen the page. */
+    overflow-x: clip;
+    overflow-clip-margin: 12px;
+  }
+  .lab > div {
+    padding: 20px 24px 8px;
+  }
+  .lab > div + div {
+    border-left: var(--rule-dash);
+  }
+  .lab > div:first-child {
+    padding-left: 0;
+  }
+  .lab > div:last-child {
+    padding-right: 0;
+  }
+  .lab__brief p {
+    font-size: var(--step-small);
+    line-height: 1.45;
+    margin-bottom: 16px;
+  }
+  .lab__q {
+    font-size: clamp(1.125rem, 1.5vw, 1.3125rem);
+    line-height: 1.35;
+    margin-bottom: 14px;
+  }
+  .lab__choices {
+    display: flex;
+    gap: 8px 34px;
+    flex-wrap: wrap;
+    margin-bottom: 12px;
+  }
+  .lab__result {
+    min-height: 4.7em;
+    font-size: var(--step-small);
+    line-height: 1.45;
+    max-width: 60ch;
+  }
+  .lab__result p {
+    display: none;
+  }
+  .lab[data-state='idle'] [data-when='idle'],
+  .lab[data-state='right'] [data-when='right'],
+  .lab[data-state='wrong'] [data-when='wrong'] {
+    display: block;
+  }
+  [data-when='idle'] {
+    color: var(--text-soft);
+  }
+
+  .lab__stamp-slot {
+    position: relative;
+    width: 150px;
+    height: 150px;
+    margin-top: 6px;
+  }
+  .lab__stamp-empty {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 1px dashed var(--ink);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    transition: opacity 0.15s;
+  }
+  .lab :global(.lab__stamp) {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    scale: 1.5;
+    transition:
+      opacity 0.12s,
+      scale 0.28s var(--ease-stamp);
+  }
+  .lab[data-state='right'] :global(.lab__stamp) {
+    opacity: 1;
+    scale: 1;
+  }
+  .lab[data-state='right'] .lab__stamp-empty {
+    opacity: 0;
+  }
+
+  @media (max-width: 1000px) {
+    .hero {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+      row-gap: 24px;
+    }
+    .hero__claim,
+    .hero__side,
+    .instructor {
+      grid-column: 1;
+      grid-row: auto;
+    }
+    /* On one column the room comes straight after the claim, and the instructor after the record. */
+    .instructor {
+      order: 3;
+      margin-top: 0;
+    }
+    .hero__side {
+      padding-top: 0;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      align-items: start;
+      gap: 24px;
+    }
+    /* The worksheet reads in order: what it is for, then the step, then the checkpoint. */
+    .lab {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+    .lab__brief {
+      grid-column: 1 / -1;
+      grid-row: 1;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr);
+      gap: 2px 14px;
+      align-items: baseline;
+      padding: 16px 0 14px !important;
+      border-bottom: var(--rule-dash);
+    }
+    .lab__brief .field,
+    .lab__brief p {
+      margin: 0;
+    }
+    .lab__step {
+      grid-column: 1;
+      grid-row: 2;
+      padding-left: 0 !important;
+      border-left: 0 !important;
+    }
+    .lab__checkpoint {
+      grid-column: 2;
+      grid-row: 2;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .hero {
+      padding-top: 22px;
+      gap: 22px;
+    }
+    .hero__claim :global(h1) {
+      max-width: none;
+    }
+    .hero__side {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .instructor {
+      align-items: flex-start;
+      gap: 14px;
+    }
+    .instructor :global(.portrait) {
+      width: 56px;
+    }
+    .record a {
+      grid-template-columns: 3.6rem minmax(0, 1fr);
+      padding: 7px 0;
+    }
+    .record .numeral {
+      font-size: 1.625rem;
+    }
+    .lab {
+      grid-template-columns: 1fr;
+    }
+    .lab > div {
+      padding: 14px 0 6px !important;
+      border-left: 0 !important;
+    }
+    .lab__brief {
+      grid-template-columns: 1fr;
+      gap: 0;
+      padding-bottom: 12px !important;
+    }
+    .lab__brief p + .field {
+      margin-top: 8px;
+    }
+    .lab__checkpoint {
+      grid-column: 1;
+      grid-row: 3;
+      display: none;
+    }
+    /* On a phone the stamp lands under the answer, at the right edge, where a stamp lands on a sheet. */
+    .lab[data-state='right'] .lab__checkpoint {
+      display: flex;
+      justify-content: flex-end;
+      padding-top: 0 !important;
+      margin-top: -8px;
+    }
+    .lab[data-state='right'] .lab__checkpoint .field {
+      display: none;
+    }
+    .lab__stamp-slot {
+      width: 124px;
+      height: 124px;
+      margin: 0 6px 6px 0;
+    }
+    .lab__result {
+      min-height: 0;
+    }
+  }
+</style>
+
+<script>
+  // Lab 01: one question, two boxes. Ticking "Your code" passes the checkpoint.
+  const lab = document.querySelector<HTMLElement>('[data-lab01]');
+  if (lab) {
+    const boxes = [...lab.querySelectorAll<HTMLButtonElement>('.check')];
+    for (const box of boxes) {
+      box.addEventListener('click', () => {
+        for (const other of boxes) other.setAttribute('aria-pressed', String(other === box));
+        lab.dataset.state = box.dataset.pick === 'code' ? 'right' : 'wrong';
+      });
+    }
+  }
+</script>

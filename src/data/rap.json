@@ -1,0 +1,94 @@
+{"title":"The 15 essential Claude Code terms","audio":"/media/claude-terms-rap.mp3","video":"/media/claude-terms-rap.mp4","poster":"/media/claude-terms-rap-poster.jpg","duration":220.36,"source":"Lines are exactly as written in the lyrics. Times come from a word-level transcription of the finished track, aligned to the written words; a word the transcription heard differently takes a time between its neighbours.","sections":[
+{"id":"s00_intro","start":0.0,"duration":16.32,"kind":"intro","lines":[
+ {"text":"What's up y'all. I know you just learned a whole lot at the dojo,","start":0.06,"words":[0.06,0.24,0.42,1.8,1.88,2.08,2.22,2.42,2.62,2.7,2.9,3.08,3.18,3.34]},
+ {"text":"and it's hard to keep all of it in your head.","start":4.54,"words":[4.54,4.62,4.76,4.98,5.12,5.36,5.54,5.62,5.74,5.86,5.98]},
+ {"text":"So here's a little rap to lock in the fifteen essential terms.","start":7.28,"words":[7.28,7.38,7.58,7.64,7.86,8.12,8.24,8.48,8.56,8.66,9.12,9.58]},
+ {"text":"Make sure you stretch those typing fingers before you start.","start":10.74,"words":[10.74,10.92,11.1,11.28,11.58,11.8,12.22,12.64,12.96,13.16]}]},
+{"id":"s01_terminal","start":16.32,"duration":10.8,"n":1,"term":"Terminal","definition":"The black window where you type commands. Its other name is the CLI, the command-line interface, and it is where Claude Code lives.","lines":[
+ {"text":"Number one, the Terminal, that black window on the screen,","start":16.52,"words":[16.52,16.88,17.04,17.2,17.72,17.9,18.24,18.58,18.7,18.82]},
+ {"text":"you type in your commands and tell it just what you mean.","start":19.42,"words":[19.42,19.56,19.8,19.94,20.1,20.58,20.7,20.92,21.1,21.24,21.46,21.6]},
+ {"text":"The fancy name for typing there is called the C L I,","start":22.1,"words":[22.1,22.26,22.6,22.78,22.92,23.27,23.46,23.6,23.8,23.94,23.94,23.94]},
+ {"text":"command-line interface, where Claude lives, now you know why.","start":24.5,"words":[24.5,25.36,25.82,25.96,26.3,26.5,26.68,26.8,27.02]}]},
+{"id":"s02_agent","start":27.12,"duration":10.78,"n":2,"term":"Agent","definition":"More than a chatbot. You give it a goal, and it opens your files and does the work to see it through.","lines":[
+ {"text":"Number two, the Agent, it does way more than chat,","start":27.32,"words":[27.32,27.66,28.2,28.36,28.7,28.88,29.14,29.32,29.48,29.68]},
+ {"text":"it opens up your files and it handles all of that.","start":30.21,"words":[30.21,30.38,30.72,30.86,31.0,31.42,31.56,31.68,32.12,32.26,32.4]},
+ {"text":"You give it a goal and it sees the mission through,","start":32.9,"words":[32.9,33.06,33.26,33.4,33.56,33.92,34.04,34.24,34.56,34.68,35.02]},
+ {"text":"a chatbot only talks, but an agent works for you.","start":35.62,"words":[35.62,35.9,36.12,36.42,36.78,36.92,37.1,37.42,37.64,37.82]}]},
+{"id":"s03_token","start":37.9,"duration":10.8,"n":3,"term":"Token","definition":"A little bit of text. Your words get chopped into tokens, and every token is billed, so tight prompts cost less.","lines":[
+ {"text":"Number three, the Token, every word gets chopped in two,","start":38.1,"words":[38.1,38.44,38.96,39.1,39.5,39.73,39.96,40.12,40.61,40.89]},
+ {"text":"little bits of text, and every bit is billed to you.","start":41.16,"words":[41.16,41.46,41.66,41.8,42.08,42.22,42.5,42.64,42.82,43.06,43.22]},
+ {"text":"The more of them you spend, the more the meter's gonna climb,","start":43.7,"words":[43.7,43.82,44.04,44.16,44.32,44.48,44.72,44.84,45.04,45.18,45.54,45.84]},
+ {"text":"so keep your prompting tight and save your money and your time.","start":46.38,"words":[46.38,46.52,46.7,46.84,47.2,47.38,47.52,47.72,47.88,48.24,48.38,48.56]}]},
+{"id":"s04_context","start":48.7,"duration":10.78,"n":4,"term":"Context window","definition":"Where the conversation’s memory lives. When it fills up, the early parts fade, so start a new session.","lines":[
+ {"text":"Number four, Context Window, that's where memory lives,","start":48.9,"words":[48.9,49.2,49.54,49.92,50.22,50.42,50.56,51.06]},
+ {"text":"it holds on to everything the conversation gives.","start":51.8,"words":[51.8,51.9,52.24,52.36,52.48,53.08,53.26,53.94]},
+ {"text":"But when the window fills right up, the early stuff, it fades,","start":54.16,"words":[54.16,54.28,54.48,54.62,54.94,55.28,55.54,55.84,55.98,56.28,56.5,56.66]},
+ {"text":"so start a brand new session when you've worked it hard for days.","start":57.14,"words":[57.14,57.3,57.54,57.62,57.82,58.0,58.36,58.56,58.66,58.86,58.98,59.19,59.19]}]},
+{"id":"s05_claudemd","start":59.48,"duration":11.46,"n":5,"term":"CLAUDE.md","definition":"A file of your rules that Claude reads every session, so you write them down once.","lines":[
+ {"text":"Number five, CLAUDE dot M D, that's the memory card,","start":59.68,"words":[59.68,60.02,60.35,60.35,60.35,60.35,61.7,61.92,62.04,62.38]},
+ {"text":"a file with your rules so remembering's not hard.","start":62.9,"words":[62.9,63.04,63.38,63.56,63.72,64.06,64.53,64.92,65.1]},
+ {"text":"It reads it every session, so it knows just where you stand,","start":65.6,"words":[65.6,65.72,65.96,66.12,66.38,66.76,66.94,67.04,67.26,67.42,67.58,67.76]},
+ {"text":"write it down one time and every session goes as planned.","start":68.1,"words":[68.1,68.3,68.43,68.82,69.04,69.32,69.48,69.76,70.08,70.32,70.46]}]},
+{"id":"s06_planmode","start":70.94,"duration":10.1,"n":6,"term":"Plan mode","definition":"Claude writes out every step first and changes nothing until you give it the green light.","lines":[
+ {"text":"Number six is Plan Mode, look before you leap,","start":71.14,"words":[71.14,71.44,71.64,71.8,72.16,72.48,72.66,73.0,73.18]},
+ {"text":"it writes out every step in a list for you to keep.","start":73.68,"words":[73.68,73.76,74.02,74.2,74.44,74.86,74.98,75.12,75.36,75.52,75.64,75.84]},
+ {"text":"Nothing gets changed until you give it the green light,","start":76.36,"words":[76.36,76.66,76.86,77.26,77.36,77.54,77.72,77.84,78.02,78.34]},
+ {"text":"measure twice and cut once, and the code comes out right.","start":78.56,"words":[78.56,78.82,79.1,79.28,79.58,79.9,80.04,80.2,80.44,80.68,80.9]}]},
+{"id":"s07_checkpoints","start":81.04,"duration":10.78,"n":7,"term":"Checkpoints","definition":"Save points. If a big change breaks things, you roll back to one.","lines":[
+ {"text":"Number seven, Checkpoints, that's a save point in time,","start":81.24,"words":[81.24,81.58,81.94,82.6,82.8,83.04,83.26,83.48,83.64]},
+ {"text":"if a big change breaks things you can rewind on a dime.","start":84.0,"words":[84.0,84.18,84.28,84.58,84.9,85.14,85.32,85.44,85.62,86.0,86.16,86.3]},
+ {"text":"No need to panic when the edit goes wrong,","start":87.14,"words":[87.14,87.3,87.46,87.62,87.98,88.14,88.3,88.62,88.98]},
+ {"text":"roll back to the checkpoint and keep moving along.","start":89.46,"words":[89.46,89.66,89.88,90.0,90.16,90.68,90.82,91.02,91.4]}]},
+{"id":"s08_effort","start":91.82,"duration":11.8,"n":8,"term":"Effort level","definition":"How deeply Claude thinks. Turn it up for hard problems, knowing that deeper takes longer and costs more.","lines":[
+ {"text":"Number eight, Effort Level, how deep should it think?","start":92.02,"words":[92.02,92.4,92.72,93.02,93.38,93.7,94.0,94.22,94.38]},
+ {"text":"Crank it up for hard stuff, it'll reason on the brink.","start":94.66,"words":[94.66,94.96,95.08,95.24,95.36,95.68,96.08,96.42,96.8,96.94,97.06]},
+ {"text":"But deeper takes longer and it costs a little more,","start":97.6,"words":[97.6,97.74,98.05,98.38,98.8,98.96,99.08,99.36,99.46,99.76]},
+ {"text":"so match it to the task, that's what the dial is for.","start":100.28,"words":[100.28,100.44,100.66,100.78,100.94,101.1,101.6,101.78,101.96,102.12,102.5,102.7]}]},
+{"id":"s09_breather","start":103.62,"duration":6.74,"kind":"breather","lines":[
+ {"text":"Whew. That's eight already.","start":103.44,"words":[103.44,103.82,104.06,104.28]},
+ {"text":"Are y'all ready for more?","start":104.72,"words":[104.72,104.86,105.1,105.34,105.5]},
+ {"text":"... Are you sure?","start":106.04,"words":[106.04,106.28,106.4,106.54]},
+ {"text":"... Alright, seems like y'all are ready. Let's go.","start":107.18,"words":[107.18,107.52,107.86,108.1,108.24,108.42,108.54,109.58,109.84]}]},
+{"id":"s10_skills","start":110.36,"duration":11.12,"n":9,"term":"Skills","definition":"A workflow on repeat: a recipe Claude follows for one kind of job, such as security or design.","lines":[
+ {"text":"Number nine is Skills, that's a workflow on repeat,","start":110.56,"words":[110.56,110.88,111.08,111.24,111.94,112.18,112.3,112.96,113.12]},
+ {"text":"a recipe it follows so the finish stays neat.","start":113.8,"words":[113.8,113.94,114.44,114.6,114.94,115.12,115.28,115.62,115.94]},
+ {"text":"There's one for security, and design, and browsing too,","start":116.28,"words":[116.28,116.5,116.66,116.8,117.46,117.62,118.14,118.26,118.72]},
+ {"text":"load the right one up and it knows just what to do.","start":118.98,"words":[118.98,119.18,119.36,119.7,120.04,120.36,120.5,120.62,120.88,121.04,121.2,121.38]}]},
+{"id":"s11_plugin","start":121.48,"duration":5.62,"n":10,"term":"Plugin","definition":"A bundle you install: a box of ready skills in one download.","lines":[
+ {"text":"Number ten, the Plugin, it's a bundle you install,","start":121.68,"words":[121.68,121.98,122.54,122.7,123.06,123.24,123.36,123.7,123.86]},
+ {"text":"a box of ready skills, and one download grabs them all.","start":124.56,"words":[124.56,124.7,124.94,125.06,125.32,125.62,125.8,126.06,126.4,126.66,126.84]}]},
+{"id":"s12_mcp","start":127.1,"duration":10.83,"n":11,"term":"MCP","definition":"The Model Context Protocol: one standard way to plug tools and systems into Claude.","lines":[
+ {"text":"Eleven, MCP, Model Context Protocol,","start":127.3,"words":[127.3,127.8,128.42,128.74,129.1]},
+ {"text":"one standard way to plug in tools, a plug that fits them all.","start":129.82,"words":[129.82,130.08,130.46,130.62,130.78,130.98,131.1,131.32,131.46,131.64,131.8,132.0,132.22]},
+ {"text":"Databases, servers, and the systems that you run,","start":132.97,"words":[132.97,133.5,133.92,134.0,134.16,134.54,134.72,134.88]},
+ {"text":"speak a common language and connect them one by one.","start":135.46,"words":[135.46,135.68,135.82,136.18,136.54,136.68,137.02,137.18,137.36,137.6]}]},
+{"id":"s13_connector","start":137.93,"duration":10.55,"n":12,"term":"Connector","definition":"MCP in action: a hookup to an app like Gmail, Calendar, Slack, or Drive, so Claude can reach it.","lines":[
+ {"text":"Twelve is the Connector, MCP in action live,","start":138.13,"words":[138.13,138.44,138.62,138.72,139.26,139.76,139.85,140.24]},
+ {"text":"it hooks up Gmail, Calendar, your Slack, and your Drive.","start":140.8,"words":[140.8,140.9,141.1,141.26,141.6,142.08,142.26,142.62,142.76,142.92]},
+ {"text":"Once you've got it plugged in, Claude can reach them all the same,","start":143.32,"words":[143.32,143.54,143.62,143.8,143.96,144.38,144.58,144.82,144.96,145.18,145.34,145.48,145.64]},
+ {"text":"ask it for your schedule and it calls them out by name.","start":146.34,"words":[146.34,146.54,146.62,146.78,146.9,147.32,147.46,147.6,147.88,148.0,148.16,148.34]}]},
+{"id":"s14_hooks","start":148.48,"duration":11.04,"n":13,"term":"Hook","definition":"An automatic move. You set it up once, and a trigger fires it without you asking.","lines":[
+ {"text":"Thirteen is the Hook, that's an automatic move,","start":148.68,"words":[148.68,149.32,149.5,149.66,149.98,150.22,150.38,151.0]},
+ {"text":"a trigger fires it off and the hook slides in the groove.","start":151.24,"words":[151.24,151.34,151.68,152.08,152.26,152.72,152.86,152.98,153.24,153.5,153.6,153.7]},
+ {"text":"You set it up one time and you never have to ask,","start":154.24,"words":[154.24,154.4,154.62,154.76,154.98,155.22,155.46,155.58,155.74,156.06,156.26,156.42]},
+ {"text":"it fires on its own, right behind the task.","start":156.9,"words":[156.9,157.06,157.46,157.62,157.82,158.4,158.62,158.96,159.08]}]},
+{"id":"s15_subagents","start":159.52,"duration":10.52,"n":14,"term":"Subagents","definition":"Helpers the main agent hands work to, such as one running the tests while another reads the code.","lines":[
+ {"text":"Fourteen, Subagents, that's the helpers on the team,","start":159.72,"words":[159.72,160.33,160.74,160.96,161.08,161.5,161.62,161.76]},
+ {"text":"the main one delegates like a coach who's got a scheme.","start":162.02,"words":[162.02,162.16,162.54,162.8,163.46,163.66,163.76,163.99,164.14,164.34,164.48]},
+ {"text":"One runs all the tests while another reads the code,","start":165.2,"words":[165.2,165.34,165.56,165.7,165.86,166.16,166.38,166.82,167.04,167.2]},
+ {"text":"splitting up the work will always lighten up the load.","start":167.76,"words":[167.76,168.24,168.38,168.52,168.72,168.86,169.2,169.54,169.74,169.84]}]},
+{"id":"s16_surfaces","start":170.04,"duration":11.76,"n":15,"term":"Work surfaces","definition":"Three doors to the same Claude: Chat for quick questions, Cowork for desk work, and Code for software.","lines":[
+ {"text":"Last one, Work Surfaces, three doors to the same brain,","start":170.24,"words":[170.24,170.64,170.92,171.2,171.76,171.94,172.28,172.4,172.6,172.92]},
+ {"text":"Chat for quick conversation, keeping questions plain.","start":173.28,"words":[173.28,173.48,173.64,173.92,174.62,174.92,175.3]},
+ {"text":"Cowork handles desk work, the projects and the grind,","start":176.0,"words":[176.0,176.32,176.64,176.94,177.16,177.28,177.69,177.82,177.96]},
+ {"text":"and Code is for the software, three doors, one mind.","start":178.5,"words":[178.5,178.62,178.86,178.98,179.12,179.32,179.98,180.2,180.72,181.0]}]},
+{"id":"s17_outro","start":181.8,"duration":38.56,"kind":"outro","lines":[
+ {"text":"Congratulations, you made it through all fifteen.","start":182.0,"words":[182.0,183.8,183.9,184.06,184.16,184.36,184.56]},
+ {"text":"You're basically fluent in Claude Code now.","start":186.06,"words":[186.06,186.24,186.72,187.06,187.2,187.56,187.9]},
+ {"text":"Let's try one, just to check.","start":189.72,"words":[189.72,189.88,190.16,191.08,191.24,191.38]},
+ {"text":"A standard way to plug your tools into Claude...","start":193.34,"words":[193.34,193.5,193.95,194.05,194.16,194.38,194.56,194.9,195.16]},
+ {"text":"That's right. MCP.","start":195.82,"words":[195.82,196.06,196.32]},
+ {"text":"Now you try the rest.","start":198.74,"words":[198.74,198.9,199.01,199.32,199.48]},
+ {"text":"That's all I've got y'all. These fifteen terms will take you far,","start":201.12,"words":[201.12,201.36,201.52,201.72,202.0,203.54,203.8,204.34,204.64,204.84,205.08,205.3]},
+ {"text":"and I'm so proud of how far you've already come.","start":207.2,"words":[207.2,207.34,207.54,207.82,208.16,208.3,208.56,208.84,209.04,209.52]},
+ {"text":"Peace, have a blessed day, and I'll see you at the dojo.","start":211.36,"words":[211.36,212.42,212.58,212.7,213.12,214.6,214.76,214.96,215.14,215.22,215.36,215.54]}]}]}

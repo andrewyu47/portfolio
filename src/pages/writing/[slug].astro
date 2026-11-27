@@ -1,0 +1,196 @@
+---
+/**
+ * One essay. The facts (where it was published, when) in a thin row at the top,
+ * the title and its one-sentence argument, then the summary body. When the piece
+ * lives elsewhere, a named link sends the reader to the full text.
+ */
+import { render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Overprint from '../../components/Overprint.astro';
+import RunHead from '../../components/RunHead.astro';
+import { publishedEssays, venue, type Essay } from '../../components/writing/essays';
+import profile from '../../data/profile.json';
+
+export async function getStaticPaths() {
+  const all = await publishedEssays();
+  return all.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: Essay;
+}
+const { entry } = Astro.props;
+const d = entry.data;
+const { Content } = await render(entry);
+const where = venue(entry);
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Article',
+  headline: d.title,
+  description: d.summary,
+  author: { '@type': 'Person', name: profile.name, url: profile.site },
+  url: new URL(`/writing/${entry.id}`, profile.site).toString(),
+  ...(d.externalUrl ? { sameAs: d.externalUrl } : {}),
+};
+---
+
+<Base title={d.title} description={d.summary} jsonLd={jsonLd}>
+  <article class="essay" aria-labelledby="essay-title">
+    <RunHead left="Writing · Essay" right={`Published on ${where}`} />
+    <header>
+      <div class="essay__hero">
+        <div>
+          <Overprint as="h1" id="essay-title" text={d.title} class="essay__title" />
+          <p class="essay__argument">{d.summary}</p>
+        </div>
+        {
+          d.externalUrl && (
+            <p class="essay__read spot">
+              <span class="label">Full text</span>
+              <a class="more" href={d.externalUrl}>
+                Read the essay on {where}
+              </a>
+            </p>
+          )
+        }
+      </div>
+
+      <div class="essay__facts">
+        <a class="essay__back label" href="/writing">Writing</a>
+        <dl class="facts">
+          <div>
+            <dt class="field">Context</dt>
+            <dd>{d.period}</dd>
+          </div>
+        </dl>
+      </div>
+    </header>
+
+    <div class="essay__body">
+      <h2 class="field">What it argues</h2>
+      <div class="prose">
+        <Content />
+        {
+          d.externalUrl ? (
+            <p class="essay__out">
+              <a class="more" href={d.externalUrl}>
+                Read the full essay on {where}
+              </a>
+            </p>
+          ) : (
+            d.publication === 'LinkedIn' && (
+              <p class="essay__out">
+                <a class="more" href={profile.links.linkedin} rel="me">
+                  Find the full essay on my LinkedIn
+                </a>
+              </p>
+            )
+          )
+        }
+      </div>
+    </div>
+  </article>
+</Base>
+
+<style>
+  .essay {
+    padding-top: clamp(20px, 3vw, 36px);
+  }
+
+  .essay__facts {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    margin-top: clamp(40px, 5.4vw, 72px);
+    padding: 14px 0 16px;
+    border-top: var(--rule);
+  }
+  .essay__back {
+    align-self: start;
+    padding-top: 1px;
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 2px;
+  }
+  .essay__back::before {
+    content: '\2190  ';
+  }
+  .facts {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--col-gap);
+    margin: 0;
+  }
+  .facts dt {
+    margin-bottom: 2px;
+  }
+  .facts dd {
+    margin: 0;
+    font-size: var(--step-small);
+    line-height: 1.4;
+  }
+
+  .essay__hero {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: clamp(28px, 4vw, 56px);
+    align-items: start;
+    padding-top: clamp(34px, 5vw, 72px);
+  }
+  .essay__read {
+    display: grid;
+    gap: 8px;
+    margin-top: 8px;
+    max-width: 17rem;
+  }
+  .essay__read .more {
+    font-size: 0.9375rem;
+    font-weight: 600;
+  }
+  header :global(.essay__title) {
+    max-width: 20ch;
+    font-size: clamp(2.5rem, 5.6vw, 5rem);
+  }
+  .essay__argument {
+    margin-top: clamp(20px, 2.6vw, 34px);
+    max-width: 31ch;
+    font-size: clamp(1.4375rem, 2.7vw, 2.25rem);
+    line-height: 1.24;
+    letter-spacing: -0.005em;
+    font-variation-settings: 'opsz' 48;
+  }
+
+  .essay__body {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding-top: 18px;
+    border-top: var(--rule-dash);
+  }
+  .essay__body .field {
+    padding-top: 6px;
+  }
+  .essay__out {
+    padding-top: 0.4em;
+  }
+
+  @media (max-width: 600px) {
+    .essay__facts,
+    .essay__body {
+      grid-template-columns: 1fr;
+    }
+    .essay__facts {
+      gap: 12px;
+    }
+    .facts {
+      gap: 10px 18px;
+    }
+    .essay__hero {
+      grid-template-columns: 1fr;
+      padding-top: 30px;
+    }
+    header :global(.essay__title) {
+      font-size: clamp(2.25rem, 9.6vw, 3rem);
+    }
+  }
+</style>

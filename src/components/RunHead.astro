@@ -1,0 +1,20 @@
+---
+/**
+ * The running head that opens a page: a flat band of teal with the type knocked out.
+ * Left says what this page is. Right carries one fact about it (a date, a place, a count).
+ * Lab sheets get the same band from Sheet.astro, so do not use both on one page.
+ *
+ *   <RunHead left="Work · Case study" right="Pinecone, 2026" />
+ */
+interface Props {
+  left: string;
+  right?: string;
+  class?: string;
+}
+const { left, right, class: className } = Astro.props;
+---
+
+<p class:list={['band', className]}>
+  <span>{left}</span>
+  {right && <span>{right}</span>}
+</p>

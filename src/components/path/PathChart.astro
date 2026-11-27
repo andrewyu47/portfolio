@@ -1,0 +1,308 @@
+---
+/**
+ * The path, drawn once: school, docs jobs, teaching and personal builds on one time axis.
+ * The axis is broken on purpose. 2012 to 2025 runs by year; 2026 runs by month, because
+ * most of the teaching and building happened in it. Every position comes from a date in
+ * src/data/timeline.json or AGENTS.md. QuickRamp has no dated period, so it is left off.
+ *
+ * Teal for structure, navy for labels, and one small pink tick for the two-day intensive.
+ * The drawing is hidden from assistive tech; the list after it says the same thing in words.
+ */
+
+type Panel = 'a' | 'b';
+type Item = {
+  lane: string;
+  panel: Panel;
+  from: number; // panel a: decimal year; panel b: month index 0 to 12
+  to?: number; // bars only
+  label?: string;
+  kind: 'bar' | 'tick' | 'dot';
+  stack?: number; // dots: how many already sit below this one in the same month
+  end?: boolean; // set the label so it ends at the mark, for marks near the right edge
+};
+
+const A0 = 2012;
+const A1 = 2026;
+const NOW = 10.85; // November 26, 2026, as a month index
+
+const items: Item[] = [
+  { lane: 'School', panel: 'a', from: 2012, to: 2014, label: 'UC Berkeley', kind: 'bar' },
+
+  { lane: 'Docs', panel: 'a', from: 2015.25, to: 2020.67, label: 'Workday', kind: 'bar' },
+  { lane: 'Docs', panel: 'a', from: 2020.67, to: 2024.33, label: 'Splunk', kind: 'bar' },
+  { lane: 'Docs', panel: 'a', from: 2024.36, to: 2026, kind: 'bar' },
+  { lane: 'Docs', panel: 'b', from: 0, to: 1, kind: 'bar' },
+  { lane: 'Docs', panel: 'b', from: 1, to: 6.5, label: 'Pinecone', kind: 'bar' },
+  { lane: 'Docs', panel: 'b', from: 6.62, to: NOW, label: 'Salesforce', kind: 'bar', end: true },
+
+  { lane: 'Teaching', panel: 'a', from: 2022.5, label: 'Splunk talk', kind: 'tick' },
+  { lane: 'Teaching', panel: 'b', from: 6.35, label: 'Intensive', kind: 'tick' },
+];
+
+// Personal builds by month of 2026 (Apr = 3).
+const buildMonths: number[] = [3, 6, 6, 7, 8, 8, 8, 8, 9];
+const seen: Record<number, number> = {};
+for (const m of buildMonths) {
+  const n = seen[m] ?? 0;
+  seen[m] = n + 1;
+  items.push({ lane: 'Built', panel: 'b', from: m + 0.5, kind: 'dot', stack: n });
+}
+
+const lanes = ['School', 'Docs', 'Teaching', 'Built'];
+const pct = (panel: Panel, v: number) => (panel === 'a' ? ((v - A0) / (A1 - A0)) * 100 : (v / 12) * 100);
+const style = (it: Item) => {
+  const left = pct(it.panel, it.from);
+  if (it.kind === 'bar') return `left:${left}%;width:${pct(it.panel, it.to!) - left}%`;
+  if (it.kind === 'dot') return `left:${left}%;--stack:${it.stack ?? 0}`;
+  return `left:${left}%`;
+};
+
+const years = [2012, 2016, 2020, 2024];
+const months = 'JFMAMJJASOND'.split('');
+---
+
+<figure class="pc" aria-labelledby="pc-cap">
+  <div class="pc__draw" aria-hidden="true">
+    <div class="pc__lane pc__lane--scale">
+      <p class="pc__name"></p>
+      <div class="pc__track">
+        <p class="pc__scale">By year</p>
+        <p class="pc__scale">2026, by month</p>
+      </div>
+    </div>
+    {
+      lanes.map((lane) => (
+        <div class:list={['pc__lane', `pc__lane--${lane.toLowerCase()}`]}>
+          <p class="pc__name">{lane}</p>
+          <div class="pc__track">
+            {(['a', 'b'] as Panel[]).map((panel) => (
+              <div class:list={['pc__panel', `pc__panel--${panel}`]}>
+                {items
+                  .filter((it) => it.lane === lane && it.panel === panel)
+                  .map((it) => (
+                    <span class:list={[`pc__${it.kind}`, { 'pc__tick--key': it.label === 'Intensive' }]} style={style(it)}>
+                      {it.label && <span class:list={['pc__lab', { 'pc__lab--end': it.end }]}>{it.label}</span>}
+                    </span>
+                  ))}
+              </div>
+            ))}
+          </div>
+        </div>
+      ))
+    }
+    <div class="pc__lane pc__lane--axis">
+      <p class="pc__name"></p>
+      <div class="pc__track">
+        <div class="pc__panel pc__panel--a">
+          {Array.from({ length: A1 - A0 }, (_, i) => <span class="pc__yr" style={`left:${(i / (A1 - A0)) * 100}%`} />)}
+          {
+            years.map((y, i) => (
+              <span class:list={['pc__axlab', { 'pc__axlab--last': i === years.length - 1 }]} style={`left:${pct('a', y)}%`}>
+                {y}
+              </span>
+            ))
+          }
+        </div>
+        <div class="pc__panel pc__panel--b">
+          {
+            months.map((m, i) => (
+              <span class="pc__mo" style={`left:${((i + 0.5) / 12) * 100}%`}>
+                {m}
+              </span>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  <figcaption id="pc-cap" class="pc__cap">
+    2012 to 2025 by year, then 2026 by month. Bars are school and jobs, the pink tick is the two-day intensive, and
+    each dot is one personal build.
+  </figcaption>
+  <ul class="visually-hidden">
+    <li>School: UC Berkeley, 2012 to 2014.</li>
+    <li>Docs: Workday, April 2015 to September 2020. Splunk, September 2020 to January 2026, as a writer and then a manager from May 2024. Pinecone, February to July 2026. Salesforce, July 2026 to now.</li>
+    <li>Teaching: a lightning talk at Splunk in 2022. The Claude Dojo two-day intensive, July 11 and 12, 2026.</li>
+    <li>Built: nine dated personal builds in 2026, one in April, two in July, one in August, four in September, and one in October.</li>
+  </ul>
+</figure>
+
+<style>
+  .pc {
+    margin: 0;
+  }
+  .pc__lane {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    align-items: end;
+  }
+  .pc__lane + .pc__lane {
+    margin-top: 12px;
+  }
+  .pc__name {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--ink);
+    line-height: 1;
+    padding-bottom: 1px;
+  }
+  .pc__track {
+    display: grid;
+    grid-template-columns: minmax(0, 5.6fr) minmax(0, 4.4fr);
+    gap: 22px;
+    position: relative;
+  }
+  .pc__panel {
+    position: relative;
+    height: 34px;
+  }
+  .pc__lane--built .pc__panel {
+    height: 48px;
+  }
+  /* The break in the axis: two short slashes between the panels, on the axis line only. */
+  .pc__lane--axis .pc__panel--b::before {
+    content: '';
+    position: absolute;
+    left: -15px;
+    top: -7px;
+    width: 8px;
+    height: 14px;
+    border-left: 1.5px solid var(--ink);
+    border-right: 1.5px solid var(--ink);
+    background: var(--stock);
+    transform: skewX(-24deg);
+  }
+  /* Faint month lines in the 2026 panel, so the change of scale shows. */
+  .pc__panel--b {
+    background-image: repeating-linear-gradient(
+      to right,
+      var(--ink-tint) 0 1px,
+      transparent 1px calc(100% / 12)
+    );
+  }
+
+  .pc__bar {
+    position: absolute;
+    bottom: 0;
+    height: 10px;
+    background: var(--ink);
+  }
+  .pc__tick {
+    position: absolute;
+    bottom: 0;
+    width: 3px;
+    height: 16px;
+    margin-left: -1.5px;
+    background: var(--ink);
+  }
+  .pc__tick--key {
+    width: 6px;
+    margin-left: -3px;
+    height: 20px;
+    background: var(--pink);
+  }
+  .pc__dot {
+    position: absolute;
+    bottom: calc(var(--stack) * 11px);
+    width: 9px;
+    height: 9px;
+    margin-left: -4.5px;
+    border-radius: 50%;
+    background: var(--ink);
+  }
+  .pc__lab {
+    position: absolute;
+    left: 0;
+    bottom: calc(100% + 5px);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1;
+    white-space: nowrap;
+    color: var(--text);
+  }
+  .pc__tick .pc__lab {
+    bottom: calc(100% + 3px);
+  }
+  .pc__lab--end {
+    left: auto;
+    right: 0;
+  }
+
+  /* Axis */
+  .pc__lane--axis {
+    margin-top: 0 !important;
+  }
+  .pc__lane--axis .pc__panel {
+    height: 30px;
+    background: none;
+    border-top: var(--rule);
+  }
+  .pc__yr {
+    position: absolute;
+    top: 0;
+    width: 1.5px;
+    height: 6px;
+    background: var(--ink);
+  }
+  .pc__axlab,
+  .pc__mo,
+  .pc__now {
+    position: absolute;
+    top: 9px;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .pc__mo {
+    transform: translateX(-50%);
+  }
+  .pc__scale {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: var(--ink);
+    padding-bottom: 6px;
+    border-bottom: var(--rule);
+  }
+
+  .pc__cap {
+    margin-top: 14px;
+    margin-left: calc((100% - var(--col-gap)) * 0.23 + var(--col-gap));
+    max-width: 62ch;
+    font-size: var(--step-small);
+    color: var(--text-soft);
+    text-wrap: pretty;
+  }
+
+  @media (max-width: 600px) {
+    .pc__lane {
+      grid-template-columns: 1fr;
+      gap: 6px;
+    }
+    .pc__lane + .pc__lane {
+      margin-top: 8px;
+    }
+    .pc__lane--axis .pc__name {
+      display: none;
+    }
+    .pc__track {
+      grid-template-columns: minmax(0, 4.6fr) minmax(0, 5.4fr);
+      gap: 16px;
+    }
+    .pc__panel--b::before {
+      left: -12px;
+    }
+    .pc__axlab--last {
+      display: none;
+    }
+    .pc__cap {
+      margin-left: 0;
+    }
+  }
+</style>

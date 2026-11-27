@@ -1,0 +1,241 @@
+---
+/**
+ * "Check yourself": the song ends by quizzing the listener on one term (MCP).
+ * This finishes the job with five more. Each question prints a definition from
+ * rap.json and three terms that are easy to mix up with each other.
+ *
+ * It reuses the worksheet checkbox from Lab 01: the right box draws a tick, a
+ * wrong box draws a cross, and a wrong pick prints what that term actually means.
+ * The stamp lands only when all five are right.
+ */
+import Stamp from '../Stamp.astro';
+import rap from '../../data/rap.json';
+
+type Section = { n?: number; term?: string; definition?: string };
+const terms = (rap.sections as Section[]).filter((s) => s.term);
+const def = (t: string) => terms.find((s) => s.term === t)?.definition ?? '';
+
+// Answer first; the order on screen is fixed so the right box moves around.
+const questions: { answer: string; choices: string[]; prompt?: string }[] = [
+  { answer: 'CLAUDE.md', choices: ['Skills', 'CLAUDE.md', 'Context window'] },
+  { answer: 'Plan mode', choices: ['Checkpoints', 'Effort level', 'Plan mode'] },
+  { answer: 'Hook', choices: ['Hook', 'Subagents', 'Connector'] },
+  { answer: 'Plugin', choices: ['Connector', 'Plugin', 'MCP'] },
+  { answer: 'Context window', choices: ['Token', 'CLAUDE.md', 'Context window'] },
+];
+---
+
+<div class="quiz" data-quiz data-state="open">
+  <ol class="qs">
+    {
+      questions.map((q, i) => (
+        <li class="q" data-q data-state="idle">
+          <p class="q__def">{def(q.answer)}</p>
+          <div class="q__choices" role="group" aria-label={`Question ${i + 1}: which term is this?`}>
+            {q.choices.map((c) => (
+              <button class="check" type="button" aria-pressed="false" data-term={c} data-right={String(c === q.answer)}>
+                <span class="check__box">
+                  <svg class="check__mark" viewBox="0 0 44 44" aria-hidden="true">
+                    {c === q.answer ? (
+                      <path pathLength="1" d="M8 24 L18 35 L38 7" />
+                    ) : (
+                      <path pathLength="1" d="M9 12 L35 36 M35 11 L10 37" />
+                    )}
+                  </svg>
+                </span>
+                {c}
+              </button>
+            ))}
+          </div>
+          <div class="q__out" aria-live="polite">
+            <p data-when="right">
+              <strong>Right:</strong> {q.answer}.
+            </p>
+            <p data-when="wrong">
+              <strong>Not this one.</strong> <span data-what></span> Try another box.
+            </p>
+          </div>
+        </li>
+      ))
+    }
+  </ol>
+  <div class="quiz__check">
+    <p class="quiz__count label" aria-live="polite"><span data-count>0</span> of {questions.length} right</p>
+    <div class="slot">
+      <span class="slot__empty label" aria-hidden="true">Stamp<br />goes here</span>
+      <Stamp lines={['All five', 'right']} small="Lab 04" label="Checkpoint passed: all five right" class="quiz__stamp" />
+    </div>
+  </div>
+</div>
+
+<script type="application/json" data-defs set:html={JSON.stringify(Object.fromEntries(terms.map((t) => [t.term, t.definition])))} />
+
+<style>
+  .quiz {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 28px;
+    align-items: start;
+  }
+  .qs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: q;
+  }
+  .q {
+    counter-increment: q;
+    display: grid;
+    grid-template-columns: 2.2rem minmax(0, 1fr);
+    column-gap: 8px;
+    padding: 0 0 18px;
+  }
+  .q + .q {
+    border-top: var(--rule-dash);
+    padding-top: 18px;
+  }
+  .q::before {
+    content: counter(q);
+    grid-row: 1 / span 3;
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: var(--step-label);
+    color: var(--ink);
+    padding-top: 5px;
+  }
+  .q__def {
+    font-size: clamp(1.125rem, 1.5vw, 1.3125rem);
+    line-height: 1.35;
+    max-width: 46ch;
+    margin-bottom: 12px;
+  }
+  .q__choices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 30px;
+  }
+  .q__choices .check {
+    font-size: 1.1875rem;
+  }
+  .q__choices .check__box {
+    width: 26px;
+    height: 26px;
+  }
+  .q__choices .check__mark {
+    left: -6px;
+    top: -10px;
+    width: 40px;
+    height: 40px;
+  }
+  .q__out {
+    font-size: var(--step-small);
+    line-height: 1.45;
+    max-width: 58ch;
+  }
+  .q__out p {
+    display: none;
+    margin-top: 10px;
+  }
+  .q[data-state='right'] [data-when='right'],
+  .q[data-state='wrong'] [data-when='wrong'] {
+    display: block;
+  }
+  .q__out strong,
+  .q__out :global(b) {
+    font-weight: 600;
+  }
+
+  .quiz__check {
+    display: grid;
+    justify-items: center;
+    gap: 12px;
+    position: sticky;
+    top: 20px;
+  }
+  .quiz__count {
+    font-variant-numeric: tabular-nums;
+  }
+  .slot {
+    position: relative;
+    width: 150px;
+    height: 150px;
+  }
+  .slot__empty {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: var(--rule-dash);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    transition: opacity 0.15s;
+  }
+  .quiz :global(.quiz__stamp) {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    scale: 1.5;
+    transition:
+      opacity 0.12s 0.2s,
+      scale 0.28s var(--ease-stamp) 0.2s;
+  }
+  .quiz[data-state='done'] :global(.quiz__stamp) {
+    opacity: 1;
+    scale: 1;
+  }
+  .quiz[data-state='done'] .slot__empty {
+    opacity: 0;
+  }
+
+  @media (max-width: 700px) {
+    .quiz {
+      grid-template-columns: 1fr;
+    }
+    .q {
+      grid-template-columns: 1.6rem minmax(0, 1fr);
+    }
+    .quiz__check {
+      position: static;
+      justify-items: start;
+      padding-left: calc(1.6rem + 8px);
+    }
+    .slot {
+      display: none;
+      width: 124px;
+      height: 124px;
+    }
+    /* On a phone the stamp lands under the last answer, where the eye already is. */
+    .quiz[data-state='done'] .slot {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+  const quiz = document.querySelector<HTMLElement>('[data-quiz]');
+  const defs: Record<string, string> = JSON.parse(document.querySelector('[data-defs]')?.textContent ?? '{}');
+  if (quiz) {
+    const qs = [...quiz.querySelectorAll<HTMLElement>('[data-q]')];
+    const count = quiz.querySelector<HTMLElement>('[data-count]')!;
+    for (const q of qs) {
+      const boxes = [...q.querySelectorAll<HTMLButtonElement>('.check')];
+      const what = q.querySelector<HTMLElement>('[data-what]')!;
+      for (const box of boxes) {
+        box.addEventListener('click', () => {
+          for (const other of boxes) other.setAttribute('aria-pressed', String(other === box));
+          const right = box.dataset.right === 'true';
+          q.dataset.state = right ? 'right' : 'wrong';
+          if (!right) {
+            const term = box.dataset.term ?? '';
+            const name = document.createElement('b');
+            name.textContent = `${term}:`;
+            what.replaceChildren(name, ` ${defs[term] ?? ''}`);
+          }
+          const n = qs.filter((x) => x.dataset.state === 'right').length;
+          count.textContent = String(n);
+          quiz.dataset.state = n === qs.length ? 'done' : 'open';
+        });
+      }
+    }
+  }
+</script>

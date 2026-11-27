@@ -1,0 +1,241 @@
+---
+/**
+ * The Claude Dojo belt ladder, drawn as a staircase from data (src/data/dojo.json).
+ *
+ * Eleven rungs, Belt 0 to Master. Each rung is a step one riser higher than the last,
+ * so position and number say the same true thing: the order you climb it in.
+ * The second plate marks one rung, the top one, because it is the only one earned in
+ * public (dojo-17, dojo-18). Lesson and video totals are for the whole ladder: the files
+ * disagree on per-rung counts, so none are drawn.
+ *
+ * Wide containers: the stair rises left to right. Narrow ones (a phone, or a reading
+ * column): it is turned on end and read bottom to top, like a ladder, while the markup
+ * stays in climbing order. A container query decides, so it fits wherever it is placed.
+ */
+import dojo from '../../data/dojo.json';
+
+const top = dojo.ladder.length - 1;
+const rungs = dojo.ladder.map((r) => ({ ...r, live: r.n === top }));
+const words = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven'];
+---
+
+<figure class="ladder" aria-labelledby="ladder-cap">
+  <ol class="ladder__rungs" style={`--top:${top}`}>
+    {
+      rungs.map((r) => (
+        <li class:list={['rung', { 'rung--live': r.live }]} id={`rung-${r.n}`} style={`--i:${r.n}`}>
+          <div class="rung__words">
+            <span class="rung__num numeral" aria-hidden="true">
+              {r.n}
+            </span>
+            <span class="rung__belt label">{r.belt}</span>
+            <span class="rung__theme">{r.theme}</span>
+            <span class="visually-hidden">
+              {`Rung ${r.n}.`}
+              {r.live ? ' The top rung, earned in public.' : ''}
+            </span>
+          </div>
+          <span class="rung__step" aria-hidden="true">
+            <span class="rung__fill halftone--ink" />
+            {r.live && <span class="rung__tread plate" />}
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+  <figcaption id="ladder-cap">
+    <p class="ladder__count">
+      <span><b class="numeral">{dojo.record.lessons}</b> lessons</span>
+      <span><b class="numeral">{dojo.record.videos}</b> lesson videos</span>
+    </p>
+    <p class="ladder__key">
+      <span class="key" aria-hidden="true"><i class="key__live"></i></span>
+      <span>
+        {words[dojo.ladder.length]} rungs, climbed in order. Each lesson is a short explainer to read or a prompt to copy
+        and run. The pink tread is the top rung, the only one earned in public.
+      </span>
+    </p>
+  </figcaption>
+</figure>
+
+<style>
+  .ladder {
+    --base: 14px;
+    --rise: 19px;
+    container-type: inline-size;
+  }
+  .ladder__rungs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(11, minmax(0, 1fr));
+    align-items: end;
+    border-bottom: var(--rule-heavy);
+  }
+  .rung {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    min-width: 0;
+    margin: 0;
+    scroll-margin-top: 24px;
+  }
+  .rung__words {
+    display: grid;
+    align-content: end;
+    gap: 3px;
+    padding: 0 8px 10px 9px;
+  }
+  .rung__num {
+    font-size: clamp(2.25rem, 3.6vw, 3.25rem);
+    color: var(--ink);
+    margin-bottom: 4px;
+  }
+  .rung__belt {
+    line-height: 1.2;
+  }
+  .rung__theme {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-stretch: var(--w-title);
+    font-size: clamp(0.8125rem, 1.08vw, 1rem);
+    line-height: 1.08;
+    hyphens: manual;
+    overflow-wrap: break-word;
+  }
+
+  /* The step itself: a teal screen with a solid tread on top and a riser on the left. */
+  .rung__step {
+    position: relative;
+    display: block;
+    height: calc(var(--base) + var(--i) * var(--rise));
+    border-top: 2.5px solid var(--ink);
+    border-left: var(--rule);
+  }
+  .rung__fill {
+    position: absolute;
+    inset: 0;
+    opacity: 0.85;
+  }
+  .rung--live .rung__fill {
+    top: 11px;
+  }
+  .rung__tread {
+    position: absolute;
+    left: -1.5px;
+    right: 0;
+    top: -2.5px;
+    height: 13.5px;
+    background: var(--pink);
+  }
+
+  figcaption {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: 10px var(--col-gap);
+    align-items: baseline;
+    margin-top: 14px;
+    font-size: 0.8125rem;
+  }
+  .ladder__count {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 22px;
+    margin: 0;
+    font-size: 0.875rem;
+  }
+  .ladder__count span {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 7px;
+  }
+  .ladder__count .numeral {
+    font-size: 2.25rem;
+    color: var(--ink);
+  }
+  .ladder__key {
+    display: flex;
+    gap: 10px;
+    align-items: baseline;
+    margin: 0;
+    max-width: 66ch;
+  }
+  .key {
+    flex: none;
+    position: relative;
+    top: 1px;
+    width: 22px;
+    height: 9px;
+    border-top: 2.5px solid var(--ink);
+  }
+  .key__live {
+    position: absolute;
+    inset: -2.5px 0 auto 0;
+    height: 9px;
+    background: var(--pink);
+    mix-blend-mode: var(--blend);
+  }
+
+  /* Turned on end: the top rung sits at the top. Read it bottom to top. */
+  @container (max-width: 860px) {
+    figcaption {
+      grid-template-columns: 1fr;
+    }
+    .ladder__rungs {
+      display: flex;
+      flex-direction: column-reverse;
+      align-items: stretch;
+      border-bottom: 0;
+      border-top: var(--rule);
+    }
+    .rung {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 0.85fr);
+      align-items: center;
+      gap: 14px;
+      padding: 9px 0;
+      border-bottom: var(--rule-dash);
+    }
+    .rung:first-child {
+      border-bottom: var(--rule-heavy);
+    }
+    .rung__words {
+      grid-template-columns: 2.6rem auto;
+      grid-template-rows: auto auto;
+      column-gap: 12px;
+      row-gap: 1px;
+      align-items: baseline;
+      padding: 0;
+    }
+    .rung__num {
+      grid-row: 1 / span 2;
+      align-self: center;
+      font-size: 2.125rem;
+      margin: 0;
+      text-align: right;
+    }
+    .rung__theme {
+      font-size: 1.0625rem;
+    }
+    .rung__step {
+      height: 22px;
+      width: calc(var(--base) * 1.4 + var(--i) * (100% - var(--base) * 1.4) / var(--top));
+      border-top: 0;
+      border-left: 0;
+      border-right: 2.5px solid var(--ink);
+    }
+    .rung--live .rung__fill {
+      top: 0;
+      right: 9px;
+    }
+    .rung__tread {
+      left: auto;
+      right: -2.5px;
+      top: 0;
+      bottom: 0;
+      height: auto;
+      width: 11px;
+    }
+  }
+</style>

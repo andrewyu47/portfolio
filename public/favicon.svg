@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <style>
+    .pink { fill: #ff4fa3; mix-blend-mode: multiply; }
+    .ink { fill: #0b5f69; mix-blend-mode: multiply; }
+    @media (prefers-color-scheme: dark) {
+      .pink { fill: #ff6fb5; mix-blend-mode: screen; }
+      .ink { fill: #7fcfcf; mix-blend-mode: screen; }
+    }
+  </style>
+  <circle class="pink" cx="18.5" cy="17.5" r="10" />
+  <path class="ink" d="M5 5h7.4l3.6 8.2L19.6 5H27l-7.6 14.6V27h-6.8v-7.4z" />
+</svg>

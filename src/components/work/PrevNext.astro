@@ -1,0 +1,132 @@
+---
+/**
+ * The foot of a case study: the previous and next case studies in `order` sequence,
+ * and the way back to the index. A side with nothing to show is left empty, not padded.
+ */
+import type { Work } from './sequence';
+
+interface Props {
+  prev?: Work;
+  next?: Work;
+}
+const { prev, next } = Astro.props;
+---
+
+<nav class="pn" aria-label="More case studies">
+  <a class="label pn__all" href="/work">All case studies</a>
+  <div class="pn__pair">
+    {
+      prev ? (
+        <a class="pn__link pn__link--prev" href={`/work/${prev.id}`} rel="prev">
+          <span class="label">Previous</span>
+          <span class="pn__title">{prev.data.title}</span>
+          <span class="pn__meta">{prev.data.org}</span>
+        </a>
+      ) : (
+        <span />
+      )
+    }
+    {
+      next && (
+        <a class="pn__link pn__link--next" href={`/work/${next.id}`} rel="next">
+          <span class="label">Next</span>
+          <span class="pn__title">{next.data.title}</span>
+          <span class="pn__meta">{next.data.org}</span>
+        </a>
+      )
+    }
+  </div>
+</nav>
+
+<style>
+  .pn {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    margin-top: clamp(48px, 6vw, 84px);
+    border-top: var(--rule);
+    padding-top: 16px;
+  }
+  /* Same label, same direction as the link at the top of the case study. */
+  .pn__all {
+    align-self: start;
+    padding-top: 3px;
+    text-decoration: underline;
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  .pn__all::before {
+    content: '\2190\00a0';
+  }
+  .pn__pair {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: var(--col-gap);
+  }
+  .pn__link {
+    display: grid;
+    align-content: start;
+    gap: 6px;
+    text-decoration: none;
+    padding: 2px 0 6px;
+  }
+  .pn__link--next {
+    grid-column: 2;
+    text-align: right;
+    justify-items: end;
+  }
+  .pn__link--prev .label::before {
+    content: '\2190  ';
+  }
+  .pn__link--next .label::after {
+    content: '  \2192';
+  }
+  .pn__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-stretch: var(--w-title);
+    font-size: clamp(1.25rem, 1.9vw, 1.625rem);
+    line-height: 1.1;
+    max-width: 26ch;
+    text-wrap: balance;
+  }
+  .pn__meta {
+    font-size: var(--step-small);
+    color: var(--text-soft);
+  }
+  .pn__link:hover .pn__title {
+    text-decoration: underline;
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 5px;
+  }
+
+  @media (max-width: 600px) {
+    .pn {
+      grid-template-columns: 1fr;
+      gap: 18px;
+    }
+    .pn__all {
+      order: 2;
+    }
+    .pn__pair {
+      grid-template-columns: 1fr;
+      gap: 0;
+    }
+    .pn__pair > span:empty {
+      display: none;
+    }
+    .pn__link {
+      padding: 12px 0;
+    }
+    .pn__link + .pn__link {
+      border-top: var(--rule-dash);
+    }
+    .pn__link--next {
+      grid-column: 1;
+      text-align: left;
+      justify-items: start;
+    }
+  }
+</style>

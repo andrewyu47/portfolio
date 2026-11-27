@@ -1,0 +1,460 @@
+---
+/**
+ * An unlisted page made for one reader. It takes a posting line by line and sets
+ * evidence beside each line, graded plainly: yes, partly, or not yet.
+ *
+ * The template is generic. Which posting it answers, and every word of the answers,
+ * comes from private data that is not in this repository (see src/lib/unlisted.ts).
+ * With no private data, this route builds nothing.
+ *
+ * Evidence that depends on the labs repository only appears once src/data/labs.json
+ * says that repository is live.
+ */
+import Base from '../../layouts/Base.astro';
+import Overprint from '../../components/Overprint.astro';
+import RunHead from '../../components/RunHead.astro';
+import labs from '../../data/labs.json';
+import profile from '../../data/profile.json';
+import { loadUnlisted, type UnlistedPage, type Level } from '../../lib/unlisted';
+
+export function getStaticPaths() {
+  return loadUnlisted().map((page) => ({ params: { slug: page.slug }, props: { page } }));
+}
+
+interface Props {
+  page: UnlistedPage;
+}
+const { page } = Astro.props;
+
+const labsLive = labs.status === 'live';
+let n = 0;
+const sections = page.sections.map((s) => ({
+  title: s.title,
+  rows: s.rows.map((r) => ({
+    ...r,
+    n: ++n,
+    evidence: r.evidence.filter((e) => e.requires !== 'labs-live' || labsLive),
+  })),
+}));
+const all = sections.flatMap((s) => s.rows);
+const count = (level: Level) => all.filter((r) => r.level === level).length;
+const LEVEL = { shown: 'Yes', partly: 'Partly', 'not-yet': 'Not yet' } as const;
+const slug = (s: string) =>
+  s
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '');
+const external = (href: string) => /^https?:/.test(href);
+// A few words of a line, enough to name it for a screen reader.
+const short = (ask: string) => ask.split(':')[0].split(' ').slice(0, 9).join(' ');
+---
+
+<Base
+  title={`${page.role}, line by line`}
+  description={`Andrew Yu's evidence for one role, set against the posting one line at a time, with a link for each claim.`}
+  noindex
+>
+  <RunHead left={`For ${page.company}`} right={page.role} />
+
+  <header class="intro">
+    <Overprint as="h1" text="The posting, line by line." />
+    <div class="intro__grid">
+    <div class="intro__claim">
+      <p class="lede">{page.intro}</p>
+      {page.gap && <p class="gap">{page.gap}</p>}
+    </div>
+
+    <nav class="tally" aria-label={`All ${all.length} lines, in the posting's order`}>
+      {
+        sections.map((s) => (
+          <div class="tally__group">
+            <span class="label">{s.title}</span>
+            <ol>
+              {s.rows.map((r) => (
+                <li>
+                  <a href={`#l-${r.n}`} aria-label={`Line ${r.n}: ${LEVEL[r.level]}. ${short(r.ask)}`}>
+                    <span class={`mark mark--${r.level}`} aria-hidden="true">
+                      {r.level === 'shown' && (
+                        <svg viewBox="0 0 44 44">
+                          <path d="M8 24 L18 35 L38 7" />
+                        </svg>
+                      )}
+                    </span>
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </div>
+        ))
+      }
+      <p class="tally__sum">
+        <span><strong class="numeral">{count('shown')}</strong> yes</span>
+        <span><strong class="numeral">{count('partly')}</strong> partly</span>
+        <span><strong class="numeral">{count('not-yet')}</strong> not yet</span>
+        <span class="tally__of">of {all.length} lines. Each box opens its line.</span>
+      </p>
+    </nav>
+    </div>
+  </header>
+
+  {
+    page.lead && page.lead.length > 0 && (
+      <section class="lead spot" data-print aria-labelledby="lead-h">
+        <h2 class="label" id="lead-h">
+          {page.lead.length === 3 ? 'Three lines to start with' : 'Lines to start with'}
+        </h2>
+        <ol class="lead__items">
+          {page.lead.map((item) => (
+            <li>
+              <p class="lead__ask" data-quoted>{item.ask}</p>
+              <p class="lead__proof">{item.proof}</p>
+              {item.link && (
+                <a class="more" href={item.link.href}>
+                  {item.link.label}
+                </a>
+              )}
+              {item.note && <p class="lead__note">{item.note}</p>}
+            </li>
+          ))}
+        </ol>
+      </section>
+    )
+  }
+
+  {
+    sections.map((section) => (
+      <section class="part" aria-labelledby={slug(section.title)}>
+        <div class="part__head">
+          <h2 id={slug(section.title)}>{section.title}</h2>
+          <p class="label">
+            {section.rows.filter((r) => r.level === 'shown').length} of {section.rows.length} yes
+          </p>
+        </div>
+        <ol class="rows">
+          {section.rows.map((row) => (
+            <li class="line" id={`l-${row.n}`}>
+              <div class="line__level">
+                <span class={`mark mark--${row.level}`} aria-hidden="true">
+                  {row.level === 'shown' && (
+                    <svg viewBox="0 0 44 44">
+                      <path d="M8 24 L18 35 L38 7" />
+                    </svg>
+                  )}
+                </span>
+                <span class="label">{LEVEL[row.level]}</span>
+              </div>
+              <div class="line__body">
+                <p class="ask" data-quoted>{row.ask}</p>
+                <p class="answer">{row.answer}</p>
+                {row.points && (
+                  <ul class="points">
+                    {row.points.map((p) => (
+                      <li>
+                        <span>{p.text}</span>
+                        {p.link && (
+                          <a class="more" href={p.link.href}>
+                            {p.link.label}
+                          </a>
+                        )}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                {row.missing && (
+                  <p class="missing">
+                    <span class="label">Missing</span> {row.missing}
+                  </p>
+                )}
+                {row.note && <p class="missing">{row.note}</p>}
+                {row.evidence.length > 0 && (
+                  <ul class="evidence">
+                    {row.evidence.map((e) => (
+                      <li>
+                        <a class="more" href={e.href} rel={external(e.href) ? 'noopener' : undefined}>
+                          {e.label}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+            </li>
+          ))}
+        </ol>
+      </section>
+    ))
+  }
+
+  <section class="part close" aria-label="Next">
+    <div class="line">
+      <div class="line__level"><span class="label">Next</span></div>
+      <div class="line__body">
+        <p class="answer">The resume has the dates. To find anything else here, connect Claude to this site and ask it.</p>
+        <ul class="evidence">
+          <li><a class="more" href="/resume">Resume</a></li>
+          <li><a class="more" href={profile.links.linkedin} rel="noopener">LinkedIn</a></li>
+          <li><a class="more" href="/teaching/connect">Lab 03: Ask this site a question</a></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .intro {
+    padding-top: clamp(28px, 4.4vw, 60px);
+  }
+  .intro :global(h1) {
+    font-size: var(--step-hero);
+  }
+  .intro__grid {
+    display: grid;
+    grid-template-columns: minmax(0, 6.3fr) minmax(0, 3.7fr);
+    gap: clamp(24px, 4vw, 64px);
+    align-items: start;
+    margin-top: clamp(22px, 3vw, 40px);
+  }
+  .lede {
+    max-width: 50ch;
+  }
+  .gap {
+    margin-top: 16px;
+    max-width: 54ch;
+    color: var(--text-soft);
+  }
+
+  /* The whole posting at a glance: one box per line, in order, grouped as the posting groups them. */
+  .tally {
+    display: grid;
+    gap: 14px;
+    padding-bottom: 6px;
+  }
+  .tally__group {
+    display: grid;
+    gap: 7px;
+  }
+  .tally ol {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 9px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .tally a {
+    display: block;
+    padding: 4px;
+    margin: -4px;
+  }
+  .tally a:hover .mark,
+  .tally a:focus-visible .mark {
+    background: var(--ink-tint);
+  }
+  .tally__sum {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 4px 18px;
+    margin-top: 6px;
+    padding-top: 12px;
+    border-top: var(--rule);
+    font-size: var(--step-small);
+    line-height: 1.5;
+  }
+  .tally__sum .numeral {
+    font-size: 2rem;
+    color: var(--ink);
+    margin-right: 5px;
+  }
+  .tally__of {
+    flex-basis: 100%;
+    color: var(--text-soft);
+  }
+
+  /* The grade mark: a worksheet box. Ticked, half inked, or empty. */
+  .mark {
+    position: relative;
+    flex: none;
+    display: block;
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--ink);
+    background: var(--stock);
+  }
+  .mark--partly {
+    background-image: linear-gradient(135deg, var(--ink) 0 50%, transparent 50%);
+  }
+  .mark svg {
+    position: absolute;
+    left: -5px;
+    top: -10px;
+    width: 36px;
+    height: 36px;
+    overflow: visible;
+    mix-blend-mode: var(--blend);
+  }
+  .mark path {
+    fill: none;
+    stroke: var(--pink);
+    stroke-width: 6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  /* The lines to read first, on the page's one field of pink. */
+  .lead {
+    margin-top: clamp(32px, 4.6vw, 60px);
+  }
+  .lead__items {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: clamp(18px, 2.6vw, 36px);
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+  }
+  .lead__items li {
+    display: grid;
+    gap: 10px;
+    align-content: start;
+  }
+  .lead__ask {
+    font-size: 0.9375rem;
+    font-style: italic;
+    line-height: 1.4;
+  }
+  .lead__proof {
+    font-size: clamp(1.1875rem, 1.75vw, 1.4375rem);
+    line-height: 1.3;
+  }
+  .lead__note {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+  }
+
+  .part {
+    padding-top: clamp(48px, 7vw, 92px);
+  }
+  .part__head {
+    padding-bottom: 14px;
+    border-bottom: var(--rule);
+  }
+  .part__head h2 {
+    font-size: var(--step-h2);
+  }
+  .part__head .label {
+    margin-top: 8px;
+  }
+
+  .rows {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .line {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: 28px 0;
+    border-bottom: var(--rule-dash);
+    scroll-margin-top: 16px;
+  }
+  .rows .line:last-child,
+  .close .line {
+    border-bottom: 0;
+  }
+  .line:target {
+    background: var(--ink-tint);
+    box-shadow:
+      -14px 0 0 var(--ink-tint),
+      14px 0 0 var(--ink-tint);
+  }
+  .line__level {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    align-self: start;
+    padding-top: 2px;
+  }
+  .line__body {
+    max-width: 68ch;
+  }
+  .ask {
+    font-style: italic;
+    color: var(--text-soft);
+    line-height: 1.45;
+  }
+  .answer {
+    margin-top: 10px;
+    font-size: 1.1875rem;
+    line-height: 1.5;
+  }
+  .points {
+    list-style: none;
+    margin: 12px 0 0;
+    padding: 0;
+    display: grid;
+    gap: 12px;
+  }
+  .points li {
+    display: grid;
+    gap: 4px;
+    justify-items: start;
+    padding-left: 16px;
+    border-left: var(--rule);
+  }
+  .missing {
+    margin-top: 12px;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+  .missing .label {
+    margin-right: 8px;
+  }
+  .evidence {
+    list-style: none;
+    margin: 14px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 26px;
+  }
+
+  .close {
+    padding-top: clamp(28px, 4vw, 48px);
+    border-top: var(--rule);
+    margin-top: clamp(28px, 4vw, 48px);
+  }
+
+  @media (max-width: 900px) {
+    .intro__grid {
+      grid-template-columns: 1fr;
+    }
+    .lead__items {
+      grid-template-columns: 1fr;
+    }
+    .lead__items li + li {
+      padding-top: 16px;
+      border-top: 1.5px solid var(--over);
+    }
+  }
+  @media (max-width: 600px) {
+    .line {
+      grid-template-columns: 1fr;
+      gap: 12px;
+      padding: 22px 0;
+    }
+    .answer {
+      font-size: 1.0625rem;
+    }
+    /* One link per line on a phone, always. */
+    .evidence {
+      flex-direction: column;
+      gap: 10px;
+    }
+    .line:target {
+      box-shadow: none;
+    }
+  }
+</style>

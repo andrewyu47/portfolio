@@ -1,0 +1,120 @@
+---
+/**
+ * The page shell: head, navigation, footer, and the registration moment.
+ *
+ * Every page prints in two plates. On load the pink plate is a little out of
+ * register and settles into place. The class `misreg` on <html> holds it out;
+ * the inline script below adds it before first paint and removes it once the
+ * page has loaded. Visitors who prefer reduced motion never get the class.
+ */
+import '../styles/global.css';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+import profile from '../data/profile.json';
+import anybodyFont from '@fontsource-variable/anybody/files/anybody-latin-wdth-normal.woff2?url';
+import literataFont from '@fontsource-variable/literata/files/literata-latin-opsz-normal.woff2?url';
+
+interface Props {
+  /** Page title. The site name is appended. Omit on the home page. */
+  title?: string;
+  description?: string;
+  /** Keep the page out of search engines (used by unlisted pages). */
+  noindex?: boolean;
+  /** Path to a social card image under /public. */
+  image?: string;
+  /** JSON-LD to embed, already shaped. */
+  jsonLd?: Record<string, unknown>;
+}
+
+const { title, description = profile.oneLine, noindex = false, image = '/og.png', jsonLd } = Astro.props;
+const fullTitle = title ? `${title} · ${profile.name}` : `${profile.name}, teaching people what AI can actually do`;
+const canonical = new URL(Astro.url.pathname.replace(/\/$/, '') || '/', Astro.site);
+const imageUrl = new URL(image, Astro.site);
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <meta name="theme-color" content="#edefea" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1b1d" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" href={anybodyFont} as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href={literataFont} as="font" type="font/woff2" crossorigin />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={profile.name} />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={imageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="alternate" type="text/plain" href="/llms.txt" title="This site for language models" />
+    {jsonLd && <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />}
+    <script is:inline>
+      (() => {
+        const root = document.documentElement;
+        root.classList.add('js');
+        try {
+          const paper = localStorage.getItem('paper');
+          if (paper === 'dark' || paper === 'light') root.dataset.theme = paper;
+        } catch {}
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+        root.classList.add('misreg');
+        const settle = () => requestAnimationFrame(() => requestAnimationFrame(() => root.classList.remove('misreg')));
+        if (document.readyState === 'complete') settle();
+        else addEventListener('load', settle, { once: true });
+        // Never leave the page out of register if load stalls on a slow asset.
+        setTimeout(() => root.classList.remove('misreg'), 2500);
+      })();
+    </script>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <div class="wrap">
+      <Nav />
+      <main id="main">
+        <slot />
+      </main>
+      <Footer />
+    </div>
+    <script is:inline>
+      // Figures marked data-print are printed when they come into view: the teal plate
+      // first, then pink lands in register (styles in global.css). With reduced motion,
+      // or in a browser without IntersectionObserver, they are simply there.
+      (() => {
+        const figures = document.querySelectorAll('[data-print]');
+        const print = (el) => el.setAttribute('data-printed', '');
+        if (matchMedia('(prefers-reduced-motion: reduce)').matches || !('IntersectionObserver' in window)) {
+          figures.forEach(print);
+          return;
+        }
+        const seen = new IntersectionObserver(
+          (entries) => {
+            for (const entry of entries) {
+              if (!entry.isIntersecting) continue;
+              print(entry.target);
+              seen.unobserve(entry.target);
+            }
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.15 },
+        );
+        figures.forEach((el) => seen.observe(el));
+        addEventListener('beforeprint', () => figures.forEach(print));
+      })();
+
+      // A code block wide enough to scroll must be reachable from the keyboard.
+      for (const pre of document.querySelectorAll('pre')) {
+        if (pre.scrollWidth > pre.clientWidth) {
+          pre.tabIndex = 0;
+          pre.setAttribute('role', 'region');
+          pre.setAttribute('aria-label', 'Code sample, scrolls sideways');
+        }
+      }
+    </script>
+  </body>
+</html>

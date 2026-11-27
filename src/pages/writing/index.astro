@@ -1,0 +1,208 @@
+---
+/**
+ * The writing page. With one essay it is not a list: the essay is set as a single
+ * feature, its title on the pink field, its argument as a large statement, one line of
+ * plain facts, and the two ways to read it. With more than one essay it falls back to
+ * a list of rows, each with a visible "Read" link.
+ */
+import Base from '../../layouts/Base.astro';
+import RunHead from '../../components/RunHead.astro';
+import { publishedEssays, venue } from '../../components/writing/essays';
+
+const essays = await publishedEssays();
+const [lead] = essays;
+const single = essays.length === 1;
+const count = essays.length === 1 ? 'One essay' : `${essays.length} essays`;
+---
+
+<Base
+  title="Writing"
+  description={single
+    ? `An essay by Andrew Yu on language and AI, summarized here and linked to where it was published.`
+    : 'Essays by Andrew Yu on language and AI, each summarized here and linked to where it was published.'}
+>
+  <div class="writing">
+    <RunHead left="Writing" right={count} />
+
+    {
+      essays.length === 0 ? (
+        <>
+          <h1 class="writing__h1">Writing</h1>
+          <p class="empty">No essays are published here yet.</p>
+        </>
+      ) : single ? (
+        <article class="feature" aria-labelledby="essay-h">
+          <p class="label feature__kind">Essay</p>
+          <div class="feature__main">
+            <div class="feature__title spot">
+              <h1 id="essay-h">{lead.data.title}</h1>
+            </div>
+            <p class="feature__thesis">{lead.data.summary}</p>
+            <p class="feature__facts label">
+              <span>Published on {venue(lead)}</span><span>{lead.data.period}</span>
+            </p>
+            <ul class="feature__links">
+              <li>
+                <a class="more" href={`/writing/${lead.id}`}>
+                  What it argues, on this site
+                </a>
+              </li>
+              {lead.data.externalUrl && (
+                <li>
+                  <a class="more" href={lead.data.externalUrl}>
+                    Read the full essay on {venue(lead)}
+                  </a>
+                </li>
+              )}
+            </ul>
+          </div>
+        </article>
+      ) : (
+        <>
+          <h1 class="writing__h1">Writing</h1>
+          <ul class="essays">
+            {essays.map((e) => (
+              <li class="essay">
+                <p class="label essay__venue">{venue(e)}</p>
+                <div>
+                  <h2 class="title">
+                    <a href={`/writing/${e.id}`}>{e.data.title}</a>
+                  </h2>
+                  <p class="essay__summary">{e.data.summary}</p>
+                  <a class="more essay__more" href={`/writing/${e.id}`}>
+                    Read
+                  </a>
+                </div>
+              </li>
+            ))}
+          </ul>
+        </>
+      )
+    }
+  </div>
+</Base>
+
+<style>
+  .writing {
+    padding-top: clamp(20px, 3vw, 36px);
+    /* The page holds the footer near the bottom edge instead of leaving it mid-screen. */
+    min-height: calc(100vh - 220px);
+  }
+
+  /* ---------- One essay, set as a feature ---------- */
+
+  .feature {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding-top: clamp(36px, 5vw, 72px);
+  }
+  .feature__kind {
+    padding-top: 6px;
+  }
+  .feature__title {
+    display: inline-block;
+    max-width: 100%;
+  }
+  .feature__title h1 {
+    font-size: clamp(2.25rem, 4.6vw, 4.25rem);
+    line-height: 0.98;
+    max-width: 16ch;
+    color: var(--over);
+    text-wrap: wrap;
+  }
+  .feature__thesis {
+    margin-top: clamp(28px, 3.6vw, 48px);
+    max-width: 26ch;
+    font-size: clamp(1.75rem, 3.2vw, 2.875rem);
+    line-height: 1.2;
+    letter-spacing: -0.008em;
+    font-variation-settings: 'opsz' 60;
+    padding-top: 18px;
+    border-top: var(--rule-heavy);
+  }
+  .feature__facts {
+    margin-top: clamp(22px, 2.6vw, 32px);
+  }
+  .feature__facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2px 0;
+  }
+  .feature__facts span + span::before {
+    content: '\00b7';
+    padding: 0 0.7em;
+  }
+  .feature__links {
+    list-style: none;
+    margin: 16px 0 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 32px;
+  }
+  .feature__links .more {
+    font-size: 0.875rem;
+  }
+
+  /* ---------- More than one essay ---------- */
+
+  .writing__h1 {
+    margin-top: clamp(36px, 5vw, 72px);
+    font-size: var(--step-h2);
+    padding-bottom: 16px;
+    border-bottom: var(--rule);
+  }
+  .essays {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .essay {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: 28px 0 30px;
+    border-bottom: var(--rule-dash);
+  }
+  .essay:last-child {
+    border-bottom: var(--rule);
+  }
+  .essay__venue {
+    padding-top: 6px;
+  }
+  .essay .title a {
+    text-decoration-color: var(--ink);
+  }
+  .essay__summary {
+    margin-top: 12px;
+    max-width: 52ch;
+    font-size: var(--step-outcome);
+    line-height: 1.32;
+  }
+  .essay__more {
+    margin-top: 12px;
+  }
+  .empty {
+    padding-top: 24px;
+    color: var(--text-soft);
+  }
+
+  @media (max-width: 600px) {
+    .writing {
+      min-height: 0;
+    }
+    .feature,
+    .essay {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .feature__kind,
+    .essay__venue {
+      padding-top: 0;
+    }
+    .feature__thesis {
+      font-size: 1.625rem;
+    }
+  }
+</style>

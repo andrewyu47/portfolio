@@ -1,0 +1,53 @@
+---
+title: "Fold"
+outcome: "Student organization leaders paste in a messy list of names and handles, and Fold turns it into a clean roster they can question in plain English, such as who came to the last three events but not this week."
+summary: "Events, attendance, follow-up, and carpools for student organization leaders, with Claude doing the data entry and answering the questions."
+org: "Personal project"
+role: "Solo builder"
+period: "Spring 2026, the first version"
+year: 2026
+area: "build"
+order: 50
+stack: ["Next.js 15", "TypeScript", "Turso (hosted SQLite)", "Drizzle ORM", "Claude API (Haiku 4.5, Sonnet 4.6)", "Tailwind CSS", "Recharts"]
+verify:
+  - label: "Try the live demo"
+    href: "https://fold-public.vercel.app"
+  - label: "Read the code on GitHub"
+    href: "https://github.com/andrewyu47/Fold-public"
+---
+
+I built Fold with Claude Code for leaders who are not data analysts. This page describes the first version, the one in the public demo and repository.
+
+## The problem
+
+Student organization leaders collect attendance however it arrives: a messy paste from a sign-in sheet, Instagram handles on a napkin, names half remembered after the fact. It ends up in spreadsheets and group chats, and in Notion docs nobody updates after week three. When a leader asks "who came to the last three events but went quiet this week?", nobody has the answer in one place.
+
+## What it does
+
+### Intake
+
+A leader pastes whatever they collected: names, phone numbers, Instagram handles, in whatever shape a co-leader wrote them down. Claude turns that into structured student records and checks for duplicates in the same pass, so a typo doesn't create a phantom freshman.
+
+### Events and attendance
+
+A leader creates an event and marks who came with a quick-add form. The event page then shows who was there for the first time and who invited whom.
+
+### Students
+
+Each person on the roster carries their own history: how often they come, who brought them, who they've brought, and every attempt to reach them. A Gone Cold tab lists anyone who hasn't shown up in 30 days or more.
+
+### Funnel
+
+People move through stages from new to engaged. A sweep moves them between stages based on attendance, and filters show stale responses, missing follow-ups, and people stuck in one stage too long.
+
+### Rides
+
+Carpools are their own records. A leader assigns drivers and riders within seat limits, with separate sessions for the trip there, the trip back, and Sunday morning.
+
+### Questions in plain English
+
+A leader asks for "all freshmen who were invited by someone" and gets a table back. The model turns the question into a query that is validated against the schema before it runs.
+
+## Under the hood
+
+Fold is a Next.js 15 app on the App Router, in TypeScript end to end, with data in Turso, a hosted SQLite, and Drizzle ORM for the schema and migrations. Claude handles parsing and insights, called from server actions so the prompts and parsing logic stay on the server.

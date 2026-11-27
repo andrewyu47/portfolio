@@ -1,0 +1,28 @@
+---
+/**
+ * The proof that Andrew teaches live rooms: 55 seconds of him opening the capstone at
+ * the Claude Dojo intensive on July 11, 2026 (recordings index, Session 2, clip 08),
+ * with captions. He is the only person in frame. Used beside the title of the Claude Dojo
+ * case study (frontmatter heroFigure: DojoClip) and near the top of /teaching.
+ */
+import Clip from '../Clip.astro';
+
+interface Props {
+  id?: string;
+  class?: string;
+}
+const { id = 'clip', class: className } = Astro.props;
+---
+
+<Clip
+  print="room-capstone"
+  src="/media/dojo-capstone-kickoff.mp4"
+  captions="/media/dojo-capstone-kickoff.vtt"
+  poster="/media/dojo-capstone-kickoff-poster.jpg"
+  length="55 seconds"
+  id={id}
+  class:list={['dojo-clip', className]}
+  alt="Andrew at a lectern with a laptop, beside a screen that reads: Build a tool that proves you can already do the job."
+>
+  I open the capstone at the Claude Dojo intensive, Day 1, July 11, 2026. From the session recording, with captions.
+</Clip>

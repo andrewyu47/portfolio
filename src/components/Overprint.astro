@@ -1,0 +1,20 @@
+---
+/**
+ * A heading printed in two plates: teal on top, pink underneath and slightly off.
+ * On load the pink plate starts out of register and settles (see .overprint in global.css).
+ * The pink copy is decorative and hidden from assistive tech.
+ *
+ *   <Overprint as="h1" text="I teach people what AI can actually do." />
+ */
+interface Props {
+  text: string;
+  as?: 'h1' | 'h2' | 'h3' | 'p' | 'span';
+  id?: string;
+  class?: string;
+}
+const { text, as: Tag = 'h2', id, class: className } = Astro.props;
+---
+
+<Tag class:list={['overprint', className]} id={id}
+  ><span class="overprint__shadow" aria-hidden="true">{text}</span><span class="overprint__ink">{text}</span></Tag
+>

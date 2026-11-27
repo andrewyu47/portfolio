@@ -1,0 +1,307 @@
+---
+/**
+ * How SAGE works, drawn as lanes: what the user does on top, what SAGE does under it,
+ * and, at the bottom, the part that was designed but not built (the Pendo log and the
+ * Jira ticket). The selection, the one thing the user does by hand, is the pink field.
+ *
+ * Wide (a container of 440px or more): a three-column swimlane. The answer path runs
+ * down from the selection, across SAGE's three steps, and back up to the popup.
+ * Narrow: one column in the order things happen, each step tagged with its lane.
+ * The steps are in reading order in the markup, so a screen reader hears the sequence.
+ *
+ * Source: the SAGE case study (portfolio-old/docs/case-studies/project-sage.mdx).
+ */
+interface Props {
+  compact?: boolean;
+  class?: string;
+}
+const { compact = false, class: className } = Astro.props;
+---
+
+<figure class:list={['sage', { 'sage--compact': compact }, className]}>
+  <div class="sage__grid">
+    <div class="node node--user node--s1 spot">
+      <span class="node__lane">The user</span>
+      <span class="node__n">1</span>
+      <span class="node__t">Draws a box around a chart, label, or number</span>
+    </div>
+    <div class="node node--sage node--s2 to-right">
+      <span class="node__lane">SAGE</span>
+      <span class="node__n">2</span>
+      <span class="node__t">Captures the DOM and HTML inside the box</span>
+    </div>
+    <div class="node node--sage node--s3 to-right">
+      <span class="node__lane">SAGE</span>
+      <span class="node__n">3</span>
+      <span class="node__t">Retrieves the matching docs from a vector database</span>
+    </div>
+    <div class="node node--sage node--s4">
+      <span class="node__lane">SAGE</span>
+      <span class="node__n">4</span>
+      <span class="node__t">A RAG agent writes the answer from those docs</span>
+    </div>
+    <div class="node node--user node--s5">
+      <span class="node__lane">The user</span>
+      <span class="node__n">5</span>
+      <span class="node__t">Reads the answer in a popup beside the box</span>
+    </div>
+    <div class="node node--design node--d1 to-right">
+      <span class="node__lane">Designed, not built</span>
+      <span class="node__t">Logs each box as a Pendo event</span>
+    </div>
+    <div class="node node--design node--d2">
+      <span class="node__lane">Designed, not built</span>
+      <span class="node__t">When one element draws enough questions, opens a Jira ticket with its ID and count</span>
+    </div>
+
+    <p class="lane lane--user" aria-hidden="true"><span>What the user does</span></p>
+    <p class="lane lane--sage" aria-hidden="true"><span>What SAGE does</span></p>
+    <p class="lane lane--design" aria-hidden="true"><span>Designed, not built</span></p>
+    <span class="drop drop--a" aria-hidden="true"></span>
+    <span class="drop drop--b drop--up" aria-hidden="true"></span>
+    <span class="drop drop--c drop--dash" aria-hidden="true"></span>
+  </div>
+  {
+    !compact && (
+      <figcaption>
+        Steps 1 to 5 are the answer path. The Pendo log and the Jira ticket were designed, not built.
+      </figcaption>
+    )
+  }
+</figure>
+
+<style>
+  .sage {
+    container-type: inline-size;
+    max-width: 560px;
+  }
+
+  /* ---------- Narrow: one column, in the order things happen ---------- */
+
+  .sage__grid {
+    display: grid;
+    gap: 22px;
+  }
+  .node {
+    position: relative;
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    align-content: start;
+    gap: 4px 10px;
+    padding: 10px 12px 12px;
+    border: var(--rule);
+    font-size: 0.9375rem;
+    line-height: 1.35;
+  }
+  .node.spot {
+    border-color: transparent;
+    padding: 10px 12px 12px;
+  }
+  .node--design {
+    border-style: dashed;
+    border-width: 1.5px;
+  }
+  .node__lane {
+    grid-column: 1 / -1;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink);
+  }
+  .node.spot .node__lane {
+    color: var(--over);
+  }
+  .node__n {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-shout);
+    font-size: 1.25rem;
+    line-height: 1.05;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .node.spot .node__n {
+    color: var(--over);
+  }
+  .node--design .node__t {
+    grid-column: 1 / -1;
+  }
+  /* A down arrow between steps in the single column. */
+  .node + .node::before {
+    content: '\2193';
+    position: absolute;
+    left: 14px;
+    top: -21px;
+    font-family: var(--font-mono);
+    font-size: 0.9375rem;
+    line-height: 20px;
+    color: var(--ink);
+  }
+  .lane,
+  .drop {
+    display: none;
+  }
+
+  /* ---------- Wide: three lanes ---------- */
+
+  @container (min-width: 440px) {
+    .sage__grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-rows: auto auto 46px auto 46px auto;
+      column-gap: 26px;
+      row-gap: 0;
+    }
+    .node + .node::before {
+      content: none;
+    }
+    .node {
+      display: block;
+    }
+    .node__lane {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .node__n {
+      display: block;
+      margin-bottom: 4px;
+    }
+    .node--s1 {
+      grid-area: 2 / 1;
+    }
+    .node--s5 {
+      grid-area: 2 / 3;
+    }
+    .node--s2 {
+      grid-area: 4 / 1;
+    }
+    .node--s3 {
+      grid-area: 4 / 2;
+    }
+    .node--s4 {
+      grid-area: 4 / 3;
+    }
+    .node--d1 {
+      grid-area: 6 / 1;
+    }
+    .node--d2 {
+      grid-area: 6 / 2 / auto / 4;
+    }
+
+    /* Lane names: the first sits above the lanes, the others ride on the rule between them,
+       in the middle column where no arrow crosses. */
+    .lane {
+      display: block;
+      position: relative;
+      margin: 0;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      line-height: 1.3;
+      color: var(--ink);
+    }
+    .lane--user {
+      grid-area: 1 / 1 / auto / 4;
+      padding-bottom: 10px;
+    }
+    .lane--sage,
+    .lane--design {
+      grid-row: 3;
+      grid-column: 1 / 4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lane--design {
+      grid-row: 5;
+    }
+    .lane--sage::before,
+    .lane--design::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 50%;
+      border-top: var(--rule);
+    }
+    .lane--design::before {
+      border-top: var(--rule-dash);
+    }
+    .lane span {
+      position: relative;
+      padding: 0 10px;
+      background: var(--stock);
+    }
+
+    /* Vertical arrows between lanes, drawn in the 46px rows. */
+    .drop {
+      display: block;
+      position: relative;
+      z-index: 1;
+      justify-self: center;
+      width: 0;
+      border-left: 2px solid var(--ink);
+    }
+    .drop::after {
+      content: '';
+      position: absolute;
+      left: -7px;
+      bottom: 0;
+      border: 6px solid transparent;
+      border-top: 9px solid var(--ink);
+      border-bottom: 0;
+    }
+    .drop--up::after {
+      top: 0;
+      bottom: auto;
+      border-top: 0;
+      border-bottom: 9px solid var(--ink);
+    }
+    .drop--dash {
+      border-left-style: dashed;
+    }
+    .drop--a {
+      grid-area: 3 / 1;
+    }
+    .drop--b {
+      grid-area: 3 / 3;
+    }
+    .drop--c {
+      grid-area: 5 / 1;
+    }
+
+    /* Horizontal arrows across the column gap. */
+    .to-right::after {
+      content: '';
+      position: absolute;
+      left: 100%;
+      top: 50%;
+      width: 26px;
+      border-top: 2px solid var(--ink);
+    }
+    .node.to-right::before {
+      content: '';
+      position: absolute;
+      left: calc(100% + 17px);
+      top: calc(50% - 5px);
+      border: 6px solid transparent;
+      border-left: 9px solid var(--ink);
+      border-right: 0;
+      z-index: 1;
+    }
+    .node--design.to-right::after {
+      border-top-style: dashed;
+    }
+  }
+
+  .sage--compact .node {
+    font-size: 0.875rem;
+  }
+</style>

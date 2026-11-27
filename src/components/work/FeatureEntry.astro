@@ -1,0 +1,139 @@
+---
+/**
+ * A full case study on the work index: the area and where in the label column, the
+ * title, its deck and a named link in the middle, and the case study's own figure on
+ * the right, the same proof that sits beside its title. The figure stays live (a clip
+ * still plays), so only the title and the named link open the page, not the whole row.
+ */
+import type { Work } from './sequence';
+import { areaName } from './sequence';
+import { figureFor } from './figures';
+
+interface Props {
+  entry: Work;
+}
+const { entry } = Astro.props;
+const d = entry.data;
+const href = `/work/${entry.id}`;
+const Figure = figureFor(d.heroFigure);
+---
+
+<li class:list={['feature', { 'feature--no-figure': !Figure }]}>
+  <div class="feature__where">
+    <p class="verb">{areaName(d.area)}</p>
+    <p class="label">{d.org}<br /><span>{d.period}</span></p>
+  </div>
+  <div class="feature__main">
+    <div class="feature__text">
+      <h2 class="feature__title"><a href={href}>{d.title}</a></h2>
+      <p class="feature__deck">{d.outcome}</p>
+      <a class="more feature__more" href={href} aria-label={`Read the case study: ${d.title}`}>Read the case study</a>
+    </div>
+    {
+      Figure && (
+        <div class="feature__figure">
+          <Figure compact id={`clip-${entry.id}`} />
+        </div>
+      )
+    }
+  </div>
+</li>
+
+<style>
+  /* The label column and content column of the page grid, so left edges line up with the
+     rows below; the content column then splits into words and figure. */
+  .feature {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    align-items: start;
+    padding: 30px 0 34px;
+    border-bottom: var(--rule-dash);
+  }
+  .feature:last-child {
+    border-bottom: 0;
+  }
+  .feature__main {
+    display: grid;
+    grid-template-columns: minmax(0, 4.6fr) minmax(0, 5.4fr);
+    gap: clamp(22px, 3vw, 40px);
+    align-items: start;
+  }
+  .feature--no-figure .feature__main {
+    grid-template-columns: 1fr;
+  }
+  .feature__where .label {
+    margin-top: 8px;
+  }
+  .feature__where .label span {
+    color: var(--text-soft);
+  }
+  .feature__title {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-shout);
+    font-size: clamp(2rem, 3.2vw, 2.75rem);
+    line-height: 0.98;
+  }
+  .feature__title a {
+    text-decoration: none;
+  }
+  .feature__title a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 6px;
+  }
+  .feature__deck {
+    margin-top: 14px;
+    font-size: 1.125rem;
+    line-height: 1.45;
+    max-width: 38ch;
+  }
+  .feature__more {
+    margin-top: 16px;
+    font-size: 0.875rem;
+  }
+  .feature__figure {
+    min-width: 0;
+    padding-top: 6px;
+  }
+  .feature__figure :global(figcaption) {
+    font-size: 0.8125rem;
+  }
+
+  @media (max-width: 900px) {
+    .feature__main {
+      grid-template-columns: 1fr;
+    }
+    .feature__figure {
+      max-width: 520px;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .feature {
+      grid-template-columns: 1fr;
+      gap: 14px;
+      padding: 24px 0 30px;
+    }
+    .feature__where {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+    }
+    .feature__where .label {
+      margin-top: 0;
+    }
+    .feature__where .label br {
+      display: none;
+    }
+    .feature__where .label span::before {
+      content: ' \00b7  ';
+      color: var(--ink);
+    }
+    .feature__figure {
+      padding-top: 4px;
+    }
+  }
+</style>

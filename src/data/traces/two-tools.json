@@ -1,0 +1,479 @@
+{
+  "id": "two-tools",
+  "title": "Two tool calls",
+  "question": "What did his docs eval find, and on which models? Give me the exact numbers from the full write-up.",
+  "recorded": true,
+  "recorded_at": "2026-11-26T03:26:31.668Z",
+  "model": "claude-opus-5-5",
+  "sdk": "@anthropic-ai/sdk 1.14.0",
+  "note": null,
+  "trips": [
+    {
+      "trip": 1,
+      "request": {
+        "model": "claude-opus-5-5",
+        "max_tokens": 16000,
+        "thinking": {
+          "type": "adaptive",
+          "display": "summarized"
+        },
+        "output_config": {
+          "effort": "low"
+        },
+        "system": "You answer questions about Andrew Yu using the tools provided. Answer briefly, and only from what the tools return. If a question is not about Andrew, answer it directly without using a tool.",
+        "tools": [
+          {
+            "name": "search_portfolio",
+            "description": "Search everything on Andrew Yu's portfolio (case studies, lessons, writing, and his career timeline) and return the most relevant passages with the page each came from. Use this first for any question about Andrew's experience, teaching, or projects. Returns up to 5 results, each with a title, a URL, and a short excerpt.",
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "What to look for, in plain words. For example: \"live Claude Code teaching\" or \"eval results\"."
+                }
+              },
+              "required": [
+                "query"
+              ],
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "get_case_study",
+            "description": "Return the full text of one case study, with its outcome, dates, role, and headline numbers. Use this after search_portfolio or list_work when a question needs more detail than an excerpt gives. Takes the slug of the case study, for example \"claude-dojo\".",
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "slug": {
+                  "type": "string",
+                  "description": "The case study slug, as returned by list_work or found in a result URL after /work/."
+                }
+              },
+              "required": [
+                "slug"
+              ],
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "list_work",
+            "description": "List every case study on Andrew Yu's portfolio with its slug, title, where the work happened, and a one-sentence outcome. Use this for an overview of his work, or to find the slug to pass to get_case_study.",
+            "input_schema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "What did his docs eval find, and on which models? Give me the exact numbers from the full write-up."
+          }
+        ]
+      },
+      "response": {
+        "model": "claude-opus-5-5",
+        "id": "msg_011ChQpvPH3Vm6vA41KFoJjH",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "toolu_01EAX7x8vraRhkLjn3Usk33A",
+            "name": "search_portfolio",
+            "input": {
+              "query": "docs eval results models"
+            },
+            "caller": {
+              "type": "direct"
+            }
+          }
+        ],
+        "container": null,
+        "stop_reason": "tool_use",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 906,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 55,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global",
+          "speed": "standard"
+        },
+        "diagnostics": null
+      },
+      "duration_ms": 914,
+      "tool_runs": [
+        {
+          "tool_use_id": "toolu_01EAX7x8vraRhkLjn3Usk33A",
+          "name": "search_portfolio",
+          "input": {
+            "query": "docs eval results models"
+          },
+          "result": {
+            "query": "docs eval results models",
+            "results": [
+              {
+                "title": "The score that lied",
+                "kind": "case study",
+                "url": "https://andrewyu.app/work/the-score-that-lied",
+                "excerpt": "With one curated docs file, the small model's task success went from 11% to 89% and the large model's from 84% to 100%. Fetching the live docs did not come close. At Pinecone I was asked whether the docs were ready for AI agents. My first answer was a score I built and later scrapped. The second was an eval that runs real developer tasks through coding agents. Pinecone Technical Writer (contract) 11% to 89% task ..."
+              },
+              {
+                "title": "Who owns an agent skill after it ships",
+                "kind": "case study",
+                "url": "https://andrewyu.app/work/salesforce",
+                "excerpt": "I proposed an ownership model for agent skills at Salesforce: the docs are the source, and evals run with and without the docs are the proof. Lead Technical Writer on a three-person innovation team that ships quickstarts, starter kits, agent skills, and demos for developers. Salesforce Lead Technical Writer "
+              },
+              {
+                "title": "Pinecone Search docs",
+                "kind": "case study",
+                "url": "https://andrewyu.app/work/pinecone-search-docs",
+                "excerpt": "Pinecone's Search docs are the SDK and API reference for querying its vector database. I was the sole author during my contract. Engineering supplied code samples and checked technical accuracy, product set the scope and audience, and other writers kept style and structure consistent with the rest of the site. The pages are live on docs.pinecone.io, starting from the Search overview linked above."
+              },
+              {
+                "title": "Ask this site a question",
+                "kind": "lesson",
+                "url": "https://andrewyu.app/teaching/connect",
+                "excerpt": "- What did Andrew's docs eval find? Say which model each number belongs to. - List Andrew's case studies and tell me which ones are about teaching. - How many people has Andrew taught to build with Claude Code? Give me the page that says so."
+              },
+              {
+                "title": "Career and education timeline",
+                "kind": "timeline",
+                "url": "https://andrewyu.app/path",
+                "excerpt": "Feb 2026 to Jul 2026: Technical Writer (contract), Pinecone. I built an eval that runs 15 real developer tasks through coding agents. With a curated docs file, the small model went from 11% to 89%."
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "trip": 2,
+      "request": {
+        "model": "claude-opus-5-5",
+        "max_tokens": 16000,
+        "thinking": {
+          "type": "adaptive",
+          "display": "summarized"
+        },
+        "output_config": {
+          "effort": "low"
+        },
+        "system": "You answer questions about Andrew Yu using the tools provided. Answer briefly, and only from what the tools return. If a question is not about Andrew, answer it directly without using a tool.",
+        "tools": [
+          {
+            "name": "search_portfolio",
+            "description": "Search everything on Andrew Yu's portfolio (case studies, lessons, writing, and his career timeline) and return the most relevant passages with the page each came from. Use this first for any question about Andrew's experience, teaching, or projects. Returns up to 5 results, each with a title, a URL, and a short excerpt.",
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "What to look for, in plain words. For example: \"live Claude Code teaching\" or \"eval results\"."
+                }
+              },
+              "required": [
+                "query"
+              ],
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "get_case_study",
+            "description": "Return the full text of one case study, with its outcome, dates, role, and headline numbers. Use this after search_portfolio or list_work when a question needs more detail than an excerpt gives. Takes the slug of the case study, for example \"claude-dojo\".",
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "slug": {
+                  "type": "string",
+                  "description": "The case study slug, as returned by list_work or found in a result URL after /work/."
+                }
+              },
+              "required": [
+                "slug"
+              ],
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "list_work",
+            "description": "List every case study on Andrew Yu's portfolio with its slug, title, where the work happened, and a one-sentence outcome. Use this for an overview of his work, or to find the slug to pass to get_case_study.",
+            "input_schema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "What did his docs eval find, and on which models? Give me the exact numbers from the full write-up."
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "toolu_01EAX7x8vraRhkLjn3Usk33A",
+                "name": "search_portfolio",
+                "input": {
+                  "query": "docs eval results models"
+                },
+                "caller": {
+                  "type": "direct"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "tool_use_id": "toolu_01EAX7x8vraRhkLjn3Usk33A",
+                "content": "{\"query\":\"docs eval results models\",\"results\":[{\"title\":\"The score that lied\",\"kind\":\"case study\",\"url\":\"https://andrewyu.app/work/the-score-that-lied\",\"excerpt\":\"With one curated docs file, the small model's task success went from 11% to 89% and the large model's from 84% to 100%. Fetching the live docs did not come close. At Pinecone I was asked whether the docs were ready for AI agents. My first answer was a score I built and later scrapped. The second was an eval that runs real developer tasks through coding agents. Pinecone Technical Writer (contract) 11% to 89% task ...\"},{\"title\":\"Who owns an agent skill after it ships\",\"kind\":\"case study\",\"url\":\"https://andrewyu.app/work/salesforce\",\"excerpt\":\"I proposed an ownership model for agent skills at Salesforce: the docs are the source, and evals run with and without the docs are the proof. Lead Technical Writer on a three-person innovation team that ships quickstarts, starter kits, agent skills, and demos for developers. Salesforce Lead Technical Writer \"},{\"title\":\"Pinecone Search docs\",\"kind\":\"case study\",\"url\":\"https://andrewyu.app/work/pinecone-search-docs\",\"excerpt\":\"Pinecone's Search docs are the SDK and API reference for querying its vector database. I was the sole author during my contract. Engineering supplied code samples and checked technical accuracy, product set the scope and audience, and other writers kept style and structure consistent with the rest of the site. The pages are live on docs.pinecone.io, starting from the Search overview linked above.\"},{\"title\":\"Ask this site a question\",\"kind\":\"lesson\",\"url\":\"https://andrewyu.app/teaching/connect\",\"excerpt\":\"- What did Andrew's docs eval find? Say which model each number belongs to. - List Andrew's case studies and tell me which ones are about teaching. - How many people has Andrew taught to build with Claude Code? Give me the page that says so.\"},{\"title\":\"Career and education timeline\",\"kind\":\"timeline\",\"url\":\"https://andrewyu.app/path\",\"excerpt\":\"Feb 2026 to Jul 2026: Technical Writer (contract), Pinecone. I built an eval that runs 15 real developer tasks through coding agents. With a curated docs file, the small model went from 11% to 89%.\"}]}"
+              }
+            ]
+          }
+        ]
+      },
+      "response": {
+        "model": "claude-opus-5-5",
+        "id": "msg_011ChQpvTDvnLTyViFAA4Pm3",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "tool_use",
+            "id": "toolu_011rZk97pbE48yFLRxx6cNNm",
+            "name": "get_case_study",
+            "input": {
+              "slug": "the-score-that-lied"
+            },
+            "caller": {
+              "type": "direct"
+            }
+          }
+        ],
+        "container": null,
+        "stop_reason": "tool_use",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 1737,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 57,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global",
+          "speed": "standard"
+        },
+        "diagnostics": null
+      },
+      "duration_ms": 909,
+      "tool_runs": [
+        {
+          "tool_use_id": "toolu_011rZk97pbE48yFLRxx6cNNm",
+          "name": "get_case_study",
+          "input": {
+            "slug": "the-score-that-lied"
+          },
+          "result": {
+            "slug": "the-score-that-lied",
+            "title": "The score that lied",
+            "url": "https://andrewyu.app/work/the-score-that-lied",
+            "where": "Pinecone",
+            "role": "Technical Writer (contract)",
+            "when": "2026",
+            "outcome": "With one curated docs file, the small model's task success went from 11% to 89% and the large model's from 84% to 100%. Fetching the live docs did not come close.",
+            "numbers": [
+              "11% to 89% task success on the small model, once it had the docs file",
+              "84% to 100% on the large model",
+              "360 runs: 15 tasks, 4 conditions, 2 models, 3 runs each"
+            ],
+            "links": [],
+            "text": "The wrong first answer\n\nThe question was simple: are our docs ready for AI agents? My first answer was a score. It rated how agent-ready a doc page looked.\n\nMy manager asked why I trusted it. I did not have a good answer. The score measured whether a page looked right to me, not whether an agent could use it to get work done. I had built it, which made me the last person likely to question it. I scrapped it.\n\nWhat I built instead\n\nAn eval that asks coding agents to do real Pinecone work and checks whether the code they write actually runs. Pass or fail, no partial credit.\n\nThere are 15 developer tasks, such as creating an index or migrating a legacy one. Each task runs under four conditions:\n\n1. No docs. The agent works from what it already knows.\n2. A curated docs file. One short page that shows the right way to do common tasks.\n3. The live docs, through MCP.\n4. The live docs, through web fetch, the way a browser would load them.\n\nEvery task ran three times per condition on two models, Claude Haiku 4.5 (the small model) and Claude Sonnet 4.6 (the large model). That is 360 runs.\n\nWhat happened\n\n| Condition | Small model | Large model |\n| --- | --- | --- |\n| No docs | 11% | 84% |\n| Curated docs file | 89% | 100% |\n| Live docs through MCP | 4% | 51% |\n| Live docs through web fetch | 18% | 84% |\n\nThe docs file was the only condition that clearly helped. The small model went from 5 passing runs out of 45 to 40 out of 45. The large model went from 84% to every run passing.\n\nThe live docs did not help. Through MCP, both models did worse than with no docs at all. Through web fetch, the large model scored exactly what it scored with nothing, and the small model gained seven points.\n\nNone of this says the live docs were badly written. They were written for people browsing a site, and they do that job. The docs file carries the same knowledge in a shape an agent can apply directly.\n\nWhat it taught me\n\nThe shape of what an agent reads mattered more than the channel it arrived through. The two channels did differ from each other, but the better one got the small model to 18%. The same knowledge in a different shape got it to 89%. My recommendation was to bring the patterns from the docs file into the regular docs, so an agent lands on them whatever route it takes.\n\nThe cheaper model gained the most. The large model already knew most of the answers. The small model knew almost none of them, and one page took it to nearly all. If more agent work runs on cheaper models, that gap is where the writing pays off.\n\nThe first lesson came before any of this, and it was mine. I built a metric, liked it, and needed my manager to ask the obvious question before I checked it against real work.\n\nI later presented this work in my Salesforce interviews."
+          }
+        }
+      ]
+    },
+    {
+      "trip": 3,
+      "request": {
+        "model": "claude-opus-5-5",
+        "max_tokens": 16000,
+        "thinking": {
+          "type": "adaptive",
+          "display": "summarized"
+        },
+        "output_config": {
+          "effort": "low"
+        },
+        "system": "You answer questions about Andrew Yu using the tools provided. Answer briefly, and only from what the tools return. If a question is not about Andrew, answer it directly without using a tool.",
+        "tools": [
+          {
+            "name": "search_portfolio",
+            "description": "Search everything on Andrew Yu's portfolio (case studies, lessons, writing, and his career timeline) and return the most relevant passages with the page each came from. Use this first for any question about Andrew's experience, teaching, or projects. Returns up to 5 results, each with a title, a URL, and a short excerpt.",
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "What to look for, in plain words. For example: \"live Claude Code teaching\" or \"eval results\"."
+                }
+              },
+              "required": [
+                "query"
+              ],
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "get_case_study",
+            "description": "Return the full text of one case study, with its outcome, dates, role, and headline numbers. Use this after search_portfolio or list_work when a question needs more detail than an excerpt gives. Takes the slug of the case study, for example \"claude-dojo\".",
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "slug": {
+                  "type": "string",
+                  "description": "The case study slug, as returned by list_work or found in a result URL after /work/."
+                }
+              },
+              "required": [
+                "slug"
+              ],
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "list_work",
+            "description": "List every case study on Andrew Yu's portfolio with its slug, title, where the work happened, and a one-sentence outcome. Use this for an overview of his work, or to find the slug to pass to get_case_study.",
+            "input_schema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "What did his docs eval find, and on which models? Give me the exact numbers from the full write-up."
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "toolu_01EAX7x8vraRhkLjn3Usk33A",
+                "name": "search_portfolio",
+                "input": {
+                  "query": "docs eval results models"
+                },
+                "caller": {
+                  "type": "direct"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "tool_use_id": "toolu_01EAX7x8vraRhkLjn3Usk33A",
+                "content": "{\"query\":\"docs eval results models\",\"results\":[{\"title\":\"The score that lied\",\"kind\":\"case study\",\"url\":\"https://andrewyu.app/work/the-score-that-lied\",\"excerpt\":\"With one curated docs file, the small model's task success went from 11% to 89% and the large model's from 84% to 100%. Fetching the live docs did not come close. At Pinecone I was asked whether the docs were ready for AI agents. My first answer was a score I built and later scrapped. The second was an eval that runs real developer tasks through coding agents. Pinecone Technical Writer (contract) 11% to 89% task ...\"},{\"title\":\"Who owns an agent skill after it ships\",\"kind\":\"case study\",\"url\":\"https://andrewyu.app/work/salesforce\",\"excerpt\":\"I proposed an ownership model for agent skills at Salesforce: the docs are the source, and evals run with and without the docs are the proof. Lead Technical Writer on a three-person innovation team that ships quickstarts, starter kits, agent skills, and demos for developers. Salesforce Lead Technical Writer \"},{\"title\":\"Pinecone Search docs\",\"kind\":\"case study\",\"url\":\"https://andrewyu.app/work/pinecone-search-docs\",\"excerpt\":\"Pinecone's Search docs are the SDK and API reference for querying its vector database. I was the sole author during my contract. Engineering supplied code samples and checked technical accuracy, product set the scope and audience, and other writers kept style and structure consistent with the rest of the site. The pages are live on docs.pinecone.io, starting from the Search overview linked above.\"},{\"title\":\"Ask this site a question\",\"kind\":\"lesson\",\"url\":\"https://andrewyu.app/teaching/connect\",\"excerpt\":\"- What did Andrew's docs eval find? Say which model each number belongs to. - List Andrew's case studies and tell me which ones are about teaching. - How many people has Andrew taught to build with Claude Code? Give me the page that says so.\"},{\"title\":\"Career and education timeline\",\"kind\":\"timeline\",\"url\":\"https://andrewyu.app/path\",\"excerpt\":\"Feb 2026 to Jul 2026: Technical Writer (contract), Pinecone. I built an eval that runs 15 real developer tasks through coding agents. With a curated docs file, the small model went from 11% to 89%.\"}]}"
+              }
+            ]
+          },
+          {
+            "role": "assistant",
+            "content": [
+              {
+                "type": "tool_use",
+                "id": "toolu_011rZk97pbE48yFLRxx6cNNm",
+                "name": "get_case_study",
+                "input": {
+                  "slug": "the-score-that-lied"
+                },
+                "caller": {
+                  "type": "direct"
+                }
+              }
+            ]
+          },
+          {
+            "role": "user",
+            "content": [
+              {
+                "type": "tool_result",
+                "tool_use_id": "toolu_011rZk97pbE48yFLRxx6cNNm",
+                "content": "{\"slug\":\"the-score-that-lied\",\"title\":\"The score that lied\",\"url\":\"https://andrewyu.app/work/the-score-that-lied\",\"where\":\"Pinecone\",\"role\":\"Technical Writer (contract)\",\"when\":\"2026\",\"outcome\":\"With one curated docs file, the small model's task success went from 11% to 89% and the large model's from 84% to 100%. Fetching the live docs did not come close.\",\"numbers\":[\"11% to 89% task success on the small model, once it had the docs file\",\"84% to 100% on the large model\",\"360 runs: 15 tasks, 4 conditions, 2 models, 3 runs each\"],\"links\":[],\"text\":\"The wrong first answer\\n\\nThe question was simple: are our docs ready for AI agents? My first answer was a score. It rated how agent-ready a doc page looked.\\n\\nMy manager asked why I trusted it. I did not have a good answer. The score measured whether a page looked right to me, not whether an agent could use it to get work done. I had built it, which made me the last person likely to question it. I scrapped it.\\n\\nWhat I built instead\\n\\nAn eval that asks coding agents to do real Pinecone work and checks whether the code they write actually runs. Pass or fail, no partial credit.\\n\\nThere are 15 developer tasks, such as creating an index or migrating a legacy one. Each task runs under four conditions:\\n\\n1. No docs. The agent works from what it already knows.\\n2. A curated docs file. One short page that shows the right way to do common tasks.\\n3. The live docs, through MCP.\\n4. The live docs, through web fetch, the way a browser would load them.\\n\\nEvery task ran three times per condition on two models, Claude Haiku 4.5 (the small model) and Claude Sonnet 4.6 (the large model). That is 360 runs.\\n\\nWhat happened\\n\\n| Condition | Small model | Large model |\\n| --- | --- | --- |\\n| No docs | 11% | 84% |\\n| Curated docs file | 89% | 100% |\\n| Live docs through MCP | 4% | 51% |\\n| Live docs through web fetch | 18% | 84% |\\n\\nThe docs file was the only condition that clearly helped. The small model went from 5 passing runs out of 45 to 40 out of 45. The large model went from 84% to every run passing.\\n\\nThe live docs did not help. Through MCP, both models did worse than with no docs at all. Through web fetch, the large model scored exactly what it scored with nothing, and the small model gained seven points.\\n\\nNone of this says the live docs were badly written. They were written for people browsing a site, and they do that job. The docs file carries the same knowledge in a shape an agent can apply directly.\\n\\nWhat it taught me\\n\\nThe shape of what an agent reads mattered more than the channel it arrived through. The two channels did differ from each other, but the better one got the small model to 18%. The same knowledge in a different shape got it to 89%. My recommendation was to bring the patterns from the docs file into the regular docs, so an agent lands on them whatever route it takes.\\n\\nThe cheaper model gained the most. The large model already knew most of the answers. The small model knew almost none of them, and one page took it to nearly all. If more agent work runs on cheaper models, that gap is where the writing pays off.\\n\\nThe first lesson came before any of this, and it was mine. I built a metric, liked it, and needed my manager to ask the obvious question before I checked it against real work.\\n\\nI later presented this work in my Salesforce interviews.\"}"
+              }
+            ]
+          }
+        ]
+      },
+      "response": {
+        "model": "claude-opus-5-5",
+        "id": "msg_011ChQpvX7qQar3QPdafXMYV",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "thinking",
+            "thinking": "I'm going to answer this in a table.\n\n",
+            "signature": "CAQS7wQKEAgUGAI4AUIIdGhpbmtpbmcSDPn+hR7JA9n0/WqfFxoM7dISV414d1qLOk1+IjAeX5ymlqRY+pyxfOkiR8skS6d+DDBXtjhvDsPQsOAv5Ud2QMRf/n63bb8MIm03LeMqjAQdwwDWzlcypTPaDlVJe4PPVm0U2zHIKZjpWrq2P0Ld8fLiv/+d4OOmQJDAFUobGoY/2XWOnm7/MQ1WHLvY3gold7sch1EpmFgQG1A/NcmpiIKuAEOexhT88U+3PuorEr6eDeHE7maygGWejBrRwoEu72q/vmMafdYipclz6GB3LVNAsiCWGqkdaTGgZxsCK/qFgrLr+ikRnrZHQqBSo20li0XOHfSxSKMSmF0psKEBlT3fHQEIERcLK6uZU+ikEnvZa5BJ6Z7R9iFOs4DDQSgN2C0r2YLMht68fC81KxMDFOEvfK4odoVF3R6m6gyiRmPMTb9J9yRLsrqUxbuglWB9FfCtvwiLFXolcV7BTe8Vw6ZFuMhz7cvmm7i8XbUO46vp39DQMy2yGebwATrG5mC6MQxnnhemU8YDy6gEJQ+QO2HUWPHddD4OANIUeq+ISFPiFtthQLyPWEbpSShP4dvHy3vDF+m505Jhl1lqxf17ZflexAtaekfhu6SKTdnXuhRFSxIWaO6z4TZfKah/P+NHwOP30T8wawOidA+mgMJT4jD661ZBACHnbbUe14z4M2VbpjGDKYA0txK/5PNInB1MqQjI8WS3VXoEdUC9Wgiy2+cEzGcZj+9mq4BfLSU24IhKdLvwTu26eo96ChythO1p+CEywvGqIBxs7mZzOIF8F36cFLqvsC5fwoHojBgB"
+          },
+          {
+            "type": "text",
+            "text": "At Pinecone in 2026, Andrew built an eval that gave coding agents 15 real developer tasks and checked whether the code they wrote actually ran. Each run was a plain pass or fail. **One short curated docs file helped far more than anything else. Pointing the agents at the live docs did not help.**\n\n**Models:** Claude Haiku 4.5 (small) and Claude Sonnet 4.6 (large). There were 360 runs in total: 15 tasks × 4 conditions × 2 models × 3 runs each.\n\n| Condition | Haiku 4.5 | Sonnet 4.6 |\n| --- | --- | --- |\n| No docs | 11% | 84% |\n| Curated docs file | 89% | 100% |\n| Live docs through MCP | 4% | 51% |\n| Live docs through web fetch | 18% | 84% |\n\n- **Haiku:** with the docs file it went from 5 of 45 runs passing to 40 of 45.\n- **Sonnet:** with the docs file every run passed.\n- **MCP:** both models did worse than with no docs at all.\n- **Web fetch:** Sonnet scored the same as with no docs, and Haiku gained 7 points.\n\n**What he concluded:** The way the information was laid out mattered more than how the agent got to it. He recommended adding the docs file's patterns to the regular docs. The smaller, cheaper model gained the most.\n\nSource: [The score that lied](https://andrewyu.app/work/the-score-that-lied)"
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 2971,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 502,
+          "output_tokens_details": {
+            "thinking_tokens": 8
+          },
+          "service_tier": "standard",
+          "inference_geo": "global",
+          "speed": "standard"
+        },
+        "diagnostics": null
+      },
+      "duration_ms": 4512,
+      "tool_runs": []
+    }
+  ]
+}

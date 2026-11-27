@@ -1,0 +1,44 @@
+---
+title: "QuickRamp"
+outcome: "In under 10 seconds, QuickRamp writes a day-by-day onboarding plan for a new hire at a small medical clinic, with competency checks a supervisor can run."
+summary: "A project I co-founded with a practicing physician assistant: a plan generator that draws on each clinic's own procedures through retrieval."
+org: "Personal project"
+role: "Co-founder and engineer"
+period: "Repository created April 2026"
+year: 2026
+area: "build"
+order: 40
+metrics:
+  - value: "6"
+    label: "clinic roles, from medical assistant to office manager"
+  - value: "12"
+    label: "medical specialties"
+stack: ["Next.js 16", "Claude API (Claude Haiku 4.5)", "Pinecone", "Supabase", "Vercel"]
+verify:
+  - label: "Try QuickRamp"
+    href: "https://quickramp.vercel.app"
+---
+
+## The problem
+
+At a small clinic, a new medical assistant shadows someone for a week, absorbs what they can, and then starts patient care. There is no plan, and no way to tell whether they learned the EHR workflow or only watched someone else use it. New hires perform tasks they were shown once and never checked on, and managers spend hours writing training checklists that get reused badly. Enterprise healthcare has learning management systems, and a small practice has a clipboard.
+
+## What the manager gets
+
+The manager fills in a short form: the role (MA, PA, NP, front office, billing, or office manager), the specialty (family medicine, urgent care, pediatrics, and others), the hire's experience level, and how long training should run. They can set the level of detail and weight the plan toward clinical skills, EHR training, or compliance.
+
+The plan comes back with a checklist for before day one and daily tasks and learning objectives grouped by week. It also has competency scenarios a supervisor runs to confirm the hire knows the material, and success metrics with target timelines and red flags. The manager checks off tasks as the hire completes them, and progress is saved between sessions.
+
+## Decisions I made
+
+**Each clinic gets its own retrieval.** Every signed-in user gets an isolated Pinecone Assistant. When a clinic uploads its procedures or EHR guides, the generator pulls from them, so a plan for a clinic on eClinicalWorks reads differently from one on Epic.
+
+**Haiku, not Sonnet.** Writing a plan is a structured writing task, not a hard reasoning problem, so I used Claude Haiku 4.5. Streaming puts the first lines on screen right away.
+
+**One free plan before signup.** Anyone gets one plan per browser without an account, and unlimited plans with a free one. Clinic managers are not early adopters, so the first plan had to cost them nothing.
+
+**No patient data.** Plans are generated without any personal information, and the prompt tells the model to keep it that way.
+
+## Where it stands
+
+QuickRamp is in validation. The goal is to get it into 10 to 20 clinics through my co-founder's clinical network. Paid tiers with progress emails and a dashboard for managers overseeing several hires are next.

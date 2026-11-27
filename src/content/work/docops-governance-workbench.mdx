@@ -1,0 +1,49 @@
+---
+title: "DocOps Governance Workbench"
+outcome: "At Splunk I built a workbench that checks developer docs against the live API spec and the style guide, then hands back a corrected draft and a pull request comment."
+summary: "A Python workbench with two checks: an MCP engine that validates facts and security against the API spec, and a retrieval engine that enforces the style guide."
+org: "Splunk"
+role: "Designer and builder"
+period: "Repository created December 2025"
+year: 2025
+area: "build"
+order: 20
+featured: true
+heroFigure: "DocOpsAudit"
+stack: ["Python", "LangChain", "Model Context Protocol (MCP)", "Streamlit"]
+verify:
+  - label: "Read the code on GitHub"
+    href: "https://github.com/andrewyu47/docops-workbench"
+  - label: "Watch the video walkthrough"
+    href: "https://www.loom.com/share/924b2975cb84414da90cc368012f02db"
+---
+
+## What it catches
+
+The workbench flags deprecated authentication in code samples before it reaches production docs, and in CI it blocks a GitHub pull request that fails the check.
+
+## The problem
+
+In our developer docs, errors kept getting through. Code examples used deprecated patterns, like Basic Auth where the API now expects tokens, and writers cited the wrong facts, like port 80 when the API listens on 8089. Holding one consistent voice across many contributors by hand was also out of reach.
+
+A linter catches syntax, and none of these are syntax errors. The first two are errors of fact, and catching them takes a tool that knows the platform.
+
+## How it works
+
+Every draft goes through a router that sends it to two engines.
+
+The logic engine uses MCP to connect to the live API specification. It looks up the parameters the draft mentions, checks ports, versions, and methods, and runs a security scan on the code.
+
+The style engine uses retrieval. It pulls the relevant rules from our PDF style guide out of a vector database, then checks voice and terminology against them.
+
+Both engines feed one diff generator. What comes out is a corrected draft, a visual diff of every change, a log that tags each fix as logic, security, or style, and a comment ready to post on the pull request.
+
+![The workbench in a browser. On the left, the Splunk Enterprise protocol is selected with two MCP servers connected and a slot to upload a style guide PDF. In the center, a Python draft connects on port 80 with a hard-coded admin password. Below it, the audit diff changes the port to 8089 and replaces the password with a token, and a governance log lists five auto-fixed issues tagged logic, security, and style.](../../assets/work/docops-workbench.webp)
+
+## Trying it
+
+I built the front end in Streamlit and the orchestration in LangChain. The prototype runs on sample Splunk Enterprise data. You pick the product, paste a draft that uses port 80 and Basic Auth, and run the audit. The workbench returns the fixed code, a newer version number where the draft named a retired one, and a line in the log explaining each change.
+
+## What it was for
+
+I built it so the expensive part of review, checking facts, would move to the tool. A reviewer would still read every page, without having to go look up the port.

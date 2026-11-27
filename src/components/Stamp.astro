@@ -1,0 +1,24 @@
+---
+/**
+ * A checkpoint stamp. Two short lines of display type and one small line under them.
+ * Reserved for things that were actually checked: a passed checkpoint, a verified result.
+ *
+ *   <Stamp lines={['Checkpoint', 'passed']} small="Lab 01" label="Checkpoint passed" />
+ */
+interface Props {
+  lines: [string] | [string, string];
+  small?: string;
+  /** What a screen reader should announce. */
+  label: string;
+  class?: string;
+}
+const { lines, small, label, class: className } = Astro.props;
+---
+
+<div class:list={['stamp', className]} role="img" aria-label={label}>
+  <span>
+    {lines[0]}
+    {lines[1] && <><br />{lines[1]}</>}
+    {small && <small>{small}</small>}
+  </span>
+</div>

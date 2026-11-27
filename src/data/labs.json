@@ -1,0 +1,13 @@
+{
+  "repo": "https://github.com/andrewyu47/launch-day-labs",
+  "status": "planned",
+  "note": "Set status to \"live\" only when the repository is public and its nightly run has passed at least once. Until then the home page must not claim the labs exist.",
+  "labs": [
+    { "id": "01", "title": "Your first Messages API call", "covers": "Claude API" },
+    { "id": "02", "title": "Give Claude a tool", "covers": "Tool use" },
+    { "id": "03", "title": "Serve tools over MCP", "covers": "MCP" },
+    { "id": "04", "title": "Build an agent with the Agent SDK", "covers": "Agent SDK" },
+    { "id": "05", "title": "Give an agent memory", "covers": "Memory" },
+    { "id": "06", "title": "Package know-how as a skill", "covers": "Skills" }
+  ]
+}

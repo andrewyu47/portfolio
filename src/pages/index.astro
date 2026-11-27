@@ -1,0 +1,31 @@
+---
+import Base from '../layouts/Base.astro';
+import Lab01 from '../components/home/Lab01.astro';
+import WorkRows from '../components/home/WorkRows.astro';
+import Lab02 from '../components/home/Lab02.astro';
+import MoreWork from '../components/home/MoreWork.astro';
+import PathStrip from '../components/home/PathStrip.astro';
+import Reach from '../components/home/Reach.astro';
+import profile from '../data/profile.json';
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'Person',
+  name: profile.name,
+  url: profile.site,
+  description: profile.oneLine,
+  jobTitle: profile.roles[0].title,
+  worksFor: { '@type': 'Organization', name: profile.roles[0].org },
+  address: { '@type': 'PostalAddress', addressLocality: profile.location },
+  sameAs: [profile.links.github, profile.links.linkedin],
+};
+---
+
+<Base jsonLd={jsonLd}>
+  <Lab01 />
+  <WorkRows />
+  <Lab02 />
+  <MoreWork />
+  <PathStrip />
+  <Reach />
+</Base>

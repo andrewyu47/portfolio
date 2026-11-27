@@ -1,0 +1,467 @@
+---
+/**
+ * /teaching: can Andrew teach a room, and how does he go about it?
+ * The first screen is the proof: a running head, the claim, and 55 seconds of him
+ * teaching (DojoClip). Then Claude Dojo (run of show and belt ladder render from
+ * src/data/dojo.json), the four labs a visitor can take now (Lab 01 on the home page
+ * plus the lessons collection), how he teaches, and talks and workshops.
+ *
+ * Sentences about what happened at the intensive come from dojo.json `said`, so this
+ * page and the case study use the same words. Their sources are the recordings index
+ * and Andrew's slot script, never the planning document.
+ */
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import Overprint from '../../components/Overprint.astro';
+import RunHead from '../../components/RunHead.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import DojoClip from '../../components/figures/DojoClip.astro';
+import RunOfShow from '../../components/teaching/RunOfShow.astro';
+import Ladder from '../../components/teaching/Ladder.astro';
+import dojo from '../../data/dojo.json';
+
+const lessons = (await getCollection('lessons', ({ data }) => !data.draft)).sort(
+  (a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title),
+);
+
+const labs = [
+  {
+    title: 'Who runs the tool?',
+    idea: 'A model never runs a tool itself. It asks, and your code runs it.',
+    minutes: 1,
+    href: '/',
+    where: 'on the home page',
+  },
+  ...lessons.map((l) => ({
+    title: l.data.title,
+    idea: l.data.idea,
+    minutes: l.data.minutes,
+    href: `/teaching/${l.id}`,
+    where: undefined as string | undefined,
+  })),
+].map((l, i) => ({ ...l, n: `Lab ${String(i + 1).padStart(2, '0')}` }));
+
+const r = dojo.record;
+const s = dojo.said;
+const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both-learned-limits-language-andrew-yu-kogmc';
+---
+
+<Base
+  title="Teaching"
+  description="Andrew Yu teaches people to build with Claude Code: 103 people through Claude Dojo with other instructors, about 70 of them in one two-day hands-on intensive, plus four labs on this site you can take now."
+>
+  <div class="top">
+    <RunHead left="Teaching" right="Claude Dojo, July 2026" />
+    <header class="intro">
+      <div class="intro__words">
+        <Overprint as="h1" text="I teach people to build with Claude Code." />
+        <p class="lede">
+          Mostly in live rooms where some people write code and most do not. The rest happens in labs on this site that
+          you can take on your own.
+        </p>
+      </div>
+      <DojoClip class="intro__clip" />
+    </header>
+  </div>
+
+  <section class="sec" id="claude-dojo" aria-labelledby="dojo-h">
+    <SectionHead title="Claude Dojo" id="dojo-h">A nonprofit where I am Director of AI Enablement.</SectionHead>
+
+    <div class="split">
+      <div class="split__body">
+        <p class="outcome">
+          With the other instructors, I taught {r.people} people to build with Claude Code. About {r.intensive} of them came
+          to one two-day hands-on intensive on {r.dates}. I co-authored the curriculum.
+        </p>
+        <a class="more" href="/work/claude-dojo">Read the Claude Dojo case study</a>
+      </div>
+    </div>
+
+    <div class="sub" id="intensive">
+      <div class="split sub__head">
+        <h3 class="title">The two days</h3>
+        <div class="said">
+          <p>{s.setup}</p>
+          <p>{s.skill}</p>
+          <p>{s.agents}</p>
+          <p>{s.capstone}</p>
+        </div>
+      </div>
+      <RunOfShow />
+    </div>
+
+    <div class="sub" id="curriculum">
+      <div class="split sub__head">
+        <h3 class="title">The curriculum</h3>
+        <p>
+          A ladder from what an LLM is to a shipped capstone. The top rung asks for a working tool anyone can open, plus a {
+            dojo.capstone.words
+          } word write-up or a {dojo.capstone.video} demo video.
+        </p>
+      </div>
+      <Ladder />
+    </div>
+
+    <div class="sub" id="rap">
+      <div class="split sub__head">
+        <h3 class="title">The fifteen terms, as a rap</h3>
+        <div>
+          <p>
+            Fifteen new terms are hard to keep in your head after a full day of learning. So I made a rap with Claude that
+            counts down the Claude Code terms a beginner meets first, in the order they meet them. We played it for the room
+            on Day 1 of the intensive.
+          </p>
+          <a class="more rap__more" href="/teaching/fifteen-terms">Play it with the lyric sheet</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="labs" aria-labelledby="labs-h">
+    <SectionHead title="Take a lab" id="labs-h">Each one teaches one idea, and you can finish it on this site.</SectionHead>
+    <ul class="labs">
+      {
+        labs.map((l) => (
+          <li>
+            <a class="lab" href={l.href}>
+              <span class="lab__mins">
+                <span class="numeral">{l.minutes}</span>
+                <span class="label">min</span>
+              </span>
+              <span class="lab__words">
+                <span class="label lab__n">
+                  {l.n}
+                  {l.where && <>, {l.where}</>}
+                </span>
+                <span class="lab__title">{l.title}</span>
+                <span class="lab__idea">{l.idea}</span>
+              </span>
+              <span class="lab__go label" aria-hidden="true">
+                Open
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="sec" id="method" aria-labelledby="method-h">
+    <SectionHead title="How I teach" id="method-h">Each habit links to the place you can check it.</SectionHead>
+
+    <div class="practice">
+      <h3 class="title">One misconception, and a guess first</h3>
+      <div>
+        <p>
+          Lab 01 goes after a single wrong idea: that the model runs its own tools. Before it explains anything, it asks
+          you to tick a box and commit to an answer, so the explanation lands on a guess you already made.
+        </p>
+        <a class="more" href="/">Try Lab 01</a>
+      </div>
+    </div>
+
+    <div class="practice">
+      <h3 class="title">Say what to do when it fails</h3>
+      <div>
+        <p>
+          The wrong answer in Lab 01 gets its own paragraph, which tells you what to try next. The Dojo Skill build planned
+          for a first run that comes out partly wrong. People told Claude what was wrong and ran it again, because that loop
+          is what they take home.
+        </p>
+        <a class="more" href="/">See the failure path in Lab 01</a>
+      </div>
+    </div>
+
+    <div class="practice">
+      <h3 class="title">Leave with something that runs</h3>
+      <div>
+        <p>
+          At the intensive each person built on their own laptop: first a Skill run on a real task, then a capstone started
+          on mock data that evening. The top rung's standard rules out screenshots and slides. It has to work when someone
+          else clicks the link.
+        </p>
+        <a class="more" href="#intensive">See the two days</a>
+      </div>
+    </div>
+
+    <div class="practice">
+      <h3 class="title">Cut scope for a first room</h3>
+      <div>
+        <p>
+          For about {r.intensive} people of mixed skill, one agent was enough. {s.agents} Anyone who raced ahead had the
+          rest of the ladder to climb on their own.
+        </p>
+        <a class="more" href="#curriculum">See the ladder</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec" id="rooms" aria-labelledby="rooms-h">
+    <SectionHead title="Talks and workshops" id="rooms-h">Where else I have stood in front of people and taught.</SectionHead>
+    <ul class="rooms">
+      <li>
+        <p class="title">Mental Models for Decision Making</p>
+        <p>
+          I have given my workshop, Mental Models for Decision Making, to more than 200 conference attendees. The Dojo
+          curriculum puts a rung on mental models before anyone touches a tool.
+        </p>
+      </li>
+      <li>
+        <p class="title">Lightning talks</p>
+        <div>
+          <p>
+            I gave a lightning talk at Splunk in 2022 and give lightning talks at Salesforce now. The Splunk talk, “The
+            Limitations of Language,” later grew into an essay.
+          </p>
+          <a class="more" href={essay}>Read the essay</a>
+        </div>
+      </li>
+      <li>
+        <p class="title">Salesforce</p>
+        <p>
+          I teach AI to my coworkers. I am Lead Technical Writer there, on a three-person team that ships quickstarts,
+          starter kits, agent skills, and demos for developers.
+        </p>
+      </li>
+      <li>
+        <p class="title">Ministry</p>
+        <p>For years I have taught live rooms as a minister.</p>
+      </li>
+    </ul>
+  </section>
+</Base>
+
+<style>
+  .top {
+    padding-top: clamp(20px, 3vw, 36px);
+  }
+  /* The claim on the left, the proof beside it, top-aligned. */
+  .intro {
+    display: grid;
+    grid-template-columns: minmax(0, 4.5fr) minmax(0, 5.5fr);
+    gap: clamp(28px, 4vw, 56px);
+    align-items: start;
+    padding-top: clamp(32px, 4.4vw, 60px);
+  }
+  .intro :global(h1) {
+    font-size: clamp(2.875rem, 5.9vw, 5.5rem);
+    max-width: 11ch;
+  }
+  .intro .lede {
+    margin-top: clamp(18px, 2.2vw, 28px);
+    max-width: 30ch;
+  }
+  .intro :global(.intro__clip) {
+    margin-top: 6px;
+  }
+  .intro :global(.intro__clip figcaption) {
+    font-size: 0.8125rem;
+  }
+
+  .said p + p {
+    margin-top: 0.6em;
+  }
+  .rap__more {
+    margin-top: 12px;
+  }
+  .lab__n {
+    margin-bottom: 2px;
+  }
+
+  /* The page grid: label column, content column. */
+  .split {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+  }
+  .split__body {
+    grid-column: 2;
+  }
+  #claude-dojo > .split {
+    padding: 30px 0 0;
+  }
+  .outcome {
+    max-width: 40ch;
+  }
+  .outcome + .more {
+    margin-top: 16px;
+  }
+
+  .sub {
+    margin-top: clamp(56px, 7vw, 88px);
+  }
+  .sub__head {
+    align-items: end;
+    padding-bottom: 18px;
+  }
+  .sub__head .title {
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+  }
+  .sub__head p {
+    max-width: 60ch;
+    color: var(--text-soft);
+  }
+  .sub__head .said p {
+    color: var(--text);
+  }
+  /* Four sentences of record: the title sits at their top, not their foot. */
+  #intensive .sub__head {
+    align-items: start;
+  }
+  #intensive .sub__head .title {
+    padding-top: 4px;
+  }
+  #curriculum .sub__head {
+    padding-bottom: 28px;
+  }
+
+  /* Labs */
+  .labs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .labs li {
+    border-bottom: var(--rule-dash);
+  }
+  .labs li:last-child {
+    border-bottom: 0;
+  }
+  .lab {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: 22px 0;
+    text-decoration: none;
+    position: relative;
+  }
+  .lab__mins {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .lab__mins .numeral {
+    font-size: 2.75rem;
+    color: var(--ink);
+  }
+  .lab__words {
+    display: grid;
+    gap: 6px;
+    padding-right: 5rem;
+  }
+  .lab__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-stretch: var(--w-title);
+    font-size: var(--step-h3);
+    line-height: 1.1;
+  }
+  .lab__idea {
+    max-width: 58ch;
+  }
+  .lab__go {
+    position: absolute;
+    right: 0;
+    top: 28px;
+    text-decoration: underline;
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  .lab__go::after {
+    content: ' \2192';
+  }
+  .lab:hover .lab__title {
+    text-decoration: underline;
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 5px;
+  }
+
+  /* How I teach */
+  .practice {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: 28px 0 30px;
+    border-bottom: var(--rule-dash);
+  }
+  .practice:last-child {
+    border-bottom: 0;
+  }
+  .practice .title {
+    font-size: clamp(1.25rem, 1.9vw, 1.5rem);
+  }
+  .practice p {
+    max-width: 62ch;
+  }
+  .practice p + .more {
+    margin-top: 12px;
+  }
+
+  /* Other rooms */
+  .rooms {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .rooms li {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: 20px 0;
+    border-bottom: var(--rule-dash);
+  }
+  .rooms li:last-child {
+    border-bottom: 0;
+  }
+  .rooms .title {
+    font-size: 1.3125rem;
+  }
+  .rooms p:not(.title) {
+    max-width: 62ch;
+  }
+  .rooms .more {
+    margin-top: 10px;
+  }
+
+  @media (max-width: 860px) {
+    /* Proof before prose: on one column the clip comes straight after the claim. */
+    .intro {
+      grid-template-columns: 1fr;
+      row-gap: 0;
+    }
+    .intro__words {
+      display: contents;
+    }
+    .intro :global(.intro__clip) {
+      order: 2;
+      margin-top: 24px;
+    }
+    .intro .lede {
+      order: 3;
+      max-width: 40ch;
+    }
+  }
+  @media (max-width: 600px) {
+    .split,
+    .lab,
+    .practice,
+    .rooms li {
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    .split__body {
+      grid-column: 1;
+    }
+    .lab__words {
+      padding-right: 0;
+    }
+    .lab__mins .numeral {
+      font-size: 2.25rem;
+    }
+    .lab__go {
+      position: static;
+    }
+  }
+</style>

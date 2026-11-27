@@ -1,0 +1,113 @@
+{
+  "id": "no-tool",
+  "title": "No tool call",
+  "question": "What is 12 times 12?",
+  "recorded": true,
+  "recorded_at": "2026-11-26T03:26:32.405Z",
+  "model": "claude-opus-5-5",
+  "sdk": "@anthropic-ai/sdk 1.14.0",
+  "note": null,
+  "trips": [
+    {
+      "trip": 1,
+      "request": {
+        "model": "claude-opus-5-5",
+        "max_tokens": 16000,
+        "thinking": {
+          "type": "adaptive",
+          "display": "summarized"
+        },
+        "output_config": {
+          "effort": "low"
+        },
+        "system": "You answer questions about Andrew Yu using the tools provided. Answer briefly, and only from what the tools return. If a question is not about Andrew, answer it directly without using a tool.",
+        "tools": [
+          {
+            "name": "search_portfolio",
+            "description": "Search everything on Andrew Yu's portfolio (case studies, lessons, writing, and his career timeline) and return the most relevant passages with the page each came from. Use this first for any question about Andrew's experience, teaching, or projects. Returns up to 5 results, each with a title, a URL, and a short excerpt.",
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "query": {
+                  "type": "string",
+                  "description": "What to look for, in plain words. For example: \"live Claude Code teaching\" or \"eval results\"."
+                }
+              },
+              "required": [
+                "query"
+              ],
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "get_case_study",
+            "description": "Return the full text of one case study, with its outcome, dates, role, and headline numbers. Use this after search_portfolio or list_work when a question needs more detail than an excerpt gives. Takes the slug of the case study, for example \"claude-dojo\".",
+            "input_schema": {
+              "type": "object",
+              "properties": {
+                "slug": {
+                  "type": "string",
+                  "description": "The case study slug, as returned by list_work or found in a result URL after /work/."
+                }
+              },
+              "required": [
+                "slug"
+              ],
+              "additionalProperties": false
+            }
+          },
+          {
+            "name": "list_work",
+            "description": "List every case study on Andrew Yu's portfolio with its slug, title, where the work happened, and a one-sentence outcome. Use this for an overview of his work, or to find the slug to pass to get_case_study.",
+            "input_schema": {
+              "type": "object",
+              "properties": {},
+              "additionalProperties": false
+            }
+          }
+        ],
+        "messages": [
+          {
+            "role": "user",
+            "content": "What is 12 times 12?"
+          }
+        ]
+      },
+      "response": {
+        "model": "claude-opus-5-5",
+        "id": "msg_011ChQpvrPTUCuXn19GX2DrK",
+        "type": "message",
+        "role": "assistant",
+        "content": [
+          {
+            "type": "text",
+            "text": "12 × 12 = 144."
+          }
+        ],
+        "container": null,
+        "stop_reason": "end_turn",
+        "stop_sequence": null,
+        "stop_details": null,
+        "usage": {
+          "input_tokens": 885,
+          "cache_creation_input_tokens": 0,
+          "cache_read_input_tokens": 0,
+          "cache_creation": {
+            "ephemeral_5m_input_tokens": 0,
+            "ephemeral_1h_input_tokens": 0
+          },
+          "output_tokens": 12,
+          "output_tokens_details": {
+            "thinking_tokens": 0
+          },
+          "service_tier": "standard",
+          "inference_geo": "global",
+          "speed": "standard"
+        },
+        "diagnostics": null
+      },
+      "duration_ms": 737,
+      "tool_runs": []
+    }
+  ]
+}

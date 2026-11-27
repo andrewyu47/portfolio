@@ -1,0 +1,120 @@
+{
+  "_sources": {
+    "record": "Head counts, dates, and the lesson and video counts come from the course's own files.",
+    "ladder": "The course document: eleven tiers, belt names and themes as written.",
+    "intensive": "What happened, not what was planned. Blocks and their order come from the index of the session recordings and from Andrew's own run sheet for his slots. 'mine' marks only blocks where the recordings show him presenting. Blocks that come only from his run sheet say so. The planning document is not used.",
+    "capstone": "The course's standard for the top rung.",
+    "notes": "Clock times are left out: the schedule drafts disagree about them, and the recordings are cut, so clip lengths are not block lengths. Per-rung lesson counts are left out because the files disagree. No instructor, guest or attendee is named."
+  },
+  "record": {
+    "people": 103,
+    "intensive": 70,
+    "dates": "July 11 and 12, 2026",
+    "lessons": 49,
+    "videos": 46
+  },
+  "said": {
+    "setup": "Setup happened in the room on Day 1: after the opening talks, everyone installed Claude Code and had Claude interview them to write a context file.",
+    "skill": "In my plenary I demonstrated the resume-tailoring Skill I use myself, then each person built a Skill for a task they repeat. Resume tailoring was one of several starters.",
+    "agents": "Sub-agents and agent fleets were shown on Day 1 as a preview, and the hands-on build stayed with one agent.",
+    "capstone": "For the capstone, people picked a real task, had Claude make mock data, and started building that evening in plan mode."
+  },
+  "ladder": [
+    { "n": 0, "belt": "Belt 0", "theme": "Baseline" },
+    { "n": 1, "belt": "White", "theme": "Mental models" },
+    { "n": 2, "belt": "Yellow", "theme": "The Claude landscape" },
+    { "n": 3, "belt": "Orange", "theme": "Setup" },
+    { "n": 4, "belt": "Green", "theme": "Prompting" },
+    { "n": 5, "belt": "Blue", "theme": "Context engineering" },
+    { "n": 6, "belt": "Purple", "theme": "The ecosystem" },
+    { "n": 7, "belt": "Brown", "theme": "Operating like a pro" },
+    { "n": 8, "belt": "Red", "theme": "Safety" },
+    { "n": 9, "belt": "Black", "theme": "Building and vibe coding" },
+    { "n": 10, "belt": "Master", "theme": "Capstone and career" }
+  ],
+  "capstone": {
+    "words": "500 to 1,000",
+    "video": "2 to 3 minute"
+  },
+  "days": [
+    {
+      "day": 1,
+      "date": "Saturday, July 11",
+      "blocks": [
+        {
+          "name": "Welcome and intros",
+          "what": "Why Claude Dojo, a poll of the room, the instructors, and the plan for both days. My part was a short introduction."
+        },
+        {
+          "name": "What changed in AI",
+          "what": "The last twelve months of AI, how the job market now prices AI fluency, and use-case ideas from the room."
+        },
+        {
+          "name": "Install Claude Code",
+          "what": "Hands-on. Everyone installed Claude Code, then ran a prompt that has Claude interview them to write a context file."
+        },
+        {
+          "name": "Fundamentals",
+          "what": "How LLMs work, hallucination, model tiers, the four ways to use Claude, plans, tokens, and usage limits."
+        },
+        {
+          "name": "Fifteen terms, as a rap",
+          "what": "The rap I made with Claude, then skills, plugins, and connectors, then the prompts that made the rap."
+        },
+        {
+          "name": "Build your first Skill",
+          "what": "My job-search numbers, then a live run of the resume-tailoring Skill I use myself on a real job description. Then each person had Claude interview them into a Skill for a task they repeat, ran it, said what came out wrong, and ran it again.",
+          "mine": true
+        },
+        {
+          "name": "Job search tools",
+          "what": "Folder structure, daily job alerts, NotebookLM, referral blurbs, and battle cards."
+        },
+        {
+          "name": "Safety and ethics",
+          "what": "Safety and a healthy skepticism, guardrails, and gray areas raised by the room."
+        },
+        {
+          "name": "Prompting, and agents as a preview",
+          "what": "A prompting framework, being interviewed by Claude, dictation, and screenshots. Then MCP, plan mode, goal loops, the context window, and agent fleets, shown as a preview."
+        },
+        {
+          "name": "Connect an MCP",
+          "what": "Hands-on: connecting the Canva MCP server to Claude, so it can reach an app outside the terminal."
+        },
+        {
+          "name": "Capstone kickoff",
+          "what": "Build a tool that proves you can do the job. Pick a real task from your own work and have Claude make mock data for it, so nothing blocks you that evening.",
+          "mine": true,
+          "clip": true
+        },
+        {
+          "name": "Evening build, by room",
+          "what": "Everyone started their capstone in plan mode, in rooms by track, including a coding room and a finance room. My run sheet had me leading the beginner room, which promised no code and no jargon."
+        }
+      ]
+    },
+    {
+      "day": 2,
+      "date": "Sunday, July 12",
+      "blocks": [
+        {
+          "name": "Job search panel",
+          "what": "From my run sheet, which had me hosting: guests on what their searches were like and what recruiters see, closing on referrals over volume."
+        },
+        {
+          "name": "Engineering track",
+          "what": "Prompts for day-to-day engineering work, planning and building a feature with agents, and interviewing in the AI era."
+        },
+        {
+          "name": "Polish and ship",
+          "what": "From my run sheet: finish the capstone and make it shareable, then write one paragraph: the task, what you built, the result."
+        },
+        {
+          "name": "Wrap-up",
+          "what": "What comes next: the belt ladder, certifications, and demo groups."
+        }
+      ]
+    }
+  ]
+}

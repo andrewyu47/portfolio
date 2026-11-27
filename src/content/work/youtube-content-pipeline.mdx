@@ -1,0 +1,49 @@
+---
+title: "YouTube content pipeline"
+outcome: "A pipeline that turns one long-form video into captioned vertical shorts matched to what is trending on YouTube, for about $0.08 a run. A second pipeline researches what to film next."
+summary: "Built for a media team that wanted more YouTube Shorts: scripts from transcription to captioned 9:16 video, run from one dashboard."
+org: "Personal project"
+role: "Solo builder"
+period: "Repository created February 2026"
+year: 2026
+area: "build"
+order: 60
+metrics:
+  - value: "28"
+    label: "scripts, from transcription to rendering"
+  - value: "$0.36"
+    label: "saved per video by transcribing locally"
+stack: ["Python", "Claude API", "Pinecone", "FFmpeg", "PyTorch", "FastAPI", "Next.js 15", "Modal"]
+---
+
+## The problem
+
+A media team wanted more YouTube Shorts. Finding three or four short-worthy moments in a 45-minute video took longer than recording the video. Working out what was trending meant hours of scrolling with nothing written down. Clips analyzed last month were forgotten, and trends spotted two weeks ago weren't tracked.
+
+## Two pipelines, one dashboard
+
+The shorts pipeline takes a raw video file and produces vertical shorts (9:16, 1080 by 1920) with titles, descriptions, and styled captions. It runs in five steps: transcribe, analyze, scout trends, match clips to trends, and render.
+
+The research pipeline scrapes what is performing on YouTube now, clusters the openings, and writes a filming plan with scripted hooks and talking points.
+
+## Matching clips to trends
+
+The first version matched clips to trending topics by keyword, and it was bad. "Trust Through Time" matched "Pizza On Time." Keywords can't see that a clip about spiritual blindness belongs next to a trending video about cognitive biases.
+
+I replaced it with three layers that trade cost for accuracy. Pinecone embeddings narrow 200+ trending shorts to about 20 candidates per clip. Claude Haiku makes a quick yes or no call to remove false positives. Claude Sonnet scores the pairs that survive on theme, audience overlap, and angle. Matching stays under $0.10 per run.
+
+## Details that mattered
+
+Transcription runs locally with faster-whisper instead of the OpenAI API. That saves $0.36 per video and keeps the footage on the machine.
+
+A vertical crop has to follow the speaker. Haar cascades failed on low-light footage, so I switched to MTCNN face detection in PyTorch, with a center crop as the fallback when it loses the face.
+
+Captions are rendered as ASS subtitles in four styles and burned in by FFmpeg with hardware-accelerated encoding.
+
+Pinecone also works as memory. Past clips stay searchable, and duplicates across videos get caught.
+
+It deploys on Modal with two images, a light one of about 500 MB for the web API and a heavy one of about 4 GB for GPU transcription. Both scale to zero when idle, and the same scripts run on a laptop or in the cloud.
+
+## The dashboard
+
+A FastAPI and Next.js 15 dashboard runs both pipelines. It streams live logs over server-sent events and has browsers for clips, trending shorts, match scores, and finished shorts.

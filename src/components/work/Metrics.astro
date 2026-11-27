@@ -1,0 +1,146 @@
+---
+/**
+ * A case study's headline numbers as big numerals with their labels.
+ *
+ * The count decides the layout, so no number of tiles leaves a hole:
+ *   0   renders nothing (the page closes the gap itself)
+ *   1   one numeral with its label set beside it
+ *   2-4 equal columns, one per number, with dashed rules between them
+ *   5+  rows of three or four, never a lone tile on the last row
+ * On a phone every count becomes a ruled list: numeral left, label right.
+ *
+ * All numerals in a set print at one size, fitted to the longest value and the
+ * width of its column (a container query), so "11% to 89%" and "46" sit together.
+ */
+interface Props {
+  metrics: { value: string; label: string }[];
+}
+const { metrics } = Astro.props;
+const n = metrics.length;
+const longest = Math.max(3, ...metrics.map((m) => m.value.length));
+const cols = n <= 4 ? n : n % 4 === 0 || n % 4 === 3 ? 4 : 3;
+---
+
+{
+  n > 0 && (
+    <div class="metrics-box">
+      <ul
+        class:list={['metrics', n === 1 ? 'metrics--one' : 'metrics--many', { 'metrics--four': n === 4 }]}
+        style={`--n:${cols};--chars:${longest}`}
+        aria-label="Headline numbers"
+      >
+        {metrics.map((m, i) => (
+          <li class:list={['metric', { 'metric--row-start': i % cols === 0 }]}>
+            <span class="numeral">{m.value}</span>
+            <span class="metric__label">{m.label}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )
+}
+
+<style>
+  .metrics-box {
+    container-type: inline-size;
+  }
+  .metrics {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    /* Roughly how wide one character of the condensed numeral face is, in em. */
+    --glyph: 0.52;
+  }
+  .numeral {
+    display: block;
+    color: var(--ink);
+    text-wrap: balance;
+  }
+  .metric__label {
+    display: block;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--text);
+    max-width: 30ch;
+  }
+
+  /* One number: the numeral large, its label set beside it on the baseline. */
+  .metrics--one .metric {
+    display: flex;
+    align-items: flex-end;
+    gap: clamp(18px, 2.4vw, 32px);
+  }
+  .metrics--one .numeral {
+    flex: none;
+    font-size: clamp(3.5rem, calc(62cqi / (var(--chars) * var(--glyph))), 8.5rem);
+  }
+  .metrics--one .metric__label {
+    padding-bottom: 0.6em;
+    font-size: 0.875rem;
+  }
+
+  /* Several numbers: equal columns. Numerals share one row and labels share the next,
+     so a value that wraps never pushes its own label out of line with the others. */
+  .metrics--many {
+    display: grid;
+    grid-template-columns: repeat(var(--n), minmax(0, 1fr));
+    column-gap: 0;
+    row-gap: 28px;
+  }
+  .metrics--many .metric {
+    display: grid;
+    grid-row: span 2;
+    grid-template-rows: subgrid;
+    row-gap: 10px;
+    padding: 0 clamp(14px, 1.8vw, 24px);
+    border-left: var(--rule-dash);
+  }
+  .metrics--many .numeral {
+    align-self: end;
+    font-size: clamp(2.25rem, calc((100cqi / var(--n) - 40px) / (var(--chars) * var(--glyph))), 5.5rem);
+  }
+  .metrics--many .metric--row-start {
+    padding-left: 0;
+    border-left: 0;
+  }
+
+  /* Four across gets tight in a tablet-width column: two by two instead. */
+  @container (max-width: 640px) {
+    .metrics--four {
+      --n: 2 !important;
+    }
+    .metrics--four .metric:nth-child(3) {
+      padding-left: 0;
+      border-left: 0;
+    }
+  }
+
+  @media (max-width: 600px) {
+    .metrics--many {
+      display: block;
+    }
+    .metrics .metric {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      align-items: center;
+      gap: 14px;
+      padding: 12px 0;
+      border-left: 0;
+      border-bottom: var(--rule-dash);
+    }
+    .metrics .metric:first-child {
+      padding-top: 0;
+    }
+    .metrics .metric:last-child {
+      padding-bottom: 0;
+      border-bottom: 0;
+    }
+    .metrics .numeral {
+      font-size: clamp(2rem, calc(50cqi / (var(--chars) * var(--glyph))), 3.5rem);
+    }
+    .metrics--one .metric__label {
+      padding-bottom: 0;
+    }
+  }
+</style>

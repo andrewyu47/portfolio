@@ -1,0 +1,256 @@
+---
+/**
+ * /teaching/fifteen-terms: the 15 essential Claude Code terms, as a rap, set as a lab sheet.
+ *
+ * Every row of the sheet sits in the page grid: the field name in the label column,
+ * the work beside it. Step 1 is the lyric sheet that plays (components/rap/Player).
+ * The checkpoint is a five-question quiz that reuses the Lab 01 checkbox
+ * (components/rap/Quiz). After the sheet: every term printed for reading with the
+ * sound off, the original video, and how it was made.
+ *
+ * Sources: /facts/rap-LYRICS.md (lyrics, verbatim), rap-timings.csv, rap-track_words.json,
+ * rap-PROMPT_HISTORY.md, and the intensive's recordings index, which lists the rap and
+ * the prompt walkthrough in Session 1 on Day 1.
+ */
+import Base from '../../layouts/Base.astro';
+import Sheet from '../../components/Sheet.astro';
+import Overprint from '../../components/Overprint.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import Player from '../../components/rap/Player.astro';
+import Quiz from '../../components/rap/Quiz.astro';
+import Glossary from '../../components/rap/Glossary.astro';
+import rap from '../../data/rap.json';
+---
+
+<Base
+  title="Fifteen Claude Code terms, in one song"
+  description="A rap Andrew Yu made with Claude for Claude Dojo that teaches the 15 Claude Code terms a beginner meets first, with a lyric sheet that follows the song and a five-question check."
+>
+  <Sheet label="Lab 04 · Fifteen terms" meta="Time: 4 minutes" labelledby="rap-title" class="rap">
+    <header class="top">
+      <Overprint as="h1" id="rap-title" text="Fifteen Claude Code terms, in one song." />
+      <div class="made spot">
+        <p class="field">Made for Claude Dojo</p>
+        <p>
+          A rap I made with Claude. We played it for the room on Day 1 of the two-day intensive in July 2026.
+        </p>
+        <a class="more" href="/work/claude-dojo">Read the Claude Dojo case study</a>
+      </div>
+    </header>
+
+    <div class="g brief">
+      <h2 class="field">Objective</h2>
+      <p class="lede">
+        Learn the fifteen terms a beginner meets first in Claude Code, in the order you meet them. Play the song and follow
+        the lyric sheet, or read every term below with the sound off.
+      </p>
+    </div>
+
+    <div class="g step">
+      <h2 class="field">Step 1 <span class="step__what">Listen</span></h2>
+      <div>
+        <Player />
+        <p class="note">Pick a number to jump to that verse.</p>
+      </div>
+    </div>
+
+    <div class="g cp">
+      <h2 class="field">Checkpoint <span class="step__what">Check yourself</span></h2>
+      <div>
+        <p class="cp__q">
+          The song ends by testing you on one: a standard way to plug your tools into Claude. That is MCP. Now try five
+          more. Tick the term for each definition.
+        </p>
+        <Quiz />
+      </div>
+    </div>
+  </Sheet>
+
+  <section class="sec" id="terms" aria-labelledby="terms-h">
+    <SectionHead title="The fifteen terms" id="terms-h">
+      Each one with what its verse says it means, and the verse itself, in the order the song teaches them.
+    </SectionHead>
+    <Glossary />
+  </section>
+
+  <section class="sec" id="video" aria-labelledby="video-h">
+    <SectionHead title="The original video" id="video-h">
+      Slides and word cards built in code and put together with ffmpeg. No filming, and no real people in it.
+    </SectionHead>
+    <div class="g g--plain">
+      <span></span>
+      <figure class="video">
+        <video controls preload="none" poster={rap.poster} width="1280" height="720">
+          <source src={rap.video} type="video/mp4" />
+          <a href={rap.video}>Download the video (MP4, 13 MB)</a>
+        </video>
+        <figcaption>3 minutes 40 seconds, 720p, with the same track.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section class="sec" id="how" aria-labelledby="how-h">
+    <SectionHead title="How it was made" id="how-h">A cheap version first, the polished one only after the words were locked.</SectionHead>
+    <div class="g g--plain">
+      <span></span>
+      <div class="prose">
+        <p>
+          I made it with Claude. I supplied the term list from the course and the prompts, and Claude drafted the lyrics
+          and revised them as I pushed. The shape came from a homemade hotkeys rap I had seen: a spoken intro, a numbered
+          countdown, a breather in the middle, and a spoken outro.
+        </p>
+        <p>
+          Before Claude made anything, I asked it to ask me questions first. That turned a vague wish into four decisions
+          about format, terms, audience, and how the music would get made. Then I asked
+          for the terms in the order a learner meets them, and later for more rhymes.
+        </p>
+        <p>
+          Then I built a cheap proof of concept. Claude Code turned the lyrics into slides, my cloned voice read them over a
+          drum loop it wrote in Python, and ffmpeg put it together. A cloned voice cannot really rap, but it let me fix the
+          words for almost nothing. Only once the content was locked did I spend on the polished version: I generated the
+          track with Suno from the lyrics and a style prompt, and Claude Code retimed every slide to it from a word-level
+          transcription of the song.
+        </p>
+        <p>
+          One moment is worth telling plainly. I asked whether the video could recreate the faces of the real people in the
+          video that inspired it. Claude said no. Those people are private individuals, several of them children, and they
+          never agreed to it. I took the no, and the video uses original cards instead. I wrote down the lesson for the
+          room:
+        </p>
+        <blockquote>
+          <p>A good AI workflow includes hearing “no” sometimes.</p>
+        </blockquote>
+        <p>
+          On Day 1 of the intensive we played the rap, and then I walked the room through the prompts that made it, one at
+          a time.
+        </p>
+        <p class="credit label">
+          Lyrics drafted by Claude from Andrew Yu's term list and prompts. Music generated with Suno from those lyrics. Video
+          built with Claude Code.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .g {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: 24px 0;
+    border-top: var(--rule-dash);
+  }
+  .g > .field {
+    margin: 0;
+    padding-top: 4px;
+  }
+  .g--plain {
+    border-top: 0;
+    padding-top: 30px;
+  }
+
+  .top {
+    display: grid;
+    grid-template-columns: minmax(0, 6.6fr) minmax(0, 3.4fr);
+    gap: clamp(24px, 3.4vw, 52px);
+    align-items: end;
+    padding: clamp(26px, 4vw, 52px) 0 clamp(26px, 3.4vw, 40px);
+  }
+  .top :global(h1) {
+    font-size: var(--step-hero);
+    max-width: 16ch;
+  }
+  .made {
+    display: grid;
+    gap: 8px;
+    justify-items: start;
+    padding-bottom: 6px;
+    font-size: var(--step-small);
+    line-height: 1.45;
+  }
+  .made .field {
+    margin: 0;
+  }
+  .made .more {
+    margin-top: 4px;
+  }
+
+  .brief {
+    border-top: var(--rule);
+  }
+  .lede {
+    max-width: 46ch;
+  }
+
+  .step__what {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-title);
+    font-size: 1.75rem;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--text);
+  }
+  .step {
+    padding-bottom: 34px;
+  }
+  .note {
+    margin-top: 18px;
+    font-size: var(--step-small);
+    line-height: 1.45;
+    color: var(--text-soft);
+  }
+
+  .cp {
+    border-top: var(--rule);
+  }
+  .cp__q {
+    font-size: var(--step-body);
+    line-height: 1.5;
+    color: var(--text-soft);
+    max-width: 58ch;
+    margin-bottom: 22px;
+  }
+
+  .video {
+    max-width: 720px;
+  }
+  .video video {
+    width: 100%;
+    height: auto;
+    background: var(--stock-2);
+    border-top: var(--rule);
+    border-bottom: var(--rule);
+  }
+
+  .credit {
+    margin-top: 2em;
+    padding-top: 14px;
+    border-top: var(--rule);
+  }
+
+  @media (max-width: 1000px) {
+    .top {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+  }
+  @media (max-width: 700px) {
+    .g {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .g--plain > span {
+      display: none;
+    }
+    .step__what {
+      display: inline;
+      margin-left: 8px;
+      font-size: 1.375rem;
+    }
+  }
+</style>

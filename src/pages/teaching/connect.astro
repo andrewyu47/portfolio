@@ -1,0 +1,645 @@
+---
+/**
+ * /teaching/connect: a lab sheet for connecting an MCP client to this site.
+ *
+ * Every row of the sheet sits in the page grid: the field name (Objective, Step 1,
+ * Checkpoint) in the label column, the work beside it. The checkpoint is real: the
+ * button sends tools/list to /mcp from the visitor's browser and prints the tool
+ * names the server sends back. The stamp lands only when that call succeeds.
+ *
+ * Tool names and descriptions are read from src/lib/portfolio-tools.mjs, the same
+ * definitions the server advertises, so this page cannot drift from the server.
+ * Client steps were checked against code.claude.com/docs/en/mcp and the Claude
+ * Help Center article "Get started with custom connectors using remote MCP" on
+ * 2026-11-26 (Pro and Max steps 1 to 9, and its Network requirements section for where
+ * the Claude apps connect from).
+ */
+import Base from '../../layouts/Base.astro';
+import Sheet from '../../components/Sheet.astro';
+import Overprint from '../../components/Overprint.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import Stamp from '../../components/Stamp.astro';
+import { TOOLS } from '../../lib/portfolio-tools.mjs';
+
+const URL_MCP = 'https://andrewyu.app/mcp';
+const command = `claude mcp add --transport http andrewyu ${URL_MCP}`;
+
+const questions = [
+  {
+    q: 'What did Andrew’s docs eval find? Say which model each number belongs to.',
+    tools: ['search_portfolio', 'get_case_study'],
+  },
+  {
+    q: 'List Andrew’s case studies and tell me which ones are about teaching.',
+    tools: ['list_work'],
+  },
+  {
+    q: 'How many people has Andrew taught to build with Claude Code? Give me the page that says so.',
+    tools: ['search_portfolio'],
+  },
+];
+---
+
+<Base
+  title="Ask this site a question"
+  description="Connect Claude Code or the Claude apps to andrewyu.app/mcp, a read-only MCP server with three tools over this site's published pages, and ask it about Andrew Yu's work."
+>
+  <Sheet label="Lab 03 · Ask this site a question" meta="Time: 5 minutes" labelledby="connect-title" class="connect">
+    <header class="top">
+      <Overprint as="h1" id="connect-title" text="Ask this site a question." />
+      <div class="addr">
+        <p class="field" id="addr-label">The address</p>
+        <p class="addr__url"><code aria-labelledby="addr-label">{URL_MCP}</code></p>
+        <button class="btn" type="button" data-copy={URL_MCP}>Copy address</button>
+      </div>
+    </header>
+
+    <div class="g brief">
+      <h2 class="field">Objective</h2>
+      <div>
+        <p class="lede">
+          Connect a client to this site and ask it about my work. It answers from the pages here and gives you the
+          link to each one.
+        </p>
+      </div>
+    </div>
+
+    <div class="g">
+      <h2 class="field">You will need</h2>
+      <p class="need">
+        Claude Code, or a Claude account on the web, desktop, or phone app. No sign-in to this site and no key.
+      </p>
+    </div>
+
+    <div class="g step">
+      <h2 class="field">Step 1 <span class="step__what">Connect</span></h2>
+      <div class="clients">
+        <section class="client" aria-labelledby="cc-h">
+          <h3 class="title" id="cc-h">Claude Code</h3>
+          <ol>
+            <li>
+              In a terminal, run:
+              <div class="cmd">
+                <pre><code>{command}</code></pre>
+                <button class="btn cmd__copy" type="button" data-copy={command}>Copy</button>
+              </div>
+              Add <code>--scope user</code> before the address to have it in every project.
+            </li>
+            <li>Run <code>claude mcp list</code>. The <code>andrewyu</code> line should say Connected.</li>
+            <li>Start <code>claude</code> and ask a question from Step 2.</li>
+          </ol>
+        </section>
+
+        <section class="client" aria-labelledby="app-h">
+          <h3 class="title" id="app-h">Claude apps</h3>
+          <ol>
+            <li>Open <b>Customize</b>, then <b>Connectors</b>.</li>
+            <li>Click <b>+ Add</b>, then <b>Add custom connector</b>.</li>
+            <li>Name it <code>Andrew Yu</code>, paste the address, and click <b>Continue</b>.</li>
+            <li>Review the settings Claude detected and click <b>Continue</b>.</li>
+            <li>
+              Under Authentication, choose <b>No sign in</b>, leave Request headers empty, and click <b>Add</b>.
+            </li>
+            <li>In a chat, open the <b>+</b> menu, then <b>Connectors</b>, and switch it on.</li>
+          </ol>
+          <p class="note">
+            On a Team or Enterprise plan, an Owner or Primary Owner adds it first under Organization settings, then
+            Connectors. After that, each person switches it on.
+          </p>
+        </section>
+      </div>
+    </div>
+
+    <div class="g step">
+      <h2 class="field">Step 2 <span class="step__what">Ask</span></h2>
+      <div>
+        <ul class="qs" aria-label="Questions worth trying">
+          {
+            questions.map((x) => (
+              <li>
+                <p class="qs__q">{x.q}</p>
+                <p class="qs__tools">
+                  <span class="label">Expect it to call</span>{' '}
+                  {x.tools.map((t) => (
+                    <code class="token">{t}</code>
+                  ))}
+                </p>
+              </li>
+            ))
+          }
+        </ul>
+        <p class="note">
+          The model decides which tool to ask for and when, and your client makes the call. You will see each call and
+          its result in the conversation. Claude Code may first look up the server’s tools by name before it calls one.
+        </p>
+      </div>
+    </div>
+
+    <div class="g cp" data-check data-state="idle">
+      <h2 class="field">Checkpoint</h2>
+      <div class="cp__body">
+        <div class="cp__run">
+          <p class="cp__q">Ask the server, from this page, which tools it has.</p>
+          <button class="btn btn--primary" type="button" data-run>Send tools/list</button>
+          <div class="cp__out" aria-live="polite">
+            <p data-when="idle">This sends one request to <code>/mcp</code> and prints what comes back.</p>
+            <p data-when="busy">Waiting for the server.</p>
+            <div data-when="right">
+              <p><strong>Expected output.</strong> The server named three tools:</p>
+              <ol class="got" data-got></ol>
+              <p>Your client reads the same list when it connects.</p>
+            </div>
+            <p data-when="wrong">
+              <strong>If it fails.</strong> <span data-why>The server did not answer.</span> Check that you are online and
+              try again. If a client fails the same way, the address is the first thing to check.
+            </p>
+          </div>
+        </div>
+        <div class="cp__slot">
+          <span class="cp__empty label" aria-hidden="true">Stamp<br />goes here</span>
+          <Stamp lines={['Server', 'answered']} small="Lab 03" label="Checkpoint passed: the server answered" class="cp__stamp" />
+        </div>
+      </div>
+    </div>
+  </Sheet>
+
+  <section class="sec" id="tools" aria-labelledby="tools-h">
+    <SectionHead title="The tools" id="tools-h">
+      The server is read-only. Its tools can reach this site’s published pages and nothing else, and none of them can
+      change anything.
+    </SectionHead>
+    <dl class="tools">
+      {
+        TOOLS.map((t) => (
+          <div class="tool">
+            <dt>
+              <code class="tool__name">{t.name}</code>
+            </dt>
+            <dd>{t.description}</dd>
+          </div>
+        ))
+      }
+    </dl>
+  </section>
+
+  <section class="sec" id="what" aria-labelledby="what-h">
+    <SectionHead title="What MCP is" id="what-h">For anyone who has only heard the term.</SectionHead>
+    <div class="g g--plain">
+      <span></span>
+      <div class="prose">
+        <p>
+          MCP, the Model Context Protocol, is a shared way for an AI app to use tools that live somewhere else. A server
+          like this one publishes a list of tools, each with a name and a plain description of when to use it. When you
+          connect, your app makes those tools available to the model. If the model decides a tool would help with your
+          question, it asks for it. Your app then calls the server: Claude Code calls it from your machine, and the
+          Claude apps call it from Anthropic’s servers. The answer comes back for the model to read before it replies.
+          The model itself never runs anything.
+        </p>
+        <a class="more" href="/">Try Lab 01: who runs the tool?</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Every sheet row: field name in the label column, the work beside it. */
+  .g {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: 24px 0;
+    border-top: var(--rule-dash);
+  }
+  .g > .field {
+    margin: 0;
+    padding-top: 4px;
+  }
+  .g--plain {
+    border-top: 0;
+    padding-top: 30px;
+  }
+
+  .top {
+    display: grid;
+    grid-template-columns: minmax(0, 6.6fr) minmax(0, 3.4fr);
+    gap: clamp(24px, 3.4vw, 52px);
+    align-items: end;
+    padding: clamp(26px, 4vw, 52px) 0 clamp(26px, 3.4vw, 40px);
+  }
+  .top :global(h1) {
+    font-size: var(--step-hero);
+    max-width: 11ch;
+  }
+  .addr {
+    display: grid;
+    gap: 10px;
+    justify-items: start;
+    padding-bottom: 6px;
+  }
+  .addr .field {
+    margin: 0;
+  }
+  .addr__url code {
+    font-family: var(--font-mono);
+    font-size: clamp(1.0625rem, 1.6vw, 1.375rem);
+    font-weight: 600;
+    background: none;
+    padding: 0;
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+  .addr__url {
+    border-bottom: 3px solid var(--pink);
+    padding-bottom: 4px;
+  }
+
+  .brief {
+    border-top: var(--rule);
+  }
+  .lede {
+    max-width: 40ch;
+  }
+  .need {
+    max-width: 60ch;
+  }
+
+  .step__what {
+    display: block;
+    margin-top: 6px;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-title);
+    font-size: 1.75rem;
+    line-height: 1;
+    letter-spacing: 0;
+    text-transform: none;
+    color: var(--text);
+  }
+
+  /* Step 1: two clients side by side, a dashed rule between them. */
+  .clients {
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  }
+  .client {
+    padding: 2px 0 4px;
+    min-width: 0;
+  }
+  .client + .client {
+    border-left: var(--rule-dash);
+    padding-left: 28px;
+  }
+  .client:first-child {
+    padding-right: 28px;
+  }
+  .client .title {
+    font-size: 1.375rem;
+    margin-bottom: 12px;
+  }
+  .client ol {
+    margin: 0;
+    padding-left: 1.5em;
+    font-size: var(--step-small);
+    line-height: 1.5;
+  }
+  .client li + li {
+    margin-top: 10px;
+  }
+  .client li::marker {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--ink);
+  }
+  .client b {
+    font-weight: 600;
+  }
+  .note {
+    margin-top: 16px;
+    font-size: var(--step-small);
+    line-height: 1.45;
+    color: var(--text-soft);
+    max-width: 58ch;
+  }
+
+  .cmd {
+    display: flex;
+    align-items: stretch;
+    margin: 8px 0 8px;
+    border-top: var(--rule);
+    border-bottom: var(--rule);
+    background: var(--stock-2);
+  }
+  .cmd pre {
+    flex: 1;
+    min-width: 0;
+    margin: 0;
+    padding: 12px 14px;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+  }
+  .cmd pre code {
+    background: none;
+    padding: 0;
+    font-size: inherit;
+  }
+  .cmd__copy {
+    border: 0;
+    border-left: var(--rule-dash);
+    border-radius: 0;
+    padding: 0 14px;
+  }
+
+  /* Step 2: the questions, one per dashed row. */
+  .qs {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+  .qs li {
+    padding: 0 0 16px;
+  }
+  .qs li + li {
+    border-top: var(--rule-dash);
+    padding-top: 16px;
+  }
+  .qs__q {
+    font-size: var(--step-lede);
+    line-height: 1.35;
+    max-width: 46ch;
+  }
+  .qs__tools {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 6px 10px;
+  }
+  .qs__tools .token {
+    font-size: 0.8125rem;
+    background: none;
+    color: var(--ink);
+  }
+
+  /* Checkpoint */
+  .cp {
+    border-top: var(--rule);
+  }
+  .cp__body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 28px;
+    align-items: start;
+  }
+  .cp__q {
+    font-size: clamp(1.125rem, 1.5vw, 1.3125rem);
+    line-height: 1.35;
+    margin-bottom: 14px;
+  }
+  .cp__out {
+    margin-top: 16px;
+    min-height: 5.5em;
+    font-size: var(--step-small);
+    line-height: 1.45;
+    max-width: 58ch;
+  }
+  .cp__out [data-when] {
+    display: none;
+  }
+  .cp[data-state='idle'] [data-when='idle'],
+  .cp[data-state='busy'] [data-when='busy'],
+  .cp[data-state='right'] [data-when='right'],
+  .cp[data-state='wrong'] [data-when='wrong'] {
+    display: block;
+  }
+  [data-when='idle'],
+  [data-when='busy'] {
+    color: var(--text-soft);
+  }
+  .got {
+    margin: 10px 0 12px;
+    padding: 0;
+    list-style: none;
+    border-top: var(--rule);
+  }
+  /* The list items are written by the script below, so they need global selectors. */
+  .got :global(li) {
+    display: grid;
+    grid-template-columns: 2.2em minmax(0, 1fr);
+    align-items: baseline;
+    padding: 7px 0;
+    border-bottom: var(--rule-dash);
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 0.9375rem;
+    animation: drop 0.32s var(--ease-press) both;
+    animation-delay: calc(var(--i) * 90ms);
+  }
+  .got :global(.got__n) {
+    font-weight: 500;
+    font-size: var(--step-label);
+    color: var(--ink);
+  }
+  @keyframes drop {
+    from {
+      opacity: 0;
+      transform: translateY(-8px);
+    }
+  }
+
+  .cp__slot {
+    position: relative;
+    width: 150px;
+    height: 150px;
+  }
+  .cp__empty {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: var(--rule-dash);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    color: var(--ink);
+    transition: opacity 0.15s;
+  }
+  .cp :global(.cp__stamp) {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    scale: 1.5;
+    transition:
+      opacity 0.12s 0.3s,
+      scale 0.28s var(--ease-stamp) 0.3s;
+  }
+  .cp[data-state='right'] :global(.cp__stamp) {
+    opacity: 1;
+    scale: 1;
+  }
+  .cp[data-state='right'] .cp__empty {
+    opacity: 0;
+  }
+
+  /* The tools, as a definition list in the page grid. */
+  .tools {
+    margin: 0;
+  }
+  .tool {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: 22px 0;
+    border-bottom: var(--rule-dash);
+  }
+  .tool dd {
+    margin: 0;
+    max-width: 64ch;
+  }
+  .tool__name {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: 1rem;
+    background: none;
+    padding: 0;
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+  .prose .more {
+    margin-top: 18px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .got :global(li) {
+      animation: none;
+    }
+    .cp :global(.cp__stamp) {
+      transition: none;
+    }
+  }
+
+  @media (max-width: 1000px) {
+    .top {
+      grid-template-columns: 1fr;
+      align-items: start;
+    }
+    .clients {
+      grid-template-columns: 1fr;
+    }
+    .client:first-child {
+      padding-right: 0;
+      padding-bottom: 22px;
+    }
+    .client + .client {
+      border-left: 0;
+      border-top: var(--rule-dash);
+      padding-left: 0;
+      padding-top: 20px;
+    }
+  }
+
+  @media (max-width: 700px) {
+    .g,
+    .tool {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+    .g--plain > span {
+      display: none;
+    }
+    .step__what {
+      display: inline;
+      margin-left: 8px;
+      font-size: 1.375rem;
+    }
+    .cp__body {
+      grid-template-columns: 1fr;
+    }
+    .cp__slot {
+      display: none;
+      width: 124px;
+      height: 124px;
+    }
+    /* On a phone the stamp lands right under the result, where the eye already is. */
+    .cp[data-state='right'] .cp__slot {
+      display: block;
+    }
+    .cp__out {
+      min-height: 0;
+    }
+  }
+</style>
+
+<script>
+  // Copy buttons: the address and the Claude Code command.
+  for (const btn of document.querySelectorAll<HTMLButtonElement>('[data-copy]')) {
+    const label = btn.textContent;
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy ?? '');
+        btn.textContent = 'Copied';
+      } catch {
+        btn.textContent = 'Select and copy';
+      }
+      setTimeout(() => (btn.textContent = label), 1800);
+    });
+  }
+
+  // Checkpoint: a real tools/list request to /mcp, in the 2026-07-28 shape (no handshake, metadata in _meta).
+  const check = document.querySelector<HTMLElement>('[data-check]');
+  const run = check?.querySelector<HTMLButtonElement>('[data-run]');
+  const got = check?.querySelector<HTMLOListElement>('[data-got]');
+  const why = check?.querySelector<HTMLElement>('[data-why]');
+  if (check && run && got && why) {
+    run.addEventListener('click', async () => {
+      check.dataset.state = 'busy';
+      run.disabled = true;
+      try {
+        const res = await fetch('/mcp', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Accept: 'application/json, text/event-stream',
+            'MCP-Protocol-Version': '2026-07-28',
+            'Mcp-Method': 'tools/list',
+          },
+          body: JSON.stringify({
+            jsonrpc: '2.0',
+            id: 1,
+            method: 'tools/list',
+            params: {
+              _meta: {
+                'io.modelcontextprotocol/protocolVersion': '2026-07-28',
+                'io.modelcontextprotocol/clientInfo': { name: 'andrewyu.app connect page', version: '1.0.0' },
+                'io.modelcontextprotocol/clientCapabilities': {},
+              },
+            },
+          }),
+        });
+        const body = await res.json();
+        const tools: { name: string }[] = body?.result?.tools ?? [];
+        if (!res.ok || tools.length === 0) {
+          throw new Error(body?.error?.message ? `The server said: ${body.error.message}.` : `The server answered ${res.status}.`);
+        }
+        got.replaceChildren(
+          ...tools.map((t, i) => {
+            const li = document.createElement('li');
+            li.style.setProperty('--i', String(i));
+            const n = document.createElement('span');
+            n.className = 'got__n';
+            n.setAttribute('aria-hidden', 'true');
+            n.textContent = String(i + 1);
+            li.append(n, t.name);
+            return li;
+          }),
+        );
+        check.dataset.state = 'right';
+      } catch (err) {
+        why.textContent = err instanceof Error && err.message.startsWith('The server') ? err.message : 'The server did not answer.';
+        check.dataset.state = 'wrong';
+      } finally {
+        run.disabled = false;
+      }
+    });
+  }
+</script>

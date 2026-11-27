@@ -1,0 +1,721 @@
+/*
+ * The agent-loop figure. Tokens only: it takes its colours from whatever paper it is
+ * printed on, so the home page's teal flood (Lab02.astro) and the lesson page's pale
+ * stock both work by redefining the tokens around it.
+ *
+ * Desktop: the stage (counts, diagram, caption, controls) on the left, the list on the
+ * right. Under 900px it stacks in that order. Under 600px the narrow drawing replaces
+ * the wide one and older rows fold to one line.
+ */
+
+.al {
+  --al-gap: clamp(22px, 3vw, 44px);
+  margin: 0;
+  border-top: var(--rule);
+}
+
+/* ---------- Head: what this run is, and whether it was recorded ---------- */
+
+.al-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 8px 32px;
+  flex-wrap: wrap;
+  padding: 12px 0;
+  border-bottom: var(--rule-dash);
+}
+.al-head__name {
+  margin: 0;
+}
+.al-prov {
+  max-width: 64ch;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: var(--text-soft);
+}
+.al-prov__flag {
+  color: var(--ink);
+  font-weight: 600;
+  margin-right: 4px;
+}
+.al-prov code {
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+/* ---------- Scenario switcher ---------- */
+
+.al-pick {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0 var(--col-gap);
+  padding: 4px 0 0;
+}
+.al-pick__b {
+  display: grid;
+  gap: 4px;
+  align-content: start;
+  text-align: left;
+  padding: 14px 0 14px;
+  background: none;
+  border: 0;
+  border-bottom: 1.5px solid transparent;
+  cursor: pointer;
+  color: var(--text);
+}
+.al-pick__t {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-stretch: var(--w-title);
+  font-size: 1.25rem;
+  line-height: 1.1;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 3px;
+  text-underline-offset: 5px;
+}
+.al-pick__q {
+  font-size: 0.875rem;
+  line-height: 1.4;
+  color: var(--text-soft);
+}
+.al-pick__b:hover .al-pick__t {
+  text-decoration-color: var(--ink);
+}
+.al-pick__b[aria-pressed='true'] {
+  border-bottom: 4px solid var(--ink);
+}
+.al-pick__b[aria-pressed='true'] .al-pick__t {
+  text-decoration-color: var(--pink);
+}
+
+/* ---------- Body: stage | list ---------- */
+
+.al-body {
+  display: grid;
+  grid-template-columns: minmax(0, 5.7fr) minmax(0, 4.3fr);
+  border-top: var(--rule);
+}
+.al-stage {
+  padding: 18px var(--al-gap) 8px 0;
+  min-width: 0;
+}
+
+.al-counts {
+  display: flex;
+  gap: clamp(20px, 3vw, 44px);
+  margin-bottom: 6px;
+}
+.al-count {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.al-count__n {
+  display: inline-block;
+  min-width: 1.1ch;
+  font-size: clamp(2.25rem, 3.4vw, 3rem);
+  color: var(--ink);
+  overflow: hidden;
+  line-height: 0.95;
+}
+.al-count__n > span {
+  display: inline-block;
+}
+.al-count__l {
+  max-width: 8.5em;
+  line-height: 1.3;
+}
+
+/* ---------- Diagram ---------- */
+
+/*
+ * The whole machine is drawn from step 1. The wide drawing needs about 540px of stage
+ * to keep every label at 13px or more on screen; below that the narrow one, with its
+ * nodes stacked at full width, takes over. The stage's own width decides, not the
+ * viewport, so the switch is right on the lesson page and inside the home page flood.
+ */
+.al-stage {
+  container: al-stage / inline-size;
+}
+.al-dias {
+  margin: 10px 0 14px;
+}
+.al-dia {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+.al-dia--narrow {
+  display: none;
+  max-width: 460px;
+  margin: 0 auto;
+}
+@container al-stage (max-width: 539px) {
+  .al-dia--wide {
+    display: none;
+  }
+  .al-dia--narrow {
+    display: block;
+  }
+}
+
+.al-st__box {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.75;
+  transition: opacity 0.35s;
+}
+.al-st__title {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-stretch: var(--w-title);
+  fill: var(--text);
+  transition: fill 0.35s;
+}
+.al-st__sub,
+.al-tool__kind {
+  font-family: var(--font-mono);
+  font-size: 14.5px;
+  fill: var(--ink);
+}
+.al-tool__name {
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 15px;
+  fill: var(--text);
+}
+.al-tool__name.is-empty {
+  font-weight: 400;
+  font-size: 14.5px;
+  fill: var(--ink);
+}
+.al-person__mark {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.75;
+}
+/* Not reached yet: a faint dashed outline, the words still legible in teal. */
+.al-st.is-ghost .al-st__box {
+  stroke-dasharray: 5 4;
+  opacity: 0.35;
+}
+.al-st.is-ghost .al-st__title {
+  fill: var(--ink);
+  font-weight: 600;
+}
+.al-lane__line {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.75;
+  transition: opacity 0.35s;
+}
+.al-lane__head {
+  fill: var(--ink);
+  transition: opacity 0.35s;
+}
+.al-lane.is-ghost .al-lane__line {
+  stroke-dasharray: 4 4;
+  opacity: 0.35;
+}
+.al-lane.is-ghost .al-lane__head {
+  opacity: 0.35;
+}
+.al-lane__label {
+  font-family: var(--font-mono);
+  font-size: 14.5px;
+  fill: var(--ink);
+}
+.al-dia--narrow .al-st__sub,
+.al-dia--narrow .al-tool__kind,
+.al-dia--narrow .al-lane__label,
+.al-dia--narrow .al-tool__name.is-empty {
+  font-size: 14px;
+}
+.al-dia--narrow .al-tool__name {
+  font-size: 14.5px;
+}
+/* The live edge: pink, drawn on in the direction of travel over the teal lane. */
+.al-lane__ink {
+  fill: none;
+  stroke: var(--pink);
+  stroke-width: 3.5;
+  mix-blend-mode: var(--blend);
+}
+.al-lane__inkhead {
+  fill: var(--pink);
+  mix-blend-mode: var(--blend);
+}
+.al-lane.is-on .al-lane__head {
+  opacity: 0;
+}
+.al-lane.is-on .al-lane__label {
+  fill: var(--text);
+  font-weight: 600;
+}
+.al-token {
+  fill: var(--text);
+  stroke: var(--pink);
+  stroke-width: 2.5;
+}
+
+/* ---------- Caption: one cell, every step stacked in it, so its height never changes ---------- */
+
+.al-caps {
+  display: grid;
+  border-top: var(--rule-dash);
+  padding: 14px 0 16px;
+}
+.al-cap {
+  grid-area: 1 / 1;
+  visibility: hidden;
+}
+.al-cap.is-on {
+  visibility: visible;
+}
+.al-cap__n {
+  margin-bottom: 4px;
+}
+.al-cap__h {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-stretch: var(--w-title);
+  font-size: clamp(1.3125rem, 2vw, 1.6875rem);
+  line-height: 1.12;
+  max-width: 30ch;
+}
+.al-cap__s {
+  margin-top: 8px;
+  font-size: 1rem;
+  line-height: 1.5;
+  max-width: 56ch;
+}
+
+/* ---------- Controls ---------- */
+
+.al-ctrl {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  grid-template-areas: 'back track next';
+  align-items: center;
+  gap: 12px;
+}
+.al-ctrl__back {
+  grid-area: back;
+  min-width: 6.2em;
+}
+.al-ctrl__next {
+  grid-area: next;
+  min-width: 6.2em;
+}
+.al-track {
+  grid-area: track;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 5px;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+.al-track__b {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border: 1.5px solid var(--ink);
+  border-radius: 2px;
+  background: transparent;
+  color: var(--ink);
+  font: 600 0.8125rem/1 var(--font-mono);
+  cursor: pointer;
+  font-variant-numeric: tabular-nums;
+}
+.al-track__b:hover {
+  background: var(--ink-tint);
+}
+.al-track__b.is-done {
+  background: var(--ink-tint);
+}
+.al-track__b[aria-current='step'] {
+  background: var(--ink);
+  color: var(--stock);
+}
+
+.al-under {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 12px;
+  padding: 14px 0 4px;
+}
+.al-rawbtn {
+  background: none;
+  border: 0;
+  padding: 4px 0;
+  cursor: pointer;
+  font: 500 0.8125rem/1.3 var(--font-mono);
+  color: var(--ink);
+  text-decoration: underline;
+  text-decoration-color: var(--pink);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+.al-rawbtn:hover {
+  text-decoration-thickness: 3px;
+}
+.al-keys {
+  margin: 0;
+}
+.al-keys kbd {
+  color: var(--ink);
+}
+
+.al-raw {
+  margin-top: 10px;
+}
+.al-raw__what {
+  font-size: 0.875rem;
+  line-height: 1.45;
+  margin-bottom: 8px;
+}
+.al-raw__what code {
+  overflow-wrap: anywhere;
+}
+.al-raw__pre {
+  margin: 0;
+  max-height: 26rem;
+  overflow: auto;
+  background: var(--stock-2);
+  border-top: var(--rule);
+  border-bottom: var(--rule);
+  padding: 14px 16px;
+  font-size: 0.75rem;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--text);
+  tab-size: 2;
+}
+
+/* ---------- The list ---------- */
+
+.al-list {
+  min-width: 0;
+  padding: 18px 0 8px var(--al-gap);
+  border-left: var(--rule-dash);
+}
+.al-list__cap {
+  margin: 0 0 8px;
+}
+.al-along {
+  padding-bottom: 16px;
+  margin-bottom: 14px;
+  border-bottom: var(--rule);
+}
+.al-along__items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.al-along .token {
+  font-size: 0.78rem;
+  background: none;
+  padding: 2px 7px;
+  transition: border-color 0.3s;
+}
+.al-list.is-sending .al-along .token {
+  border-color: var(--pink);
+}
+
+.al-rows {
+  position: relative;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+/* On a send step a pink bracket takes in every row: all of it goes. */
+.al-rows::before {
+  content: '';
+  position: absolute;
+  left: calc(-1 * var(--al-gap) + 6px);
+  top: 4px;
+  bottom: 4px;
+  width: 9px;
+  border: 3px solid var(--pink);
+  border-right: 0;
+  opacity: 0;
+  mix-blend-mode: var(--blend);
+  transition: opacity 0.25s;
+}
+.al-list.is-sending .al-rows:not(.al-rows--answer)::before {
+  opacity: 1;
+}
+
+.al-row {
+  padding: 12px 0 13px;
+  border-top: var(--rule-dash);
+}
+.al-row:first-child {
+  border-top: 0;
+  padding-top: 2px;
+}
+.al-row__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 12px;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.al-row__idx {
+  font-weight: 600;
+  color: var(--text);
+}
+.al-row__idx.chip {
+  color: var(--over);
+  padding: 0 6px;
+}
+.al-row__plain {
+  margin: 3px 0 5px;
+  font-size: 1.0625rem;
+  line-height: 1.35;
+}
+.al-row__aside {
+  font-size: 0.9375rem;
+  color: var(--text-soft);
+}
+.al-row__wire {
+  display: grid;
+  gap: 3px;
+}
+.al-w {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--text-soft);
+  overflow-wrap: anywhere;
+}
+.al-w__type {
+  font-weight: 600;
+  color: var(--ink);
+}
+.al-w__name {
+  font-weight: 600;
+  color: var(--text);
+}
+.al-w__len,
+.al-w__id {
+  color: var(--ink);
+}
+.al-answer {
+  margin-top: 12px;
+  border-top: var(--rule);
+  padding-top: 12px;
+}
+.al-rows--answer .al-row {
+  padding-top: 0;
+}
+
+/* A message not produced yet: a numbered dashed slot, as tall as the row that will fill it. */
+.al-slot {
+  position: relative;
+  padding: 12px 0 13px;
+}
+.al-slot::before {
+  content: '';
+  position: absolute;
+  inset: 5px 0;
+  border: 1px dashed color-mix(in srgb, var(--ink) 55%, transparent);
+}
+.al-answer .al-slot {
+  padding-top: 0;
+}
+.al-answer .al-slot::before {
+  top: -5px;
+}
+.al-slot__n {
+  position: absolute;
+  top: 14px;
+  left: 12px;
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.al-answer .al-slot__n {
+  top: 2px;
+}
+.al-slot__body {
+  visibility: hidden;
+}
+
+.al-think {
+  margin-top: 6px;
+}
+.al-think summary {
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  line-height: 1.5;
+  color: var(--ink);
+}
+.al-think[open] summary {
+  margin-bottom: 4px;
+}
+.al-think__text {
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--text-soft);
+  padding-left: 12px;
+  border-left: var(--rule-dash);
+}
+.al-row__usage {
+  margin-top: 5px;
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  color: var(--ink);
+}
+
+/* ---------- Stacked ---------- */
+
+@media (max-width: 900px) {
+  .al-body {
+    grid-template-columns: 1fr;
+  }
+  .al-stage {
+    padding-right: 0;
+  }
+  .al-list {
+    padding-left: 0;
+    border-left: 0;
+    border-top: var(--rule);
+  }
+  /* The bracket sits out in the page gutter. */
+  .al-rows::before {
+    left: -13px;
+    width: 7px;
+  }
+}
+
+/* ---------- Phone ---------- */
+
+@media (max-width: 600px) {
+  .al-stage {
+    padding-top: 12px;
+  }
+  .al-counts {
+    margin-bottom: 0;
+  }
+  .al-count__n {
+    font-size: 2.125rem;
+  }
+  .al-caps {
+    padding: 10px 0 12px;
+  }
+  .al-cap__h {
+    font-size: 1.25rem;
+  }
+  .al-cap__s {
+    font-size: 0.9375rem;
+    margin-top: 6px;
+  }
+  .al-ctrl {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas:
+      'track track'
+      'back next';
+    gap: 10px;
+  }
+  .al-track {
+    justify-content: flex-start;
+    gap: 4px;
+  }
+  .al-track__b {
+    width: 32px;
+    height: 32px;
+  }
+  .al-ctrl__back,
+  .al-ctrl__next {
+    width: 100%;
+  }
+  .al-under {
+    padding-top: 10px;
+  }
+  /* Three runs side by side; the question is messages[0] in the list anyway. */
+  .al-pick {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 0 12px;
+  }
+  .al-pick__b {
+    padding: 10px 0;
+  }
+  .al-pick__t {
+    font-size: 1.0625rem;
+  }
+  .al-pick__q {
+    display: none;
+  }
+
+  /* Older rows fold to one line, so the newest message stays on screen. */
+  .al-row:not(.is-newest) {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 7px 0;
+  }
+  .al-row:not(.is-newest) .al-row__meta {
+    flex: none;
+  }
+  .al-row:not(.is-newest) .al-row__role,
+  .al-row:not(.is-newest) .al-row__stop,
+  .al-row:not(.is-newest) .al-row__wire,
+  .al-row:not(.is-newest) .al-think,
+  .al-row:not(.is-newest) .al-row__usage,
+  .al-row:not(.is-newest) .al-row__aside {
+    display: none;
+  }
+  .al-row:not(.is-newest) .al-row__plain {
+    margin: 0;
+    min-width: 0;
+    font-size: 0.9375rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .al-row:first-child:not(.is-newest) {
+    padding-top: 2px;
+  }
+  /* On a phone a slot is one line: it says where the message will go, nothing more. */
+  .al-slot {
+    padding: 0;
+    height: 38px;
+    margin-top: 6px;
+  }
+  .al-slot::before {
+    inset: 0;
+  }
+  .al-slot__n {
+    top: 50%;
+    transform: translateY(-50%);
+  }
+  .al-answer .al-slot::before {
+    top: 0;
+  }
+  .al-answer .al-slot__n {
+    top: 50%;
+  }
+  .al-slot__body {
+    display: none;
+  }
+  .al-along {
+    padding-bottom: 12px;
+    margin-bottom: 10px;
+  }
+}

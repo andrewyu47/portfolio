@@ -1,0 +1,34 @@
+---
+title: "Pinecone Search docs"
+outcome: "As sole author, I wrote the Search SDK and API reference for Pinecone's vector database so that a developer reading a page and an AI assistant retrieving one section each get a complete answer."
+summary: "A writing sample from my contract at Pinecone: search documentation for the full-text search rollout, reviewed by engineering, product, and other writers."
+org: "Pinecone"
+role: "Technical Writer (contract)"
+period: "Feb 2026 to Jul 2026"
+year: 2026
+area: "build"
+order: 70
+verify:
+  - label: "Read the Search overview on docs.pinecone.io"
+    href: "https://docs.pinecone.io/guides/search/search-overview"
+---
+
+## The work
+
+Pinecone's Search docs are the SDK and API reference for querying its vector database. I was the sole author during my contract. Engineering supplied code samples and checked technical accuracy, product set the scope and audience, and other writers kept style and structure consistent with the rest of the site.
+
+## Two readers
+
+Developers read these pages, and so do the AI assistants that answer developers' questions for them. An assistant doesn't read a page top to bottom. It retrieves a chunk.
+
+So I structured every page so that a single retrieved section is a complete answer that doesn't waste tokens, and so that a developer scanning the same page still finds what they came for. Headings, examples, and metadata are written to be retrieved as well as read.
+
+## How I worked on the release
+
+For the full-text search rollout, I started in the source code and the recent pull requests to see what had changed. The hard part was structure. Customers needed to see which tool to reach for at each level of complexity, and that decision shapes every page that follows. I checked the plan with the engineer who built the feature before I wrote the draft.
+
+Then I drafted with structured headings and metadata and shipped through pull request review, where engineering, product, and other writers each weighed in before anything merged.
+
+## What I'd change
+
+I'd put runnable examples on the page instead of linking out to a notebook, so a developer could run a first query without leaving the docs.

@@ -1,46 +1,50 @@
 {
-  "name": "my-portfolio",
-  "version": "0.0.0",
+  "name": "andrewyu-app",
+  "type": "module",
+  "version": "2.0.0",
   "private": true,
+  "description": "Andrew Yu's portfolio: a lab manual about teaching AI, with an MCP server built in.",
+  "engines": {
+    "node": ">=22.23.4"
+  },
   "scripts": {
-    "docusaurus": "docusaurus",
-    "start": "docusaurus start",
-    "build": "docusaurus build",
-    "swizzle": "docusaurus swizzle",
-    "deploy": "docusaurus deploy",
-    "clear": "docusaurus clear",
-    "serve": "docusaurus serve",
-    "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids"
+    "index": "node scripts/build-index.mjs",
+    "dev": "node scripts/build-index.mjs && astro dev",
+    "build": "node scripts/build-index.mjs && astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "check:copy": "node scripts/check-copy.mjs",
+    "check:links": "node scripts/check-links.mjs",
+    "test": "playwright test",
+    "test:mcp": "node --test tests/mcp.test.mjs",
+    "record": "node scripts/record-traces.mjs",
+    "astro": "astro"
   },
   "dependencies": {
-    "@docusaurus/core": "3.9.2",
-    "@docusaurus/preset-classic": "3.9.2",
-    "@docusaurus/theme-mermaid": "^3.9.2",
-    "@mdx-js/react": "^3.0.0",
-    "clsx": "^2.0.0",
-    "prism-react-renderer": "^2.3.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-player": "^3.4.0"
+    "@astrojs/markdown-satteri": "^0.4.10",
+    "@astrojs/mdx": "^8.1.6",
+    "@astrojs/react": "^7.1.9",
+    "@astrojs/sitemap": "^3.7.6",
+    "@astrojs/vercel": "^11.0.22",
+    "@fontsource-variable/anybody": "^5.3.0",
+    "@fontsource-variable/literata": "^5.3.0",
+    "@fontsource-variable/spline-sans-mono": "^5.3.0",
+    "@modelcontextprotocol/server": "^2.4.0",
+    "@types/react": "^19.3.3",
+    "@types/react-dom": "^19.3.0",
+    "astro": "^7.4.13",
+    "motion": "^14.14.0",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "yaml": "^2.9.1",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
-    "@docusaurus/module-type-aliases": "3.9.2",
-    "@docusaurus/types": "3.9.2"
-  },
-  "browserslist": {
-    "production": [
-      ">0.5%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 3 chrome version",
-      "last 3 firefox version",
-      "last 5 safari version"
-    ]
-  },
-  "engines": {
-    "node": ">=20.0"
+    "@anthropic-ai/sdk": "^1.14.0",
+    "@astrojs/check": "^0.9.12",
+    "@axe-core/playwright": "^4.14.1",
+    "@modelcontextprotocol/client": "^2.4.0",
+    "@playwright/test": "^1.65.1",
+    "typescript": "^6.0.3"
   }
 }

@@ -1,0 +1,17 @@
+{
+  "name": "Andrew Yu",
+  "location": "Seattle",
+  "thesis": "I teach people what AI can actually do.",
+  "support": "Then I build the labs and demos that let them do it without me in the room.",
+  "oneLine": "Andrew Yu teaches people what AI can actually do, then builds the labs and demos that let them do it without him in the room.",
+  "about": "Andrew Yu is a technical writer and AI educator in Seattle. He is Lead Technical Writer at Salesforce and Director of AI Enablement at Claude Dojo, a nonprofit where he and his fellow instructors have taught 103 people to build with Claude Code. Before that he wrote developer documentation at Pinecone and led a content strategy team at Splunk. He studied English at UC Berkeley, and he builds every day with Claude Code.",
+  "roles": [
+    { "title": "Lead Technical Writer", "org": "Salesforce", "period": "2026 to present" },
+    { "title": "Director of AI Enablement", "org": "Claude Dojo", "period": "2026 to present" }
+  ],
+  "links": {
+    "github": "https://github.com/andrewyu47",
+    "linkedin": "https://www.linkedin.com/in/andrewyu47/"
+  },
+  "site": "https://andrewyu.app"
+}

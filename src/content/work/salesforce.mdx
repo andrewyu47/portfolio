@@ -1,0 +1,40 @@
+---
+title: "Who owns an agent skill after it ships"
+outcome: "I proposed an ownership model for agent skills at Salesforce: the docs are the source, and evals run with and without the docs are the proof."
+summary: "Lead Technical Writer on a three-person innovation team that ships quickstarts, starter kits, agent skills, and demos for developers."
+org: "Salesforce"
+role: "Lead Technical Writer"
+period: "Jul 2026 to present"
+year: 2026
+area: "measure"
+order: 3
+featured: false
+metrics: []
+stack: ["Claude Code", "Agent Skills", "Evals"]
+---
+
+## The gap
+
+An agent skill is a document. It is instructional Markdown that teaches an agent how to help someone use software. Skills are cheap to write, so they multiply, and the hard question comes after one ships: who keeps it right? When a product changes, the docs get updated. The skill that says the same thing in a different file often does not, and the agent reads the skill.
+
+I work on a three-person innovation team that ships quickstarts, starter kits, agent skills, and demos for developers. That work sits right on this gap, so I wrote down how I think it should be closed. This page describes the idea in general terms and carries no internal detail.
+
+## What I proposed
+
+**The docs are the source.** A skill should come from the same guidance that feeds the docs, owned by the same writer, so the two cannot drift apart.
+
+**Evals are the proof.** Run a realistic developer task with the skill and without it, and compare. If the skill does not change the outcome, it is not earning its place. Building evals like this is part of my job, along with agentic workflows. The method is the one behind [the score that lied](/work/the-score-that-lied).
+
+**Every skill needs a way out.** A skill that nobody retires keeps getting loaded after its product has moved on. Each one should carry a label that says where it is in its life, so retiring it is a normal step and not an emergency.
+
+## Why the description is writing work
+
+A skill's description is the part people skim past, and it matters most. It is what the model reads to decide whether to use the skill at all. A vague description means a good skill never loads, or loads for the wrong task. Getting it right means naming the task the way a developer would ask for it and drawing a clear line around what the skill does not cover. Technical writers already do that with page titles and summaries.
+
+So I treat skill evals as documentation evals. They measure whether our guidance helps someone finish a real task.
+
+## What I teach coworkers
+
+I teach AI to the people I work with. I gave a lightning talk at Splunk in 2022 and give lightning talks at Salesforce now. I start with the boring, repeatable parts of the job, because that is where people see time come back first. Then I teach the loop: give the agent a clear goal and a way to check its own work, and let it try, check, and try again until it succeeds or needs a person.
+
+Beyond the team, I work on AI strategy and on how the writer role changes for my organization, and I have pitched that work to my VP.

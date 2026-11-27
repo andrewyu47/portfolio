@@ -1,0 +1,36 @@
+---
+title: Ask this site a question
+idea: This site is also an MCP server, so you can connect an AI client to it and ask about my work.
+minutes: 5
+order: 3
+---
+
+This site is an MCP server at https://andrewyu.app/mcp. Connect a client to it and ask about my work. It answers from the pages on this site and gives you the link to each one.
+
+The server is read-only. Its tools can reach this site's published pages and nothing else, and none of them can change anything. It needs no sign-in and no key.
+
+## Connect Claude Code
+
+In a terminal, run `claude mcp add --transport http andrewyu https://andrewyu.app/mcp`. Then run `claude mcp list` and check that the andrewyu line says Connected.
+
+## Connect the Claude apps
+
+Open Customize, then Connectors. Click + Add, then Add custom connector. Name it, paste the address, and click Continue. Review the settings Claude detected and click Continue. Under Authentication, choose No sign in, leave Request headers empty, and click Add. In a chat, open the + menu, then Connectors, and switch it on.
+
+On a Team or Enterprise plan, an Owner or Primary Owner adds it first under Organization settings, then Connectors. After that, each person switches it on.
+
+## Questions worth trying
+
+- What did Andrew's docs eval find? Say which model each number belongs to.
+- List Andrew's case studies and tell me which ones are about teaching.
+- How many people has Andrew taught to build with Claude Code? Give me the page that says so.
+
+The model decides which tool to ask for and when, and your client makes the call. Claude Code may first look up the server's tools by name before it calls one.
+
+## The tools
+
+search_portfolio returns up to five passages from across the site, each with its page. get_case_study returns the full text of one case study. list_work lists every case study with its slug and outcome.
+
+## What MCP is
+
+MCP, the Model Context Protocol, is a shared way for an AI app to use tools that live somewhere else. The server publishes a list of tools. When the model asks for one, your app calls the server and passes the answer back. Claude Code calls it from your machine, and the Claude apps call it from Anthropic's servers. The model itself never runs anything.

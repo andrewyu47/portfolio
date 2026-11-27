@@ -1,0 +1,127 @@
+/*
+ * Design tokens: a two-ink risograph lab manual.
+ *
+ * One stock, two inks. Teal is the working plate: rules, labels, diagrams, controls.
+ * Pink is the second plate: emphasis, data highlights, stamps, marks made by hand.
+ * Where both plates print, they multiply into navy, and that is what words are set
+ * in: reading text is printed in both inks so it is properly dark.
+ * Nothing on the site gets a color outside these.
+ */
+
+:root {
+  color-scheme: light;
+
+  /* Stock and inks */
+  --stock: #edefea; /* cool grey-white paper, deliberately not cream */
+  --stock-2: #e2e6e0; /* the same stock in shadow: insets, code blocks */
+  --ink: #0b5f69; /* teal plate: apparatus, never long reading text */
+  --pink: #ff4fa3; /* fluorescent pink plate: never used for small text */
+  --text: #0b1d43; /* teal over pink: all reading text and headlines */
+  --over: #0b1d43; /* the same navy, named for use as text set on a pink ground */
+  --text-soft: rgb(11 29 67 / 0.72); /* secondary reading text */
+  --ink-tint: rgb(11 95 105 / 0.14); /* a light screen of teal */
+  --blend: multiply; /* how a plate lays over what is under it */
+  --grain-opacity: 0.34;
+
+  /* Headlines print in both plates: teal letters over a pink copy that sits a hair off. */
+  --over-fill: var(--ink);
+  --over-edge: var(--pink);
+  --over-blend: multiply;
+
+  /* Type: three voices and no more */
+  --font-display: 'Anybody Variable', 'Arial Narrow', 'Helvetica Neue', sans-serif;
+  --font-body: 'Literata Variable', Georgia, 'Times New Roman', serif;
+  --font-mono: 'Spline Sans Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  /* Anybody is used at two widths only, so it reads as one typeface, not three.
+     Condensed shouts. The wider cut names things. */
+  --w-shout: 72%; /* headlines and big numerals */
+  --w-title: 92%; /* names of things: list titles, the three verbs, diagram nodes */
+
+  /* Scale */
+  --step-hero: clamp(2.875rem, 6.9vw, 6.25rem);
+  --step-h2: clamp(2.125rem, 4.4vw, 3.75rem);
+  --step-h3: clamp(1.375rem, 2.4vw, 2rem);
+  --step-lede: clamp(1.1875rem, 1.8vw, 1.4375rem);
+  --step-outcome: clamp(1.25rem, 2vw, 1.625rem);
+  --step-body: 1.0625rem;
+  --step-small: 0.96875rem;
+  --step-label: 0.78125rem;
+
+  /* Space */
+  --gutter: clamp(16px, 4vw, 56px);
+  --wrap: 1280px;
+  --section: clamp(64px, 9vw, 120px);
+  /* The page grid: a narrow label column, then the content. */
+  --cols: minmax(0, 2.3fr) minmax(0, 7.7fr);
+  --col-gap: 22px;
+
+  /* Rules: solid for structure, heavy for the top of a sheet, dashed only inside tables of rows */
+  --rule: 1.5px solid var(--ink);
+  --rule-heavy: 4px solid var(--ink);
+  --rule-dash: 1px dashed var(--ink);
+  --dot: 5px; /* halftone screen pitch */
+
+  /* Registration: how far the pink plate sits off the teal one, at rest and before it settles */
+  --drift-x: 2px;
+  --drift-y: 1.5px;
+  --misreg-x: 11px;
+  --misreg-y: -7px;
+
+  /* Motion */
+  --ease-press: cubic-bezier(0.2, 0.7, 0.2, 1); /* a plate settling into register */
+  --ease-stamp: cubic-bezier(0.3, 1.6, 0.5, 1); /* a stamp landing */
+  --dur-register: 1.05s;
+}
+
+/* Night printing: dark stock, light inks, and plates that add light instead of ink. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    color-scheme: dark;
+    --stock: #0e1a1c;
+    --stock-2: #15262a;
+    --ink: #7fcfcf;
+    --pink: #ff6fb5;
+    --text: #eaf3f1;
+    --over: #0b1d43;
+    --text-soft: rgb(234 243 241 / 0.74);
+    --ink-tint: rgb(127 207 207 / 0.14);
+    --blend: screen;
+    --grain-opacity: 0.35;
+    /* Headlines are knocked out to the text color, with one quiet teal edge behind them. */
+    --over-fill: var(--text);
+    --over-edge: #2d8f95;
+    --over-blend: normal;
+  }
+}
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --stock: #0e1a1c;
+  --stock-2: #15262a;
+  --ink: #7fcfcf;
+  --pink: #ff6fb5;
+  --text: #eaf3f1;
+  --over: #0b1d43;
+  --text-soft: rgb(234 243 241 / 0.74);
+  --ink-tint: rgb(127 207 207 / 0.14);
+  --blend: screen;
+  --grain-opacity: 0.35;
+  --over-fill: var(--text);
+  --over-edge: #2d8f95;
+  --over-blend: normal;
+}
+
+/* Code samples are set in the same inks as everything else (Shiki's css-variables theme). */
+:root {
+  --astro-code-foreground: var(--text);
+  --astro-code-background: var(--stock-2);
+  --astro-code-token-constant: var(--ink);
+  --astro-code-token-string: var(--text);
+  --astro-code-token-comment: var(--text-soft);
+  --astro-code-token-keyword: var(--ink);
+  --astro-code-token-parameter: var(--text);
+  --astro-code-token-function: var(--ink);
+  --astro-code-token-string-expression: var(--text);
+  --astro-code-token-punctuation: var(--text-soft);
+  --astro-code-token-link: var(--ink);
+}

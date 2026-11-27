@@ -1,0 +1,113 @@
+---
+/**
+ * A short piece of real footage. It first shows as a two-ink print with a play button.
+ * Pressing play swaps the print for the recording itself, with captions on.
+ * Without JavaScript the print stays, with a plain link to the file under it.
+ *
+ *   <Clip
+ *     print="room-capstone"
+ *     src="/media/dojo-capstone-kickoff.mp4"
+ *     captions="/media/dojo-capstone-kickoff.vtt"
+ *     poster="/media/dojo-capstone-kickoff-poster.jpg"
+ *     length="55 seconds"
+ *     alt="..."
+ *   >
+ *     Caption text.
+ *   </Clip>
+ */
+import Photo from './Photo.astro';
+
+interface Props {
+  print: 'room-capstone' | 'room-capstone-tight';
+  src: string;
+  captions: string;
+  poster: string;
+  /** How long the clip runs, in words: "55 seconds". */
+  length: string;
+  alt: string;
+  id?: string;
+  class?: string;
+}
+const { print, src, captions, poster, length, alt, id, class: className } = Astro.props;
+---
+
+<figure class:list={['clip', className]} id={id} data-clip>
+  <div class="clip__stage">
+    <Photo print={print} alt={alt} />
+    <button class="clip__play" type="button" data-clip-play>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"></path></svg>
+      <span>Play the recording, {length}</span>
+    </button>
+    <video class="clip__video" controls playsinline preload="none" poster={poster} hidden>
+      <source src={src} type="video/mp4" />
+      <track kind="captions" srclang="en" label="English" src={captions} default />
+    </video>
+  </div>
+  <figcaption>
+    <slot />
+    <noscript> <a href={src}>Open the recording ({length}).</a></noscript>
+  </figcaption>
+</figure>
+
+<style>
+  .clip__stage {
+    position: relative;
+  }
+  .clip__play {
+    position: absolute;
+    left: 14px;
+    bottom: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px 10px 12px;
+    background: var(--stock);
+    color: var(--text);
+    border: var(--rule);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .clip__play svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--pink);
+    stroke: var(--text);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+  .clip__play:hover {
+    background: var(--ink);
+    color: var(--stock);
+  }
+  .clip__video {
+    display: block;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    background: #000;
+  }
+  .clip__video[hidden] {
+    display: none;
+  }
+  .clip[data-playing] :global(.photo),
+  .clip[data-playing] .clip__play {
+    display: none;
+  }
+</style>
+
+<script>
+  // Swap the print for the recording when someone asks to play it.
+  for (const clip of document.querySelectorAll<HTMLElement>('[data-clip]')) {
+    const button = clip.querySelector<HTMLButtonElement>('[data-clip-play]');
+    const video = clip.querySelector<HTMLVideoElement>('video');
+    if (!button || !video) continue;
+    button.addEventListener('click', () => {
+      clip.dataset.playing = '';
+      video.hidden = false;
+      for (const track of video.textTracks) track.mode = 'showing';
+      video.focus();
+      void video.play().catch(() => {});
+    });
+  }
+</script>
