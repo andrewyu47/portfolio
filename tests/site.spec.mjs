@@ -96,6 +96,21 @@ for (const url of pages) {
       );
       expect(moving, 'animations still running').toBe(0);
     });
+
+    test('figures print when they are scrolled to', async ({ page }) => {
+      await page.goto(url, { waitUntil: 'load' });
+      const figures = await page.locator('[data-print]').count();
+      test.skip(figures === 0, 'no print-on-arrival figures on this page');
+      const height = await page.evaluate(() => document.documentElement.scrollHeight);
+      for (let y = 0; y < height; y += 400) {
+        await page.evaluate((to) => window.scrollTo(0, to), y);
+        await page.waitForTimeout(120);
+      }
+      await page.waitForTimeout(400);
+      // A figure that is never told to print stays invisible, so this must be zero.
+      const waiting = await page.locator('[data-print]:not([data-printed])').count();
+      expect(waiting, 'figures still waiting to print').toBe(0);
+    });
   });
 }
 

@@ -5,7 +5,7 @@ minutes: 4
 order: 4
 ---
 
-Fifteen new terms are hard to keep in your head after a full day of learning. So I made a rap with Claude for the people in Claude Dojo that counts down the fifteen Claude Code terms a beginner meets first, from the terminal to work surfaces, in the order a learner meets them. We played it for the room on Day 1 of the two-day intensive in July 2026, and then I walked them through the prompts that made it.
+Fifteen new terms are hard to keep in your head on your first day with a new tool. So I made a rap with Claude for the people in Claude Dojo that counts down the fifteen Claude Code terms a beginner meets first, from the terminal to work surfaces, in the order a learner meets them. We played it for the room on Day 1 of the two-day intensive in July 2026, and then I walked them through the prompts that made it.
 
 The lesson page plays the song with a lyric sheet that follows it: the current verse is printed large, and the line being rapped is marked. Every term is also printed on the page, with its definition and its verse, for reading with the sound off. It ends with a five-question check.
 
@@ -19,18 +19,18 @@ Lyrics drafted by Claude from Andrew Yu's term list and prompts. Music generated
 
 ## The fifteen terms
 
-1. **Terminal.** The black window where you type commands. Its other name is the CLI, the command-line interface, and it is where Claude Code lives.
+1. **Terminal.** The window where you type commands, also called the CLI, the command-line interface. It is where Claude Code started, and it also runs in VS Code, JetBrains, the desktop app, and the web.
 2. **Agent.** More than a chatbot. You give it a goal, and it opens your files and does the work to see it through.
 3. **Token.** A little bit of text. Your words get chopped into tokens, and every token is billed, so tight prompts cost less.
-4. **Context window.** Where the conversation's memory lives. When it fills up, the early parts fade, so start a new session.
+4. **Context window.** Claude's working memory for a session: the conversation, the files it read, and your standing instructions. When it fills up, Claude Code summarizes the early part, so details can drop out. Run /compact yourself, or start fresh with /clear when you switch tasks.
 5. **CLAUDE.md.** A file of your rules that Claude reads every session, so you write them down once.
 6. **Plan mode.** Claude writes out every step first and changes nothing until you give it the green light.
-7. **Checkpoints.** Save points. If a big change breaks things, you roll back to one.
+7. **Checkpoints.** Save points, one for each prompt you send. Press Esc twice or run /rewind to roll Claude's file edits back to one. They do not undo what a shell command changed, so keep using git.
 8. **Effort level.** How deeply Claude thinks. Turn it up for hard problems, knowing that deeper takes longer and costs more.
 9. **Skills.** A workflow on repeat: a recipe Claude follows for one kind of job, such as security or design.
-10. **Plugin.** A bundle you install: a box of ready skills in one download.
+10. **Plugin.** A bundle you install in one step from a marketplace. It can hold skills, hooks, subagents, and MCP servers.
 11. **MCP.** The Model Context Protocol: one standard way to plug tools and systems into Claude.
 12. **Connector.** MCP in action: a hookup to an app like Gmail, Calendar, Slack, or Drive, so Claude can reach it.
 13. **Hook.** An automatic move. You set it up once, and a trigger fires it without you asking.
 14. **Subagents.** Helpers the main agent hands work to, such as one running the tests while another reads the code.
-15. **Work surfaces.** Three doors to the same Claude: Chat for quick questions, Cowork for desk work, and Code for software.
+15. **Work surfaces.** The places you use Claude. In the Claude app those are Chat, Cowork, and Code. Claude Code itself runs on several surfaces: the terminal, VS Code, JetBrains, the desktop app, and the web.

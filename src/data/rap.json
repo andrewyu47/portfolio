@@ -4,7 +4,7 @@
  {"text":"and it's hard to keep all of it in your head.","start":4.54,"words":[4.54,4.62,4.76,4.98,5.12,5.36,5.54,5.62,5.74,5.86,5.98]},
  {"text":"So here's a little rap to lock in the fifteen essential terms.","start":7.28,"words":[7.28,7.38,7.58,7.64,7.86,8.12,8.24,8.48,8.56,8.66,9.12,9.58]},
  {"text":"Make sure you stretch those typing fingers before you start.","start":10.74,"words":[10.74,10.92,11.1,11.28,11.58,11.8,12.22,12.64,12.96,13.16]}]},
-{"id":"s01_terminal","start":16.32,"duration":10.8,"n":1,"term":"Terminal","definition":"The black window where you type commands. Its other name is the CLI, the command-line interface, and it is where Claude Code lives.","lines":[
+{"id":"s01_terminal","start":16.32,"duration":10.8,"n":1,"term":"Terminal","definition":"The window where you type commands, also called the CLI, the command-line interface. It is where Claude Code started, and it also runs in VS Code, JetBrains, the desktop app, and the web.","lines":[
  {"text":"Number one, the Terminal, that black window on the screen,","start":16.52,"words":[16.52,16.88,17.04,17.2,17.72,17.9,18.24,18.58,18.7,18.82]},
  {"text":"you type in your commands and tell it just what you mean.","start":19.42,"words":[19.42,19.56,19.8,19.94,20.1,20.58,20.7,20.92,21.1,21.24,21.46,21.6]},
  {"text":"The fancy name for typing there is called the C L I,","start":22.1,"words":[22.1,22.26,22.6,22.78,22.92,23.27,23.46,23.6,23.8,23.94,23.94,23.94]},
@@ -19,7 +19,7 @@
  {"text":"little bits of text, and every bit is billed to you.","start":41.16,"words":[41.16,41.46,41.66,41.8,42.08,42.22,42.5,42.64,42.82,43.06,43.22]},
  {"text":"The more of them you spend, the more the meter's gonna climb,","start":43.7,"words":[43.7,43.82,44.04,44.16,44.32,44.48,44.72,44.84,45.04,45.18,45.54,45.84]},
  {"text":"so keep your prompting tight and save your money and your time.","start":46.38,"words":[46.38,46.52,46.7,46.84,47.2,47.38,47.52,47.72,47.88,48.24,48.38,48.56]}]},
-{"id":"s04_context","start":48.7,"duration":10.78,"n":4,"term":"Context window","definition":"Where the conversation’s memory lives. When it fills up, the early parts fade, so start a new session.","lines":[
+{"id":"s04_context","start":48.7,"duration":10.78,"n":4,"term":"Context window","definition":"Claude’s working memory for a session: the conversation, the files it read, and your standing instructions. When it fills up, Claude Code summarizes the early part, so details can drop out. Run /compact yourself, or start fresh with /clear when you switch tasks.","lines":[
  {"text":"Number four, Context Window, that's where memory lives,","start":48.9,"words":[48.9,49.2,49.54,49.92,50.22,50.42,50.56,51.06]},
  {"text":"it holds on to everything the conversation gives.","start":51.8,"words":[51.8,51.9,52.24,52.36,52.48,53.08,53.26,53.94]},
  {"text":"But when the window fills right up, the early stuff, it fades,","start":54.16,"words":[54.16,54.28,54.48,54.62,54.94,55.28,55.54,55.84,55.98,56.28,56.5,56.66]},
@@ -34,7 +34,7 @@
  {"text":"it writes out every step in a list for you to keep.","start":73.68,"words":[73.68,73.76,74.02,74.2,74.44,74.86,74.98,75.12,75.36,75.52,75.64,75.84]},
  {"text":"Nothing gets changed until you give it the green light,","start":76.36,"words":[76.36,76.66,76.86,77.26,77.36,77.54,77.72,77.84,78.02,78.34]},
  {"text":"measure twice and cut once, and the code comes out right.","start":78.56,"words":[78.56,78.82,79.1,79.28,79.58,79.9,80.04,80.2,80.44,80.68,80.9]}]},
-{"id":"s07_checkpoints","start":81.04,"duration":10.78,"n":7,"term":"Checkpoints","definition":"Save points. If a big change breaks things, you roll back to one.","lines":[
+{"id":"s07_checkpoints","start":81.04,"duration":10.78,"n":7,"term":"Checkpoints","definition":"Save points, one for each prompt you send. Press Esc twice or run /rewind to roll Claude’s file edits back to one. They do not undo what a shell command changed, so keep using git.","lines":[
  {"text":"Number seven, Checkpoints, that's a save point in time,","start":81.24,"words":[81.24,81.58,81.94,82.6,82.8,83.04,83.26,83.48,83.64]},
  {"text":"if a big change breaks things you can rewind on a dime.","start":84.0,"words":[84.0,84.18,84.28,84.58,84.9,85.14,85.32,85.44,85.62,86.0,86.16,86.3]},
  {"text":"No need to panic when the edit goes wrong,","start":87.14,"words":[87.14,87.3,87.46,87.62,87.98,88.14,88.3,88.62,88.98]},
@@ -54,7 +54,7 @@
  {"text":"a recipe it follows so the finish stays neat.","start":113.8,"words":[113.8,113.94,114.44,114.6,114.94,115.12,115.28,115.62,115.94]},
  {"text":"There's one for security, and design, and browsing too,","start":116.28,"words":[116.28,116.5,116.66,116.8,117.46,117.62,118.14,118.26,118.72]},
  {"text":"load the right one up and it knows just what to do.","start":118.98,"words":[118.98,119.18,119.36,119.7,120.04,120.36,120.5,120.62,120.88,121.04,121.2,121.38]}]},
-{"id":"s11_plugin","start":121.48,"duration":5.62,"n":10,"term":"Plugin","definition":"A bundle you install: a box of ready skills in one download.","lines":[
+{"id":"s11_plugin","start":121.48,"duration":5.62,"n":10,"term":"Plugin","definition":"A bundle you install in one step from a marketplace. It can hold skills, hooks, subagents, and MCP servers.","lines":[
  {"text":"Number ten, the Plugin, it's a bundle you install,","start":121.68,"words":[121.68,121.98,122.54,122.7,123.06,123.24,123.36,123.7,123.86]},
  {"text":"a box of ready skills, and one download grabs them all.","start":124.56,"words":[124.56,124.7,124.94,125.06,125.32,125.62,125.8,126.06,126.4,126.66,126.84]}]},
 {"id":"s12_mcp","start":127.1,"duration":10.83,"n":11,"term":"MCP","definition":"The Model Context Protocol: one standard way to plug tools and systems into Claude.","lines":[
@@ -77,7 +77,7 @@
  {"text":"the main one delegates like a coach who's got a scheme.","start":162.02,"words":[162.02,162.16,162.54,162.8,163.46,163.66,163.76,163.99,164.14,164.34,164.48]},
  {"text":"One runs all the tests while another reads the code,","start":165.2,"words":[165.2,165.34,165.56,165.7,165.86,166.16,166.38,166.82,167.04,167.2]},
  {"text":"splitting up the work will always lighten up the load.","start":167.76,"words":[167.76,168.24,168.38,168.52,168.72,168.86,169.2,169.54,169.74,169.84]}]},
-{"id":"s16_surfaces","start":170.04,"duration":11.76,"n":15,"term":"Work surfaces","definition":"Three doors to the same Claude: Chat for quick questions, Cowork for desk work, and Code for software.","lines":[
+{"id":"s16_surfaces","start":170.04,"duration":11.76,"n":15,"term":"Work surfaces","definition":"The places you use Claude. In the Claude app those are Chat, Cowork, and Code. Claude Code itself runs on several surfaces: the terminal, VS Code, JetBrains, the desktop app, and the web.","lines":[
  {"text":"Last one, Work Surfaces, three doors to the same brain,","start":170.24,"words":[170.24,170.64,170.92,171.2,171.76,171.94,172.28,172.4,172.6,172.92]},
  {"text":"Chat for quick conversation, keeping questions plain.","start":173.28,"words":[173.28,173.48,173.64,173.92,174.62,174.92,175.3]},
  {"text":"Cowork handles desk work, the projects and the grind,","start":176.0,"words":[176.0,176.32,176.64,176.94,177.16,177.28,177.69,177.82,177.96]},

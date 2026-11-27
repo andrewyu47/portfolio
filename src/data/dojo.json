@@ -15,7 +15,7 @@
   },
   "said": {
     "setup": "Setup happened in the room on Day 1: after the opening talks, everyone installed Claude Code and had Claude interview them to write a context file.",
-    "skill": "In my plenary I demonstrated the resume-tailoring Skill I use myself, then each person built a Skill for a task they repeat. Resume tailoring was one of several starters.",
+    "skill": "In my plenary I showed the resume-tailoring Skill I use myself, live in my own terminal, and gave the room the same build: have Claude interview you into one long master resume, pick an output format, and save that format as a Skill.",
     "agents": "Sub-agents and agent fleets were shown on Day 1 as a preview, and the hands-on build stayed with one agent.",
     "capstone": "For the capstone, people picked a real task, had Claude make mock data, and started building that evening in plan mode."
   },
@@ -43,7 +43,7 @@
       "blocks": [
         {
           "name": "Welcome and intros",
-          "what": "Why Claude Dojo, a poll of the room, the instructors, and the plan for both days. My part was a short introduction."
+          "what": "Why Claude Dojo, a poll of the room, the instructors, and the plan for both days."
         },
         {
           "name": "What changed in AI",
@@ -63,7 +63,7 @@
         },
         {
           "name": "Build your first Skill",
-          "what": "My job-search numbers, then a live run of the resume-tailoring Skill I use myself on a real job description. Then each person had Claude interview them into a Skill for a task they repeat, ran it, said what came out wrong, and ran it again.",
+          "what": "My job-search numbers, then a live run of the resume-tailoring Skill I use myself on a real job description. Then the room got the same build: have Claude interview you into one long master resume, pick an output format, and save that format as a Skill.",
           "mine": true
         },
         {
