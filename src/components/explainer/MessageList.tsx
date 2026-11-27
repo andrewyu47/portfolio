@@ -172,7 +172,7 @@ function RowView({
   next: number;
   enter: boolean;
 }) {
-  const reduced = useStill();
+  const reduced = useStill() !== false;
   const isAnswer = row.index === null;
   return (
     <motion.li

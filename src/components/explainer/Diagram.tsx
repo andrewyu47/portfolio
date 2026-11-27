@@ -271,11 +271,15 @@ function Drawing({ geo, step, index, still }: { geo: Geo; step: Step; index: num
 }
 
 export default function Diagram({ step, index }: { step: Step; index: number }) {
-  const still = useStill();
+  const known = useStill();
+  // Until the preference is read, draw nothing in motion. Once it is known the drawings
+  // remount, so a visitor who allows motion still sees the first step draw itself in.
+  const still = known !== false;
+  const key = known === null ? 'pending' : 'known';
   return (
     <div className="al-dias">
-      <Drawing geo={WIDE} step={step} index={index} still={still} />
-      <Drawing geo={NARROW} step={step} index={index} still={still} />
+      <Drawing key={`wide-${key}`} geo={WIDE} step={step} index={index} still={still} />
+      <Drawing key={`narrow-${key}`} geo={NARROW} step={step} index={index} still={still} />
     </div>
   );
 }

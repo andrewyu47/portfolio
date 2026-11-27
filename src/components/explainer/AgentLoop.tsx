@@ -49,7 +49,8 @@ function provenance(t: Trace) {
 }
 
 function Count({ value, label }: { value: number; label: string }) {
-  const reduced = useStill();
+  // Unknown counts as still: nothing may start moving before the preference is read.
+  const reduced = useStill() !== false;
   return (
     <div className="al-count">
       <span className="al-count__n numeral" aria-hidden="true">
