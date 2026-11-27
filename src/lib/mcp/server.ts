@@ -257,12 +257,16 @@ export async function handleMcpRequest(request: Request): Promise<Response> {
         headers: {
           ...headers,
           'Content-Type': html ? 'text/html; charset=utf-8' : 'text/plain; charset=utf-8',
-          'Cache-Control': 'public, max-age=3600',
+          // What a GET gets depends on its Accept header, so no shared cache may keep one
+          // answer and hand it to the next caller. (A CDN did exactly that once: it kept the
+          // plain-text pointer and served it to a client that was speaking the protocol.)
+          'Cache-Control': 'no-store',
+          Vary: 'Accept',
           Link: `<${CONNECT_PAGE}>; rel="help"`,
         },
       });
     }
-    return withHeaders(await handler.fetch(request), headers);
+    return withHeaders(await handler.fetch(request), { ...headers, 'Cache-Control': 'no-store', Vary: 'Accept' });
   }
 
   if (method === 'POST') {
