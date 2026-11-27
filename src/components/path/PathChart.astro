@@ -3,11 +3,11 @@
  * The path, drawn once: school, docs jobs, teaching and personal builds on one time axis.
  * The axis is broken on purpose. 2012 to 2025 runs by year; 2026 runs by month, because
  * most of the teaching and building happened in it. Every position comes from a date in
- * src/data/timeline.json or the settled facts. QuickRamp has no dated period, so it is left off,
- * and so is the workshop: it is listed under the drawing instead.
+ * src/data/timeline.json or the settled facts. QuickRamp has no dated period, so it is left off.
  *
  * Pink is the teaching plate and nothing else on this figure is pink: the Claude Dojo year,
- * the intensive as a taller block, teaching coworkers at Salesforce, and the 2022 talk.
+ * the intensive as a taller block, teaching coworkers at Salesforce, the 2022 talk, and the
+ * July 2024 workshop.
  * Teal carries everything else.
  *
  * Desktop: one grid, lane names in the page's label column, the two panels side by side.
@@ -46,6 +46,7 @@ const items: Item[] = [
   { lane: 'Docs', panel: 'b', from: SF, to: NOW, label: 'Salesforce', kind: 'bar', lab: 'end' },
 
   { lane: 'Teaching', panel: 'a', from: 2022.5, label: 'Lightning talk at Splunk', kind: 'tick', teach: true, lab: 'end' },
+  { lane: 'Teaching', panel: 'a', from: 2024.54, label: 'Workshop, 200+', kind: 'tick', teach: true, row: 'upper', lab: 'end' },
   { lane: 'Teaching', panel: 'b', from: 0, to: NOW, label: 'Claude Dojo, 103 taught', kind: 'bar', teach: true, row: 'upper' },
   { lane: 'Teaching', panel: 'b', from: 6.33, to: 6.4, label: 'About 70 people', kind: 'block', teach: true, row: 'upper', lab: 'after' },
   { lane: 'Teaching', panel: 'b', from: SF, to: NOW, label: 'Coworkers at Salesforce', kind: 'bar', teach: true, lab: 'before' },
@@ -158,7 +159,8 @@ const months = 'JFMAMJJASOND'.split('');
       manager from May 2024. Pinecone, February to July 2026. Salesforce, July 2026 to now.
     </li>
     <li>
-      Teaching: a lightning talk at Splunk in 2022. Claude Dojo, 2026 to now: 103 people taught to build with Claude
+      Teaching: a lightning talk at Splunk in 2022. A workshop for more than 200 attendees at the All-Team Training
+      Retreat in July 2024. Claude Dojo, 2026 to now: 103 people taught to build with Claude
       Code, with the other instructors, about 70 of them at the two-day intensive on July 11 and 12, 2026. Teaching AI
       to coworkers at Salesforce, July 2026 to now.
     </li>
@@ -288,6 +290,11 @@ const months = 'JFMAMJJASOND'.split('');
     width: 5px;
     height: 30px;
     margin-left: -2.5px;
+  }
+  /* A second tick close to the first sits on the upper row, so the two labels never meet. */
+  .pc__tick.pc__upper {
+    bottom: 32px;
+    height: 26px;
   }
   .pc__block {
     min-width: 9px;
@@ -438,7 +445,7 @@ const months = 'JFMAMJJASOND'.split('');
       margin-bottom: 6px;
     }
     .pc__panel--a .pc__lane--teaching .pc__track {
-      height: 34px;
+      height: 62px;
     }
     .pc__lane--built .pc__track {
       height: 48px;

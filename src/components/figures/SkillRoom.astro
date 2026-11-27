@@ -1,0 +1,26 @@
+---
+/**
+ * A second room: Andrew at the presenter's table during the Skill demo at the Claude Dojo
+ * intensive, Day 1, July 11, 2026 (recordings index, Session 1, clip 19). The screen is
+ * blurred in the source frame and the crop ends above the people seated in front, so he is
+ * the only person in the print. Used in the Claude Dojo case study beside the account of
+ * that session, and on /teaching beside the run sheet.
+ */
+import Photo from '../Photo.astro';
+
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+---
+
+<figure class:list={['skill-room', className]}>
+  <Photo
+    print="room-skill-demo"
+    alt="Andrew at a high table with two laptops and a microphone, one hand raised as he talks, beside a large screen on a stand. The screen is blurred."
+  />
+  <figcaption>
+    I run the Skill demo from my own laptop at the Claude Dojo intensive, Day 1, July 11, 2026. From the session
+    recording. The screen is blurred because it showed my own files.
+  </figcaption>
+</figure>

@@ -4,6 +4,7 @@
 //   node scripts/make-photo.mjs [--preview]
 //
 // Reads   src/assets/room-capstone-source.jpg   (a frame from the session recording)
+//         src/assets/room-skill-demo-source.jpg (a frame from another session, screen blurred)
 // Writes  public/img/<name>.png                 (white on transparent: used as a CSS mask,
 //                                                so the ink color follows the tokens)
 // With --preview it also writes .shots/photo-preview-<name>.png in the site's two inks.
@@ -19,6 +20,7 @@ import sharp from 'sharp';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = path.join(root, 'src/assets/room-capstone-source.jpg');
+const SKILL_SRC = path.join(root, 'src/assets/room-skill-demo-source.jpg');
 
 /**
  * One entry per print. `crop` is in source pixels. `pink` is the flat pink disc printed
@@ -28,6 +30,9 @@ const SRC = path.join(root, 'src/assets/room-capstone-source.jpg');
 const PRINTS = [
   { name: 'room-capstone', crop: { left: 0, top: 20, width: 1920, height: 1000 }, width: 2000, cell: 7, pink: { cx: 0.9125, cy: 0.47, r: 0.086 } },
   { name: 'room-capstone-tight', crop: { left: 700, top: 40, width: 1220, height: 840 }, width: 1220, cell: 6, pink: { cx: 0.862, cy: 0.535, r: 0.136 } },
+  // A second room, from the Skill demo on the first morning. The source frame was cropped and
+  // its screen blurred before it was saved, so the people seated in front are not in the file.
+  { name: 'room-skill-demo', src: SKILL_SRC, crop: { left: 0, top: 0, width: 1420, height: 770 }, width: 1600, cell: 7, gamma: 0.36, pink: { cx: 0.868, cy: 0.45, r: 0.085 } },
 ];
 
 const ANGLE = (45 * Math.PI) / 180;
@@ -38,12 +43,16 @@ const smooth = (a, b, t) => {
 };
 // The room was dim, so lift the middle tones before screening: the wall prints as a
 // middle tone, concrete and skin print light, and only the display prints solid.
-const lift = (l) => Math.pow(l, 0.55);
+// How far to lift the middle tones. Each print may set its own `gamma`: a darker room needs a
+// lower number, or the wall prints solid and the figure disappears into it.
+let GAMMA = 0.55;
+const lift = (l) => Math.pow(l, GAMMA);
 const coverage = (l) => Math.pow(clamp((1 - lift(l) - 0.1) / 0.72), 1.3);
 
-async function makePrint({ name, crop, width, cell, pink }) {
+async function makePrint({ name, src = SRC, crop, width, cell, pink, gamma = 0.55 }) {
+  GAMMA = gamma;
   const height = Math.round((width * crop.height) / crop.width);
-  const base = sharp(SRC).extract(crop).resize(width, height).grayscale().normalise();
+  const base = sharp(src).extract(crop).resize(width, height).grayscale().normalise();
   const fine = await base.clone().sharpen({ sigma: 1 }).raw().toBuffer();
   const soft = await base.clone().blur(cell * 0.45).raw().toBuffer();
   const area = await base.clone().blur(cell * 2.5).raw().toBuffer();

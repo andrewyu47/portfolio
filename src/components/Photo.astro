@@ -12,13 +12,14 @@
  */
 interface Props {
   /** Which print: a file name under /public/img, without the extension. */
-  print: 'room-capstone' | 'room-capstone-tight';
+  print: 'room-capstone' | 'room-capstone-tight' | 'room-skill-demo';
   alt: string;
   class?: string;
 }
 const PRINTS = {
   'room-capstone': { ratio: '2000 / 1042', cx: 0.9125, cy: 0.47, r: 0.086 },
   'room-capstone-tight': { ratio: '1220 / 840', cx: 0.862, cy: 0.535, r: 0.136 },
+  'room-skill-demo': { ratio: '1600 / 868', cx: 0.868, cy: 0.45, r: 0.085 },
 } as const;
 
 const { print, alt, class: className } = Astro.props;

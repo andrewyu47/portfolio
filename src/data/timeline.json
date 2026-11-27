@@ -102,11 +102,11 @@
     "label": "Read the essay it grew into"
   },
   {
-    "when": "Undated",
+    "when": "Jul 2024",
     "title": "Mental Models for Decision Making",
-    "detail": "I have given my workshop, Mental Models for Decision Making, to more than 200 conference attendees.",
+    "detail": "I gave my workshop, Mental Models for Decision Making, to more than 200 attendees at the All-Team Training Retreat in July 2024.",
     "kind": "teaching",
-    "figure": { "value": "200+", "caption": "conference attendees" }
+    "figure": { "value": "200+", "caption": "attendees" }
   },
   {
     "when": "Ongoing",
