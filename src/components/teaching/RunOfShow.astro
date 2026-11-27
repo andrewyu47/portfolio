@@ -1,12 +1,16 @@
 ---
 /**
  * The two-day Claude Dojo intensive, set as a run sheet: the days side by side, one line
- * per block (number, name, one clause), in the order the recordings index and Andrew's
- * slot script show them. Rendered from src/data/dojo.json (`brief` is the clause).
+ * per block (number, name, one clause), in the order the recordings index shows them.
+ * Rendered from src/data/dojo.json (`brief` is the clause).
  *
  * The blocks marked `mine` are his sessions that are on video. They print as solid pink
  * bars with navy type and the word "Mine", so the mark never depends on color alone.
- * The capstone bar carries the link to the 55 second clip.
+ * A block with `watch` links to its published recording, labelled with its length: the
+ * rap block to the prompt walkthrough, the capstone bar to the 55 second clip.
+ *
+ * Blocks marked `runSheet` are in no recording; they come from Andrew's own run sheet,
+ * and a line under them says so. The caption counts them.
  *
  * No clock times: the drafts disagree, and clip lengths are not block lengths.
  *
@@ -18,19 +22,26 @@
  *   middle               two columns, Day 1 above Day 2
  *   narrow               one column; blocks that are not his drop to their names
  *
- * Prints on arrival: the day rules draw, then the two pink bars land.
+ * Prints on arrival: the day rules draw, then the pink bars land.
  */
 import dojo from '../../data/dojo.json';
 
 interface Props {
   compact?: boolean;
-  /** Where the capstone bar's clip link points. Pass false where no clip is on the page. */
+  /** Where a link to the clip on this page ("#clip" in dojo.json) points. Pass false where no clip is on the page. */
   clipHref?: string | false;
 }
 const { compact = false, clipHref = '#clip' } = Astro.props;
 
-type Block = { name: string; brief: string; what: string; mine?: boolean; clip?: boolean };
+type Watch = { label: string; href: string };
+type Block = { name: string; brief: string; what: string; mine?: boolean; runSheet?: boolean; watch?: Watch };
 const days = dojo.days.map((d) => ({ ...d, blocks: d.blocks as Block[] }));
+const watchHref = (w: Watch) => (w.href === '#clip' ? clipHref : w.href);
+
+// The caption names how many blocks come from the run sheet instead of the recordings.
+const planned = days.flatMap((d) => d.blocks).filter((b) => b.runSheet).length;
+const plannedWord = ['', 'one', 'two', 'three', 'four'][planned] ?? String(planned);
+
 const DayTag = compact ? 'p' : 'h4';
 const capId = compact ? 'ros-cap-compact' : 'ros-cap';
 ---
@@ -67,9 +78,10 @@ const capId = compact ? 'ros-cap-compact' : 'ros-cap';
                     Mine<span class="visually-hidden">: I presented this block, and it is on video</span>
                   </span>
                 )}
-                {b.clip && clipHref && (
-                  <a class="more block__clip" href={clipHref}>
-                    Watch me open it, 55 seconds
+                {b.runSheet && <span class="label block__src">From my run sheet</span>}
+                {b.watch && watchHref(b.watch) && (
+                  <a class="more block__clip" href={watchHref(b.watch) as string}>
+                    {b.watch.label}
                   </a>
                 )}
               </li>
@@ -80,7 +92,9 @@ const capId = compact ? 'ros-cap-compact' : 'ros-cap';
     }
   </div>
   <figcaption id={capId}>
-    {dojo.record.dates}, in the order the recordings show. The pink bars marked Mine are my sessions on video.
+    {dojo.record.dates}. Blocks are in the order the recordings show{
+      planned > 0 && `, except the ${plannedWord} marked as from my run sheet`
+    }. The pink bars marked Mine are my sessions on video.
     {
       compact && (
         <>
@@ -248,6 +262,18 @@ const capId = compact ? 'ros-cap-compact' : 'ros-cap';
     margin-top: 6px;
     color: var(--over);
     text-decoration-color: var(--over);
+  }
+  /* Two of his sessions in a row stay two bars: a strip of paper shows between them. */
+  .block--mine + .block--mine::before {
+    top: 5px;
+  }
+
+  /* A block that is in no recording: the run sheet is its only source, and it says so. */
+  .block__src {
+    grid-column: 2 / -1;
+    justify-self: start;
+    margin-top: 5px;
+    line-height: 1.3;
   }
 
   figcaption {

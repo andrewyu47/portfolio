@@ -2,7 +2,8 @@
 /**
  * /teaching: can Andrew teach a room, and how does he go about it?
  * The first screen is the proof: a running head, the claim, and 55 seconds of him
- * teaching (DojoClip). Then Claude Dojo (run of show and belt ladder render from
+ * teaching (DojoClip), with a link under it to the other recording on the site, his
+ * walkthrough of the rap's prompts. Then Claude Dojo (run of show and belt ladder render from
  * src/data/dojo.json), the four labs a visitor can take now (Lab 01 on the home page
  * plus the lessons collection), how he teaches, and talks and workshops.
  *
@@ -64,7 +65,14 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
           you can take on your own.
         </p>
       </div>
-      <DojoClip class="intro__clip" />
+      <div class="intro__proof">
+        <DojoClip class="intro__clip" />
+        <p class="intro__also">
+          <a class="more" href="/teaching/fifteen-terms#walkthrough"
+            >Watch me walk the room through the prompts behind a rap, 2&nbsp;minutes&nbsp;54&nbsp;seconds</a
+          >
+        </p>
+      </div>
     </header>
   </div>
 
@@ -157,8 +165,8 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
       <div>
         <p>
           The wrong answer in Lab 01 gets its own paragraph, which tells you what to try next. The Dojo Skill build planned
-          for a first run that comes out partly wrong. People told Claude what was wrong and ran it again, because that loop
-          is what they take home.
+          for a first run that comes out partly wrong. The plan was for people to tell Claude what was wrong and run it again,
+          because that loop is what they take home.
         </p>
         <a class="more" href="/">See the failure path in Lab 01</a>
       </div>
@@ -252,6 +260,11 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
   }
   .intro :global(.intro__clip figcaption) {
     font-size: 0.8125rem;
+  }
+  /* The second recording on the site, under the first one's caption. */
+  .intro__also {
+    margin-top: 14px;
+    text-wrap: balance;
   }
 
   .said p + p {
@@ -436,8 +449,10 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
     .intro__words {
       display: contents;
     }
-    .intro :global(.intro__clip) {
+    .intro__proof {
       order: 2;
+    }
+    .intro :global(.intro__clip) {
       margin-top: 24px;
     }
     .intro .lede {

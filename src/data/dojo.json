@@ -2,7 +2,7 @@
   "_sources": {
     "record": "Head counts, dates, and the lesson and video counts come from the course's own files.",
     "ladder": "The course document: eleven tiers, belt names and themes as written.",
-    "intensive": "What happened, not what was planned. Blocks and their order come from the index of the session recordings and from Andrew's own run sheet for his slots. 'mine' marks only blocks where the recordings show him presenting. Blocks that come only from his run sheet say so. The planning document is not used.",
+    "intensive": "What happened, not what was planned. Blocks and their order come from the index of the session recordings and from Andrew's own run sheet for his slots. 'mine' marks only blocks where the recordings show him presenting: Session 1 clip 17 (the rap's prompt walkthrough), clips 18 and 19 (the Skill plenary and its live demo), and Session 2 clip 08 (the capstone kickoff). Blocks that come only from his run sheet carry 'runSheet' and say so on the page: the Day 2 job search panel and polish-and-ship are in no recording. 'watch' links a block to a published recording of it, with its length; '#clip' means the clip on the same page. The Skill plenary is not published, so it has no link. The planning document is not used.",
     "capstone": "The course's standard for the top rung.",
     "brief": "Each block's 'brief' is one clause cut from its own 'what' for the run sheet. It adds nothing that 'what' does not say.",
     "notes": "Clock times are left out: the schedule drafts disagree about them, and the recordings are cut, so clip lengths are not block lengths. Per-rung lesson counts are left out because the files disagree. No instructor, guest or attendee is named."
@@ -65,7 +65,9 @@
         {
           "name": "Fifteen terms, as a rap",
           "brief": "the rap I made with Claude, then the prompts that made it",
-          "what": "The rap I made with Claude, then skills, plugins, and connectors, then the prompts that made the rap."
+          "what": "The rap I made with Claude, then skills, plugins, and connectors, then the prompts that made the rap.",
+          "mine": true,
+          "watch": { "label": "Watch my walkthrough, 2 minutes 54 seconds", "href": "/teaching/fifteen-terms#walkthrough" }
         },
         {
           "name": "Build your first Skill",
@@ -98,7 +100,7 @@
           "brief": "build a tool that proves you can do the job",
           "what": "Build a tool that proves you can do the job. Pick a real task from your own work and have Claude make mock data for it, so nothing blocks you that evening.",
           "mine": true,
-          "clip": true
+          "watch": { "label": "Watch me open it, 55 seconds", "href": "#clip" }
         },
         {
           "name": "Evening build, by room",
@@ -114,7 +116,8 @@
         {
           "name": "Job search panel",
           "brief": "guests on their searches and what recruiters see",
-          "what": "Guests on what their searches were like and what recruiters see, closing on referrals over volume."
+          "what": "Guests on what their searches were like and what recruiters see, closing on referrals over volume.",
+          "runSheet": true
         },
         {
           "name": "Engineering track",
@@ -124,7 +127,8 @@
         {
           "name": "Polish and ship",
           "brief": "make the capstone shareable, then write one paragraph about it",
-          "what": "Finish the capstone and make it shareable, then write one paragraph: the task, what you built, the result."
+          "what": "Finish the capstone and make it shareable, then write one paragraph: the task, what you built, the result.",
+          "runSheet": true
         },
         {
           "name": "Wrap-up",

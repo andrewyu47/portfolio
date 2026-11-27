@@ -120,6 +120,10 @@ const cols = n <= 4 ? n : n % 4 === 0 || n % 4 === 3 ? 4 : 3;
     .metrics--many {
       display: block;
     }
+    /* Each numeral sits beside the first line of its label, however long the label runs. */
+    .metrics--many .numeral {
+      align-self: start;
+    }
     .metrics .metric {
       display: grid;
       grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);

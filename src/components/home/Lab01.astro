@@ -1,24 +1,22 @@
 ---
 /**
- * The home page hero. It is a lab sheet, because writing labs is the job:
- * the claim beside a print of the room it was made in, who is making it, two results
- * on record, and a one-question lab the visitor can finish in the first screen.
+ * The home page hero. It is a lab sheet, because writing labs is the job: the claim
+ * beside a print of the room it was made in, a caption that says who is making it, and a
+ * one-question lab the visitor can finish on the first screen.
+ *
+ * One grid runs through the sheet. The worksheet keeps the hero's lines: its step ends
+ * where the claim ends, and its checkpoint hangs from the print's left edge. On a phone
+ * the checkpoint has no cell of its own. Its ring sits at the top right of Step 1, and
+ * the stamp lands there.
  *
  * The print's pink disc is the one pink field of this screen.
  */
 import Sheet from '../Sheet.astro';
 import Overprint from '../Overprint.astro';
-import Portrait from '../Portrait.astro';
 import Photo from '../Photo.astro';
 import Stamp from '../Stamp.astro';
 import profile from '../../data/profile.json';
-import recordAll from '../../data/record.json';
-import labs from '../../data/labs.json';
 
-// A line on the record that depends on the labs repository only shows once that
-// repository is public and its nightly run has passed (labs.json status "live").
-type RecordLine = { value: string; label: string; href: string; requires?: string };
-const record = (recordAll as RecordLine[]).filter((r) => r.requires !== 'labs-live' || labs.status === 'live');
 const [salesforce, dojo] = profile.roles;
 ---
 
@@ -29,42 +27,24 @@ const [salesforce, dojo] = profile.roles;
       <p class="lede">{profile.support}</p>
     </div>
 
-    <div class="instructor">
-        <Portrait size="64px" disc={false} />
-        <p class="instructor__line">
-          <span class="field">Instructor</span>
-          <span class="instructor__text"
-            ><strong>{profile.name}</strong>. {salesforce.title} at {salesforce.org}, and {dojo.title} at {dojo.org}, a
-            nonprofit.</span
-          >
+    <figure class="room">
+      <Photo
+        print="room-capstone-tight"
+        alt="Andrew at a microphone beside a screen whose slide reads: Build a tool that proves you can already do the job."
+      />
+      <figcaption>
+        <p class="room__who">
+          <span class="nowrap">{salesforce.title}</span> at {salesforce.org}, and <span class="nowrap"
+            >{dojo.title}</span
+          > at {dojo.org}, a nonprofit.
         </p>
-    </div>
-
-    <div class="hero__side">
-      <figure class="room">
-        <Photo
-          print="room-capstone-tight"
-          alt="Andrew at a microphone beside a screen whose slide reads: Build a tool that proves you can already do the job."
-        />
-        <figcaption>
-          <span>The capstone kickoff at the Claude Dojo intensive, <span class="nowrap">July 11, 2026.</span></span>
-          <a class="more" href="/work/claude-dojo#clip">Watch 55 seconds</a>
-        </figcaption>
-      </figure>
-
-      <ul class="record" aria-label="On record">
-        {
-          record.map((r) => (
-            <li>
-              <a href={r.href}>
-                <span class="numeral">{r.value}</span>
-                <span class="record__what">{r.label}</span>
-              </a>
-            </li>
-          ))
-        }
-      </ul>
-    </div>
+        <p class="room__when">
+          <a href="#teach">Teaching people to build with Claude Code</a> at its intensive, <span class="nowrap"
+            >July 11, 2026.</span
+          > <a class="more" href="/work/claude-dojo#clip">Watch 55 seconds</a>
+        </p>
+      </figcaption>
+    </figure>
   </div>
 
   <div class="lab" data-state="idle" data-lab01>
@@ -114,7 +94,9 @@ const [salesforce, dojo] = profile.roles;
     <div class="lab__checkpoint">
       <h2 class="field">Checkpoint</h2>
       <div class="lab__stamp-slot">
-        <span class="lab__stamp-empty label" aria-hidden="true">Stamp<br />goes here</span>
+        <span class="lab__stamp-empty label" aria-hidden="true"
+          ><span>Stamp<span class="lab__stamp-where"><br />goes here</span></span></span
+        >
         <Stamp lines={['Checkpoint', 'passed']} small="Lab 01" label="Checkpoint passed" class="lab__stamp" />
       </div>
     </div>
@@ -122,117 +104,65 @@ const [salesforce, dojo] = profile.roles;
 </Sheet>
 
 <style>
-  /* The claim on the left, the room on the right. The print's top edge sits on the
-     headline's cap line, so the two read as one statement. */
+  /* One grid for the whole sheet. --gap is the gutter between the claim and the print,
+     and the claim takes 61% of what is left. The worksheet reuses both numbers. */
+  .hero,
+  .lab {
+    --gap: clamp(24px, 3.4vw, 52px);
+    --claim: calc((100% - var(--gap)) * 0.61);
+  }
+
+  /* ---------- The hero: the claim on the left, the room on the right ---------- */
+
   .hero {
     display: grid;
     grid-template-columns: minmax(0, 6.1fr) minmax(0, 3.9fr);
-    gap: 0 clamp(24px, 3.4vw, 52px);
-    grid-template-rows: auto 1fr;
+    column-gap: var(--gap);
     align-items: start;
-    padding: clamp(26px, 4vw, 52px) 0 clamp(22px, 2vw, 26px);
-  }
-  .hero__claim {
-    grid-column: 1;
-    grid-row: 1;
-  }
-  .instructor {
-    grid-column: 1;
-    grid-row: 2;
-    align-self: end;
-  }
-  .hero__side {
-    grid-column: 2;
-    grid-row: 1 / span 2;
-  }
-  .nowrap {
-    white-space: nowrap;
+    /* The worksheet's top rule closes the hero: one rule, the full width of the sheet. */
+    padding: clamp(20px, 2.6vw, 34px) 0 26px;
   }
   .hero__claim :global(h1) {
-    font-size: var(--step-hero);
+    font-size: clamp(3rem, 5.9vw, 5.375rem);
   }
   .lede {
     margin-top: clamp(18px, 2vw, 26px);
   }
 
-  .instructor {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: clamp(20px, 2vw, 26px);
-    padding-top: 16px;
-    border-top: var(--rule);
+  /* The print's top edge sits on the cap line of the headline, so the two read as one statement. */
+  .room {
+    padding-top: calc(clamp(3rem, 5.9vw, 5.375rem) * 0.1);
   }
-  .instructor__line {
-    font-size: var(--step-small);
-    line-height: 1.4;
-    max-width: 46ch;
-  }
-  .instructor__line .field {
-    display: block;
-    margin: 0 0 2px;
-  }
-  .instructor__text strong {
-    font-weight: 700;
-  }
-
-  .hero__side {
-    display: grid;
-    gap: 18px;
-    /* Lands the print's top edge on the cap line of the first headline line. */
-    padding-top: calc(var(--step-hero) * 0.1);
+  /* A shorter crop of the print, so the answer still clears the fold of an 800px window. */
+  .room :global(.photo) {
+    aspect-ratio: 1220 / 700;
   }
   .room figcaption {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: baseline;
-    justify-content: space-between;
-    gap: 4px 16px;
     margin-top: 10px;
-    font-size: 0.8125rem;
     color: var(--text);
   }
-  .room figcaption .more {
+  /* Who is at the microphone, in the reading face, then the dated caption of the print. */
+  .room__who {
+    font-family: var(--font-body);
+    font-size: var(--step-small);
+    line-height: 1.4;
+  }
+  .room__when {
+    margin-top: 4px;
+  }
+  .room__when .more,
+  .nowrap {
     white-space: nowrap;
   }
 
-  .record {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    border-top: var(--rule);
-  }
-  .record li + li {
-    border-top: var(--rule-dash);
-  }
-  .record a {
-    display: grid;
-    grid-template-columns: 4.6rem minmax(0, 1fr);
-    gap: 14px;
-    align-items: center;
-    padding: 9px 0;
-    text-decoration: none;
-  }
-  .record .numeral {
-    font-size: 2.125rem;
-    color: var(--ink);
-  }
-  .record__what {
-    font-size: var(--step-small);
-    line-height: 1.3;
-  }
-  .record a:hover .record__what,
-  .record a:focus-visible .record__what {
-    text-decoration: underline;
-    text-decoration-color: var(--pink);
-    text-decoration-thickness: 2px;
-    text-underline-offset: 4px;
-  }
+  /* ---------- The worksheet ---------- */
 
-  /* The lab itself */
   .lab {
     display: grid;
-    grid-template-columns: minmax(0, 2.3fr) minmax(0, 5fr) minmax(0, 2.7fr);
+    /* The label column, then the rest of the claim column, then the print's column. Each
+       dashed divider stands in the middle of a gutter, so the step's text ends where the
+       claim ends and the checkpoint starts where the print starts. */
+    grid-template-columns: 23% calc(var(--claim) + var(--gap) / 2 - 23%) minmax(0, 1fr);
     border-top: var(--rule);
     /* The sheet is closed with a rule, the way the bottom of a handout is. */
     border-bottom: var(--rule);
@@ -241,17 +171,19 @@ const [salesforce, dojo] = profile.roles;
     overflow-x: clip;
     overflow-clip-margin: 12px;
   }
-  .lab > div {
-    padding: 20px 24px 8px;
+  /* Each cell sets its own padding and divider, so the narrower layouts below can
+     override them one for one. */
+  .lab > .lab__brief {
+    padding: 16px 24px 8px 0;
   }
-  .lab > div + div {
+  .lab > .lab__step {
+    padding: 16px calc(var(--gap) / 2) 8px 24px;
     border-left: var(--rule-dash);
   }
-  .lab > div:first-child {
-    padding-left: 0;
-  }
-  .lab > div:last-child {
-    padding-right: 0;
+  .lab > .lab__checkpoint {
+    /* Less the divider's own pixel, so the ring starts exactly on the print's left edge. */
+    padding: 16px 0 8px calc(var(--gap) / 2 - 1px);
+    border-left: var(--rule-dash);
   }
   .lab__brief p {
     font-size: var(--step-small);
@@ -263,25 +195,30 @@ const [salesforce, dojo] = profile.roles;
     line-height: 1.35;
     margin-bottom: 14px;
   }
+  /* The two boxes stay on one line: the gap between them gives way first on a narrow laptop. */
   .lab__choices {
     display: flex;
-    gap: 8px 34px;
+    gap: 8px clamp(18px, 5vw - 38px, 34px);
     flex-wrap: wrap;
     margin-bottom: 12px;
   }
+
+  /* The three replies share one cell, so the sheet always has the height of the longest
+     and nothing under it moves when someone answers. */
   .lab__result {
-    min-height: 4.7em;
+    display: grid;
     font-size: var(--step-small);
     line-height: 1.45;
     max-width: 60ch;
   }
   .lab__result p {
-    display: none;
+    grid-area: 1 / 1;
+    visibility: hidden;
   }
   .lab[data-state='idle'] [data-when='idle'],
   .lab[data-state='right'] [data-when='right'],
   .lab[data-state='wrong'] [data-when='wrong'] {
-    display: block;
+    visibility: visible;
   }
   [data-when='idle'] {
     color: var(--text-soft);
@@ -303,173 +240,99 @@ const [salesforce, dojo] = profile.roles;
     text-align: center;
     transition: opacity 0.15s;
   }
+  /* The stamp is not there until the checkpoint is passed, for a screen reader too. */
   .lab :global(.lab__stamp) {
     position: absolute;
     inset: 0;
     opacity: 0;
     scale: 1.5;
+    visibility: hidden;
     transition:
       opacity 0.12s,
-      scale 0.28s var(--ease-stamp);
+      scale 0.28s var(--ease-stamp),
+      visibility 0s linear 0.28s;
   }
   .lab[data-state='right'] :global(.lab__stamp) {
     opacity: 1;
     scale: 1;
+    visibility: visible;
+    transition:
+      opacity 0.12s,
+      scale 0.28s var(--ease-stamp),
+      visibility 0s;
   }
   .lab[data-state='right'] .lab__stamp-empty {
     opacity: 0;
   }
 
-  /* On a desktop the whole exercise, from the question to its answer, has to sit above
-     the fold of a laptop screen, so the hero is kept short. */
-  @media (min-width: 1001px) {
-    .hero {
-      padding: clamp(20px, 2.6vw, 34px) 0 18px;
-    }
-    .hero__claim :global(h1) {
-      font-size: clamp(3rem, 5.9vw, 5.375rem);
-    }
-    .hero__side {
-      gap: 14px;
-      padding-top: calc(clamp(3rem, 5.9vw, 5.375rem) * 0.1);
-    }
-    .room :global(.photo) {
-      aspect-ratio: 1220 / 730;
-    }
-    .record a {
-      padding: 6px 0;
-    }
-    .record .numeral {
-      font-size: 1.875rem;
-    }
-    .instructor {
-      margin-top: 14px;
-      padding-top: 12px;
-    }
-    .lab > div {
-      padding-top: 16px;
-    }
-  }
+  /* ---------- Narrow laptops and tablets ---------- */
 
-  @media (max-width: 1000px) {
-    .hero {
-      grid-template-columns: 1fr;
-      grid-template-rows: none;
-      row-gap: 24px;
-    }
-    .hero__claim,
-    .hero__side,
-    .instructor {
-      grid-column: 1;
-      grid-row: auto;
-    }
-    /* On one column the room comes straight after the claim, and the instructor after the record. */
-    .instructor {
-      order: 3;
-      margin-top: 0;
-    }
-    .hero__side {
-      padding-top: 0;
-      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-      align-items: start;
-      gap: 24px;
-    }
-    /* The worksheet reads in order: what it is for, then the step, then the checkpoint. */
+  /* Below this width the step column under the claim is too narrow for both boxes on one
+     line, so the worksheet stacks: what it is for, then the step beside the checkpoint. */
+  @media (max-width: 1099px) {
     .lab {
       grid-template-columns: minmax(0, 1fr) auto;
     }
-    .lab__brief {
+    .lab__choices {
+      column-gap: 34px;
+    }
+    .lab > .lab__brief {
       grid-column: 1 / -1;
       grid-row: 1;
       display: grid;
       grid-template-columns: auto minmax(0, 1fr);
       gap: 2px 14px;
       align-items: baseline;
-      padding: 16px 0 14px !important;
+      padding: 16px 0 14px;
       border-bottom: var(--rule-dash);
     }
     .lab__brief .field,
     .lab__brief p {
       margin: 0;
     }
-    .lab__step {
+    .lab > .lab__step {
       grid-column: 1;
       grid-row: 2;
-      padding-left: 0 !important;
-      border-left: 0 !important;
+      padding: 16px 24px 8px 0;
+      border-left: 0;
     }
-    .lab__checkpoint {
+    .lab > .lab__checkpoint {
       grid-column: 2;
       grid-row: 2;
+      padding: 16px 0 8px 24px;
     }
   }
 
-  @media (max-width: 600px) {
+  /* One column for the hero: the claim, then the print with its caption beside it. */
+  @media (max-width: 1000px) {
     .hero {
-      padding-top: 22px;
-      gap: 22px;
+      grid-template-columns: minmax(0, 1fr);
+      row-gap: 24px;
+      padding: clamp(26px, 4vw, 52px) 0 clamp(22px, 2vw, 26px);
     }
     .hero__claim :global(h1) {
-      max-width: none;
+      font-size: var(--step-hero);
     }
-    .hero__side {
-      grid-template-columns: 1fr;
-      gap: 16px;
+    .room {
+      padding-top: 0;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+      gap: 24px;
+      align-items: end;
     }
-    .instructor {
-      align-items: flex-start;
-      gap: 14px;
+    .room :global(.photo) {
+      aspect-ratio: var(--photo-ratio);
     }
-    .instructor :global(.portrait) {
-      width: 56px;
+    .room figcaption {
+      margin-top: 0;
     }
-    .record a {
-      grid-template-columns: 3.6rem minmax(0, 1fr);
-      padding: 7px 0;
-    }
-    .record .numeral {
-      font-size: 1.625rem;
-    }
-    .lab {
-      grid-template-columns: 1fr;
-    }
-    .lab > div {
-      padding: 14px 0 6px !important;
-      border-left: 0 !important;
-    }
-    .lab__brief {
-      grid-template-columns: 1fr;
-      gap: 0;
-      padding-bottom: 12px !important;
-    }
-    .lab__brief p + .field {
-      margin-top: 8px;
-    }
-    .lab__checkpoint {
-      grid-column: 1;
-      grid-row: 3;
-      display: none;
-    }
-    /* On a phone the stamp lands under the answer, at the right edge, where a stamp lands on a sheet. */
-    .lab[data-state='right'] .lab__checkpoint {
-      display: flex;
-      justify-content: flex-end;
-      padding-top: 0 !important;
-      margin-top: -8px;
-    }
-    .lab[data-state='right'] .lab__checkpoint .field {
-      display: none;
-    }
-    .lab__stamp-slot {
-      width: 124px;
-      height: 124px;
-      margin: 0 6px 6px 0;
-    }
-    .lab__result {
-      min-height: 0;
-    }
-    /* On a phone the question comes straight after the claim: the band at the top promises
-       a lab, so the lab is the next thing you reach. The room and the record follow it. */
+  }
+
+  /* ---------- Phones ---------- */
+
+  @media (max-width: 600px) {
+    /* The question comes straight after the claim: the band at the top promises a lab,
+       so the lab is the next thing you reach. The room follows it. */
     :global(.lab01) {
       display: flex;
       flex-direction: column;
@@ -481,19 +344,96 @@ const [salesforce, dojo] = profile.roles;
       order: 1;
       padding-top: 22px;
     }
+    .hero__claim :global(h1) {
+      max-width: none;
+    }
     .lab {
       order: 2;
       margin-top: 20px;
+      grid-template-columns: minmax(0, 1fr);
     }
-    .hero__side {
+    /* The worksheet's closing rule is the only rule between the lab and the room. */
+    .room {
       order: 3;
-      margin-top: 18px;
-      padding-top: 20px;
-      border-top: var(--rule);
+      display: block;
+      margin-top: 26px;
     }
-    .instructor {
-      order: 4;
-      margin-top: 18px;
+    .room figcaption {
+      margin-top: 10px;
+    }
+
+    /* The brief stacks. Its last line is short, which leaves the corner over the dashed
+       rule clear for the stamp. */
+    .lab > .lab__brief {
+      grid-template-columns: minmax(0, 1fr);
+      gap: 0;
+      padding: 14px 0 12px;
+    }
+    .lab__brief p + .field {
+      margin-top: 8px;
+    }
+    .lab > .lab__step {
+      padding: 14px 0 6px;
+    }
+
+    /* The checkpoint shares the Step 1 cell: its ring stands at the top right, level with
+       the label, and pokes a few pixels over the dashed rule above. The label leaves room
+       under it so the ring never touches the question. */
+    .lab > .lab__step,
+    .lab > .lab__checkpoint {
+      grid-column: 1;
+      grid-row: 2;
+    }
+    .lab > .lab__checkpoint {
+      justify-self: end;
+      align-self: start;
+      padding: 0;
+      margin-top: -7px;
+      border-left: 0;
+    }
+    .lab__step .field {
+      margin-bottom: 14px;
+    }
+    .lab__checkpoint .field {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .lab__stamp-slot {
+      width: 56px;
+      height: 56px;
+      margin: 0;
+    }
+    .lab__stamp-empty {
+      font-size: 0.6875rem;
+    }
+    .lab__stamp-where {
+      display: none;
+    }
+    /* The stamp is bigger than its ring, so its words stay legible. It lands on the corner
+       of the step, across the dashed rule, clear of the question under it. */
+    .lab :global(.lab__stamp) {
+      inset: auto 2px -4px auto;
+      width: 94px;
+      height: 94px;
+      font-size: 0.8125rem;
+    }
+    .lab :global(.lab__stamp)::before {
+      inset: 5px;
+    }
+    .lab :global(.lab__stamp small) {
+      margin-top: 4px;
+      font-size: 0.625rem;
+    }
+  }
+
+  /* On the narrowest phones the two boxes still share a line. */
+  @media (max-width: 379px) {
+    .lab__choices {
+      column-gap: 12px;
     }
   }
 </style>

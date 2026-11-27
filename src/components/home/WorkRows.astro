@@ -49,7 +49,10 @@ const built = [
       <div class="dots" role="img" aria-label={`${people} dots, one per person. ${intensive} are filled.`}>
         {Array.from({ length: people }, (_, i) => <i class={i < intensive ? 'dot dot--in' : 'dot'} style={`--i:${i}`} />)}
       </div>
-      <figcaption>One dot per person. Filled dots came through the two-day intensive in July 2026.</figcaption>
+      <figcaption>
+        One dot per person. Filled dots came through the two-day intensive in July 2026. Open dots are members who did
+        not attend it.
+      </figcaption>
     </figure>
   </div>
 
@@ -67,7 +70,7 @@ const built = [
       <ul>
         <li><span class="label">2022</span><span>Lightning talk at Splunk, “The Limitations of Language”</span></li>
         <li><span class="label">Jul 2024</span><span>Workshop at the All-Team Training Retreat, 200+ attendees</span></li>
-        <li><span class="label">Jul 2026</span><span>Claude Dojo intensive, two sessions on video</span></li>
+        <li><span class="label">Jul 2026</span><span>Claude Dojo intensive, three sessions on video</span></li>
         <li><span class="label">2026</span><span>Lightning talks at Salesforce</span></li>
       </ul>
     </figure>
