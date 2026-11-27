@@ -15,9 +15,11 @@ import { publishedWork } from '../../components/work/sequence';
 const entries = await publishedWork();
 const featured = entries.filter((e) => e.data.featured);
 const rest = entries.filter((e) => !e.data.featured);
+// Work that was Andrew's own, as opposed to work done for an employer.
+const OWN = ['Personal project', 'Co-founded startup'];
 const groups = [
-  { id: 'at-work', name: 'At work', entries: rest.filter((e) => e.data.org !== 'Personal project') },
-  { id: 'personal', name: 'Personal projects', entries: rest.filter((e) => e.data.org === 'Personal project') },
+  { id: 'at-work', name: 'At work', entries: rest.filter((e) => !OWN.includes(e.data.org)) },
+  { id: 'personal', name: 'Personal projects', entries: rest.filter((e) => OWN.includes(e.data.org)) },
 ].filter((g) => g.entries.length > 0);
 ---
 

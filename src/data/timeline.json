@@ -79,7 +79,7 @@
     "kind": "teaching",
     "href": "/teaching",
     "label": "See the teaching page",
-    "figure": { "value": "~70", "caption": "people in one room, two days" }
+    "figure": { "value": "~70", "caption": "people, two days" }
   },
   {
     "when": "Jul 2026 to present",
@@ -109,7 +109,7 @@
   {
     "when": "Apr 2026",
     "title": "Fold",
-    "detail": "Events, attendance, and follow-up for a student ministry, with questions asked in plain English. The first version dates from April 2026, and I redesigned it in September 2026.",
+    "detail": "Events, attendance, and follow-up for student organizations, with questions asked in plain English. The first version dates from April 2026, and I redesigned it in September 2026.",
     "kind": "build",
     "href": "/work/fold",
     "label": "Read the case study"
