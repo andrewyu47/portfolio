@@ -4,6 +4,7 @@
     "ladder": "The course document: eleven tiers, belt names and themes as written.",
     "intensive": "What happened, not what was planned. Blocks and their order come from the index of the session recordings and from Andrew's own run sheet for his slots. 'mine' marks only blocks where the recordings show him presenting. Blocks that come only from his run sheet say so. The planning document is not used.",
     "capstone": "The course's standard for the top rung.",
+    "brief": "Each block's 'brief' is one clause cut from its own 'what' for the run sheet. It adds nothing that 'what' does not say.",
     "notes": "Clock times are left out: the schedule drafts disagree about them, and the recordings are cut, so clip lengths are not block lengths. Per-rung lesson counts are left out because the files disagree. No instructor, guest or attendee is named."
   },
   "record": {
@@ -43,53 +44,65 @@
       "blocks": [
         {
           "name": "Welcome and intros",
+          "brief": "why Claude Dojo, and the plan for both days",
           "what": "Why Claude Dojo, a poll of the room, the instructors, and the plan for both days."
         },
         {
           "name": "What changed in AI",
+          "brief": "the last twelve months, and how the job market now prices AI fluency",
           "what": "The last twelve months of AI, how the job market now prices AI fluency, and use-case ideas from the room."
         },
         {
           "name": "Install Claude Code",
+          "brief": "hands-on, then Claude interviews you to write a context file",
           "what": "Hands-on. Everyone installed Claude Code, then ran a prompt that has Claude interview them to write a context file."
         },
         {
           "name": "Fundamentals",
+          "brief": "how LLMs work, and hallucination",
           "what": "How LLMs work, hallucination, model tiers, the four ways to use Claude, plans, tokens, and usage limits."
         },
         {
           "name": "Fifteen terms, as a rap",
+          "brief": "the rap I made with Claude, then the prompts that made it",
           "what": "The rap I made with Claude, then skills, plugins, and connectors, then the prompts that made the rap."
         },
         {
           "name": "Build your first Skill",
+          "brief": "a live run of the resume-tailoring Skill I use, then the room built one",
           "what": "My job-search numbers, then a live run of the resume-tailoring Skill I use myself on a real job description. Then the room got the same build: have Claude interview you into one long master resume, pick an output format, and save that format as a Skill.",
           "mine": true
         },
         {
           "name": "Job search tools",
+          "brief": "from folder structure to battle cards",
           "what": "Folder structure, daily job alerts, NotebookLM, referral blurbs, and battle cards."
         },
         {
           "name": "Safety and ethics",
+          "brief": "guardrails, and gray areas raised by the room",
           "what": "Safety and a healthy skepticism, guardrails, and gray areas raised by the room."
         },
         {
           "name": "Prompting, and agents as a preview",
+          "brief": "a prompting framework, then MCP and agent fleets shown as a preview",
           "what": "A prompting framework, being interviewed by Claude, dictation, and screenshots. Then MCP, plan mode, goal loops, the context window, and agent fleets, shown as a preview."
         },
         {
           "name": "Connect an MCP",
+          "brief": "hands-on, connecting the Canva MCP server to Claude",
           "what": "Hands-on: connecting the Canva MCP server to Claude, so it can reach an app outside the terminal."
         },
         {
           "name": "Capstone kickoff",
+          "brief": "build a tool that proves you can do the job",
           "what": "Build a tool that proves you can do the job. Pick a real task from your own work and have Claude make mock data for it, so nothing blocks you that evening.",
           "mine": true,
           "clip": true
         },
         {
           "name": "Evening build, by room",
+          "brief": "capstones started in plan mode, in rooms by track",
           "what": "Everyone started their capstone in plan mode, in rooms by track, including a coding room and a finance room."
         }
       ]
@@ -100,18 +113,22 @@
       "blocks": [
         {
           "name": "Job search panel",
+          "brief": "guests on their searches and what recruiters see",
           "what": "Guests on what their searches were like and what recruiters see, closing on referrals over volume."
         },
         {
           "name": "Engineering track",
+          "brief": "planning and building a feature with agents",
           "what": "Prompts for day-to-day engineering work, planning and building a feature with agents, and interviewing in the AI era."
         },
         {
           "name": "Polish and ship",
+          "brief": "make the capstone shareable, then write one paragraph about it",
           "what": "Finish the capstone and make it shareable, then write one paragraph: the task, what you built, the result."
         },
         {
           "name": "Wrap-up",
+          "brief": "what comes next on the belt ladder",
           "what": "What comes next: the belt ladder, certifications, and demo groups."
         }
       ]

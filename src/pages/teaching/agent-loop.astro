@@ -74,28 +74,26 @@ const checks = [
 
     <div class="g brief">
       <h2 class="field">Objective</h2>
-      <p class="need">
-        Step through one exchange with the Claude API and say, at each step, what moves, who sends it, and what is in
-        the list.
-      </p>
-    </div>
-
-    <div class="g">
-      <h2 class="field">You will need</h2>
-      <p class="need">This page. Nothing to install, and no key.</p>
-    </div>
-
-    <div class="g g--figure">
-      <h2 class="field">Part 1 <span class="step__what">Step through a run</span></h2>
-      <div>
-        <p class="need step__lead">
-          Start with one tool call. Then try two, where the list grows twice, and none, where the loop ends on the first
-          trip.
+      <div class="brief__row">
+        <p class="need">
+          Step through one exchange with the Claude API and say, at each step, what moves, who sends it, and what is in
+          the list.
         </p>
+        <div class="brief__need">
+          <h2 class="field">You will need</h2>
+          <p>This page. Nothing to install, and no key.</p>
+        </div>
       </div>
     </div>
+
     <div class="figure">
-      <AgentLoop client:visible traces={traces} label="One agent run, three ways" />
+      <h2 class="visually-hidden">Part 1: Step through a run</h2>
+      <AgentLoop
+        client:visible
+        traces={traces}
+        label="Part 1 · Step through a run, three ways"
+        lead="Start with one tool call. Then try two, where the list grows twice, and none, where the loop ends on the first trip."
+      />
     </div>
 
     <div class="g" id="check">
@@ -144,8 +142,8 @@ const checks = [
           <h3 class="title">“The model ran the search.”</h3>
           <p>
             It did not, and it cannot. Look at step 3 of the one-tool run: the reply holds a tool_use block, a tool name
-            and an input, and no result. The search runs in step 4, in your code. If your code never runs it, nothing happens
-            and the loop stalls.
+            and an input, and no result. The search runs in step 4, in your code. If your code never runs it, the model never
+            gets an answer: the next request must carry a tool_result for that id, or the API rejects it.
           </p>
           <p>
             That holds for tools you define, like search_portfolio. Anthropic’s server tools, such as web search and
@@ -174,7 +172,7 @@ const checks = [
           <a href="https://github.com/andrewyu47/portfolio/blob/main/scripts/record-traces.mjs" rel="noopener"
             ><code>scripts/record-traces.mjs</code></a
           >, and it needs an API key. You
-          do not have to write this loop yourself: the Anthropic SDK’s tool runner loops over tools you define, and with
+          do not have to write this loop yourself: the Anthropic SDK’s tool runner, a beta helper, loops over tools you define, and with
           Managed Agents, Anthropic runs the loop for you.
         </p>
         <a class="more" href="#how-made">How these runs were made</a>
@@ -284,20 +282,46 @@ const checks = [
     border-top: 0;
     padding-top: 30px;
   }
+  /* The first screen has to reach the figure: a one-line title with the lede beside
+     it, then Objective and You will need in one row. */
   .brief {
     border-top: var(--rule);
+    padding: 14px 0 16px;
+  }
+  .brief__row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 21em);
+    gap: var(--col-gap) calc(var(--col-gap) * 2);
+    align-items: start;
+  }
+  .brief__need {
+    display: grid;
+    gap: 4px;
+  }
+  .brief__need .field {
+    margin: 0;
+    padding-top: 4px;
+  }
+  .brief__need p {
+    font-size: var(--step-small);
+    line-height: 1.45;
   }
   .top {
-    padding: clamp(26px, 4vw, 52px) 0 clamp(26px, 3.4vw, 40px);
+    padding: clamp(22px, 2vw, 28px) 0 clamp(18px, 1.6vw, 22px);
     display: grid;
-    gap: clamp(14px, 2vw, 22px);
+    grid-template-columns: auto minmax(0, 1fr);
+    align-items: end;
+    gap: clamp(14px, 2vw, 22px) calc(var(--col-gap) * 2);
   }
   .top :global(h1) {
-    font-size: var(--step-hero);
-    max-width: 14ch;
+    font-size: clamp(2.75rem, 5vw, 4.5rem);
+    white-space: nowrap;
   }
   .lede {
-    max-width: 40ch;
+    max-width: 30ch;
+    font-size: clamp(1.0625rem, 1.3vw, 1.1875rem);
+    line-height: 1.4;
+    justify-self: end;
   }
   .need {
     max-width: 60ch;
@@ -314,14 +338,8 @@ const checks = [
     text-transform: none;
     color: var(--text);
   }
-  .g--figure {
-    padding-bottom: 14px;
-  }
-  .step__lead {
-    padding-top: 4px;
-  }
   .figure {
-    padding: 6px 0 36px;
+    padding: 0 0 36px;
   }
 
   /* Check yourself */
@@ -411,7 +429,25 @@ const checks = [
     font-size: inherit;
   }
 
+  @media (max-width: 1100px) {
+    .top {
+      grid-template-columns: 1fr;
+    }
+    .top :global(h1) {
+      white-space: normal;
+      max-width: 14ch;
+    }
+    .lede {
+      justify-self: start;
+      max-width: 40ch;
+    }
+  }
+
   @media (max-width: 900px) {
+    .brief__row {
+      grid-template-columns: 1fr;
+      gap: 12px;
+    }
     .fails {
       grid-template-columns: 1fr;
     }
@@ -430,6 +466,22 @@ const checks = [
     .g {
       grid-template-columns: 1fr;
       gap: 10px;
+    }
+    /* On a phone the figure has to arrive within a screen and a half. */
+    .top {
+      padding: 18px 0 16px;
+      gap: 10px;
+    }
+    .lede {
+      font-size: 1.0625rem;
+    }
+    .brief {
+      gap: 6px;
+      padding: 12px 0 14px;
+    }
+    .brief .need {
+      font-size: 1rem;
+      line-height: 1.45;
     }
     .g > span:empty {
       display: none;

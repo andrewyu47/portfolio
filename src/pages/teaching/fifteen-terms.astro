@@ -19,7 +19,7 @@ import SectionHead from '../../components/SectionHead.astro';
 import Player from '../../components/rap/Player.astro';
 import Quiz from '../../components/rap/Quiz.astro';
 import Glossary from '../../components/rap/Glossary.astro';
-import rap from '../../data/rap.json';
+import RapVideo from '../../components/rap/RapVideo.astro';
 ---
 
 <Base
@@ -79,13 +79,7 @@ import rap from '../../data/rap.json';
     </SectionHead>
     <div class="g g--plain">
       <span></span>
-      <figure class="video">
-        <video controls preload="none" poster={rap.poster} width="1280" height="720">
-          <source src={rap.video} type="video/mp4" />
-          <a href={rap.video}>Download the video (MP4, 13 MB)</a>
-        </video>
-        <figcaption>3 minutes 40 seconds, 720p, with the same track.</figcaption>
-      </figure>
+      <RapVideo>3 minutes 40 seconds, 720p, with the same track.</RapVideo>
     </div>
   </section>
 
@@ -165,7 +159,7 @@ import rap from '../../data/rap.json';
     display: grid;
     gap: 8px;
     justify-items: start;
-    padding-bottom: 6px;
+    padding: clamp(20px, 2.2vw, 28px);
     font-size: var(--step-small);
     line-height: 1.45;
   }
@@ -214,17 +208,6 @@ import rap from '../../data/rap.json';
     color: var(--text-soft);
     max-width: 58ch;
     margin-bottom: 22px;
-  }
-
-  .video {
-    max-width: 720px;
-  }
-  .video video {
-    width: 100%;
-    height: auto;
-    background: var(--stock-2);
-    border-top: var(--rule);
-    border-bottom: var(--rule);
   }
 
   .credit {

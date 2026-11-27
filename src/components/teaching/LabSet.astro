@@ -1,0 +1,459 @@
+---
+/**
+ * The labs a visitor can take now, set two by two. Each lab shows a small drawing of a
+ * piece of itself, so the set reads as four different exercises before a word is read:
+ *
+ *   tool  Lab 01: the model asks, your code runs the tool (the home page lab)
+ *   loop  the agent loop: the message list your code keeps, the newest entry marked
+ *   mcp   connect: the address with its pink underline, and the server's three tools
+ *   rap   the song: fifteen terms on a strip, each cell as long as its verse; the pink
+ *         cell is MCP, the term the song ends by testing
+ *
+ * The drawings are aria-hidden: each sits inside a link whose title and idea say the
+ * same thing in words. Tool names come from src/lib/portfolio-tools.mjs, verse lengths
+ * from src/data/rap.json.
+ */
+import rap from '../../data/rap.json';
+import { TOOLS } from '../../lib/portfolio-tools.mjs';
+
+export type Lab = {
+  n: number;
+  title: string;
+  idea: string;
+  minutes: number;
+  href: string;
+  where?: string;
+  sketch: 'tool' | 'loop' | 'mcp' | 'rap';
+};
+interface Props {
+  labs: Lab[];
+}
+const { labs } = Astro.props;
+
+type Section = { id: string; duration: number; n?: number; term?: string };
+const sections = rap.sections as Section[];
+const tools = (TOOLS as { name: string }[]).map((t) => t.name);
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<ul class="labset">
+  {
+    labs.map((l) => (
+      <li>
+        <a class="lab" href={l.href}>
+          <span class="lab__sketch" aria-hidden="true" data-print="wipe">
+            {l.sketch === 'tool' && (
+              <svg viewBox="0 0 360 96" class="sk">
+                <rect x="1" y="34" width="84" height="38" class="sk__box" />
+                <text x="43" y="58" class="sk__name">model</text>
+                <line x1="85" y1="53" x2="134" y2="53" class="sk__ask" />
+                <path d="M128 48 L136 53 L128 58" class="sk__head" />
+                <text x="110" y="40" class="sk__note">asks</text>
+                <rect x="138" y="34" width="104" height="38" class="sk__box" />
+                <text x="190" y="58" class="sk__name">your code</text>
+                <line x1="242" y1="53" x2="286" y2="53" class="sk__runs" />
+                <path d="M280 46 L292 53 L280 60" class="sk__runs-head" />
+                <text x="266" y="40" class="sk__note">runs</text>
+                <rect x="294" y="34" width="64" height="38" class="sk__box" />
+                <text x="326" y="58" class="sk__name">tool</text>
+              </svg>
+            )}
+            {l.sketch === 'loop' && (
+              <span class="sk-list">
+                <span class="sk-list__head">messages</span>
+                <span class="sk-list__row">
+                  <b>[0]</b> user
+                </span>
+                <span class="sk-list__row">
+                  <b>[1]</b> assistant, tool_use
+                </span>
+                <span class="sk-list__row sk-list__row--new">
+                  <b>[2]</b> user, tool_result
+                </span>
+                <span class="sk-list__row sk-list__row--slot">
+                  <b>[3]</b>
+                </span>
+              </span>
+            )}
+            {l.sketch === 'mcp' && (
+              <span class="sk-mcp">
+                <span class="sk-mcp__addr">
+                  <span class="sk-mcp__url">andrewyu.app/mcp</span>
+                  <span class="sk-mcp__copy">Copy</span>
+                </span>
+                <span class="sk-mcp__tools">
+                  {tools.map((t) => (
+                    <span class="token">{t}</span>
+                  ))}
+                </span>
+              </span>
+            )}
+            {l.sketch === 'rap' && (
+              <span class="sk-rap">
+                <span class="sk-rap__cells">
+                  {sections.map((s) => (
+                    <span
+                      class:list={['sk-rap__cell', { 'sk-rap__cell--gap': !s.n, 'sk-rap__cell--live': s.term === 'MCP' }]}
+                      style={`flex-grow:${s.duration}`}
+                    />
+                  ))}
+                </span>
+                <span class="sk-rap__notes">
+                  {sections.map((s, i) => (
+                    <span class="sk-rap__note" style={`flex-grow:${s.duration}`}>
+                      {i === 0 && <span class="sk-rap__at sk-rap__at--start">0:00</span>}
+                      {s.term === 'MCP' && <span class="sk-rap__at">{s.n} MCP</span>}
+                      {i === sections.length - 1 && <span class="sk-rap__at sk-rap__at--end">3:40</span>}
+                    </span>
+                  ))}
+                </span>
+              </span>
+            )}
+          </span>
+          <span class="lab__head">
+            <span class="lab__n numeral">{pad(l.n)}</span>
+            <span class="lab__title">{l.title}</span>
+          </span>
+          <span class="lab__idea">{l.idea}</span>
+          <span class="lab__foot">
+            <span class="label">
+              Lab {pad(l.n)}, {l.minutes} min{l.where && <>, {l.where}</>}
+            </span>
+            <span class="lab__go label" aria-hidden="true">
+              Open
+            </span>
+          </span>
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .labset {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    border-top: var(--rule);
+  }
+  .labset li {
+    margin: 0;
+    display: flex;
+  }
+  /* A rule between the columns and between the rows. No boxes. */
+  .labset li:nth-child(odd) {
+    border-right: var(--rule-dash);
+  }
+  .labset li:nth-child(n + 3) {
+    border-top: var(--rule-dash);
+  }
+
+  .lab {
+    flex: 1;
+    display: grid;
+    grid-template-rows: auto auto 1fr auto;
+    gap: 12px;
+    padding: 26px clamp(18px, 2.6vw, 34px) 22px;
+    text-decoration: none;
+    color: var(--text);
+  }
+  .labset li:nth-child(odd) .lab {
+    padding-left: 0;
+  }
+  .labset li:nth-child(even) .lab {
+    padding-right: 0;
+  }
+
+  /* ---------- The drawings ---------- */
+
+  .lab__sketch {
+    display: flex;
+    align-items: center;
+    height: 132px;
+    margin-bottom: 8px;
+    max-width: 440px;
+  }
+  .lab__sketch > * {
+    width: 100%;
+  }
+
+  .sk {
+    display: block;
+    overflow: visible;
+  }
+  .sk__box {
+    fill: var(--stock);
+    stroke: var(--ink);
+    stroke-width: 1.5;
+  }
+  .sk__name {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-stretch: var(--w-title);
+    font-size: 15px;
+    fill: var(--text);
+    text-anchor: middle;
+  }
+  .sk__note {
+    font-family: var(--font-mono);
+    font-size: 13px;
+    fill: var(--ink);
+    text-anchor: middle;
+  }
+  .sk__ask {
+    stroke: var(--ink);
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+  }
+  .sk__head {
+    fill: none;
+    stroke: var(--ink);
+    stroke-width: 1.5;
+  }
+  .sk__runs {
+    stroke: var(--pink);
+    stroke-width: 4;
+  }
+  .sk__runs-head {
+    fill: var(--pink);
+  }
+
+  .sk-list {
+    display: grid;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.2;
+    border-top: var(--rule);
+  }
+  .sk-list__head {
+    padding: 5px 0;
+    color: var(--ink);
+    border-bottom: var(--rule-dash);
+  }
+  .sk-list__row {
+    position: relative;
+    isolation: isolate;
+    padding: 5px 8px;
+    border-bottom: var(--rule-dash);
+  }
+  .sk-list__row b {
+    font-weight: 600;
+    color: var(--ink);
+    margin-right: 6px;
+  }
+  .sk-list__row--new {
+    color: var(--over);
+    border-bottom-color: transparent;
+  }
+  .sk-list__row--new b {
+    color: var(--over);
+  }
+  .sk-list__row--new::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--pink);
+    mix-blend-mode: var(--blend);
+  }
+  /* The message not sent yet: a dashed outline at full ink, so its number still reads. */
+  .sk-list__row--slot {
+    border-bottom: 0;
+    outline: 1px dashed var(--ink);
+    outline-offset: -1px;
+  }
+
+  .sk-mcp {
+    display: grid;
+    gap: 16px;
+  }
+  .sk-mcp__addr {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+  }
+  .sk-mcp__url {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    font-size: clamp(1rem, 1.8vw, 1.25rem);
+    text-decoration: underline;
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 4px;
+    text-underline-offset: 6px;
+  }
+  .sk-mcp__copy {
+    font: 600 0.8125rem/1 var(--font-mono);
+    color: var(--ink);
+    border: var(--rule);
+    padding: 7px 10px;
+  }
+  .sk-mcp__tools {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .sk-mcp__tools .token {
+    font-size: 0.8125rem;
+  }
+
+  .sk-rap {
+    display: grid;
+    gap: 6px;
+  }
+  .sk-rap__cells {
+    display: flex;
+    height: 48px;
+    border-top: var(--rule);
+    border-bottom: var(--rule);
+  }
+  .sk-rap__cell {
+    position: relative;
+    isolation: isolate;
+    flex-basis: 0;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-shout);
+    font-size: 0.9375rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--text);
+    border-left: var(--rule-dash);
+  }
+  .sk-rap__cell:first-child {
+    border-left: 0;
+  }
+  .sk-rap__cell--gap {
+    background-image: radial-gradient(var(--ink) 34%, transparent 36%);
+    background-size: var(--dot) var(--dot);
+    opacity: 0.6;
+  }
+  .sk-rap__cell--live {
+    color: var(--over);
+  }
+  .sk-rap__cell--live::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: var(--pink);
+    mix-blend-mode: var(--blend);
+  }
+  /* A second row with the same proportions, so each note sits under its own cell. */
+  .sk-rap__notes {
+    display: flex;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.3;
+    color: var(--ink);
+  }
+  .sk-rap__note {
+    position: relative;
+    flex-basis: 0;
+    min-width: 0;
+    height: 1.3em;
+  }
+  .sk-rap__at {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    translate: -50% 0;
+    white-space: nowrap;
+  }
+  .sk-rap__at--start {
+    left: 0;
+    translate: none;
+  }
+  .sk-rap__at--end {
+    left: auto;
+    right: 0;
+    translate: none;
+  }
+
+  /* ---------- The words ---------- */
+
+  .lab__head {
+    display: grid;
+    grid-template-columns: 3.2rem minmax(0, 1fr);
+    align-items: baseline;
+    gap: 12px;
+  }
+  .lab__n {
+    font-size: 2.75rem;
+    color: var(--ink);
+  }
+  .lab__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-stretch: var(--w-title);
+    font-size: clamp(1.25rem, 1.9vw, 1.5rem);
+    line-height: 1.1;
+  }
+  .lab__idea {
+    padding-left: calc(3.2rem + 12px);
+    font-size: var(--step-small);
+    line-height: 1.5;
+    color: var(--text-soft);
+    max-width: 46ch;
+  }
+  .lab__foot {
+    padding-left: calc(3.2rem + 12px);
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    padding-top: 6px;
+  }
+  .lab__go {
+    color: var(--text);
+    white-space: nowrap;
+    text-decoration: underline;
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 4px;
+  }
+  .lab__go::after {
+    content: '\00a0\2192';
+  }
+  .lab:hover .lab__title {
+    text-decoration: underline;
+    text-decoration-color: var(--pink);
+    text-decoration-thickness: 3px;
+    text-underline-offset: 5px;
+  }
+
+  @media (max-width: 760px) {
+    .labset {
+      grid-template-columns: minmax(0, 1fr);
+    }
+    .labset li:nth-child(odd) {
+      border-right: 0;
+    }
+    .labset li + li {
+      border-top: var(--rule-dash);
+    }
+    .labset .lab {
+      padding-left: 0;
+      padding-right: 0;
+    }
+    .lab__sketch {
+      height: auto;
+      min-height: 96px;
+    }
+    .lab__idea,
+    .lab__foot {
+      padding-left: 0;
+    }
+    .lab__head {
+      grid-template-columns: 2.6rem minmax(0, 1fr);
+    }
+    .lab__n {
+      font-size: 2.25rem;
+    }
+  }
+</style>

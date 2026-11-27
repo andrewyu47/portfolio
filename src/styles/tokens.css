@@ -21,7 +21,7 @@
   --text-soft: rgb(11 29 67 / 0.72); /* secondary reading text */
   --ink-tint: rgb(11 95 105 / 0.14); /* a light screen of teal */
   --blend: multiply; /* how a plate lays over what is under it */
-  --grain-opacity: 0.34;
+  --grain-opacity: 0.2;
 
   /* Headlines print in both plates: teal letters over a pink copy that sits a hair off. */
   --over-fill: var(--ink);
@@ -87,10 +87,10 @@
     --text-soft: rgb(234 243 241 / 0.74);
     --ink-tint: rgb(127 207 207 / 0.14);
     --blend: screen;
-    --grain-opacity: 0.35;
-    /* Headlines are knocked out to the text color, with one quiet teal edge behind them. */
+    --grain-opacity: 0.2;
+    /* Headlines are a plain light fill. A second plate behind light type reads as a drop shadow. */
     --over-fill: var(--text);
-    --over-edge: #2d8f95;
+    --over-edge: transparent;
     --over-blend: normal;
     /* The running head keeps the day teal with pale type. A full bar of the light night ink outshouts the headline. */
     --band: #0b5f69;
@@ -108,9 +108,9 @@
   --text-soft: rgb(234 243 241 / 0.74);
   --ink-tint: rgb(127 207 207 / 0.14);
   --blend: screen;
-  --grain-opacity: 0.35;
+  --grain-opacity: 0.2;
   --over-fill: var(--text);
-  --over-edge: #2d8f95;
+  --over-edge: transparent;
   --over-blend: normal;
   --band: #0b5f69;
   --band-text: #edefea;

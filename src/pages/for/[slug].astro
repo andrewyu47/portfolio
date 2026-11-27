@@ -133,18 +133,20 @@ const short = (ask: string) => ask.split(':')[0].split(' ').slice(0, 9).join(' '
         <ol class="rows">
           {section.rows.map((row) => (
             <li class="line" id={`l-${row.n}`}>
-              <div class="line__level">
-                <span class={`mark mark--${row.level}`} aria-hidden="true">
-                  {row.level === 'shown' && (
-                    <svg viewBox="0 0 44 44">
-                      <path d="M8 24 L18 35 L38 7" />
-                    </svg>
-                  )}
-                </span>
-                <span class="label">{LEVEL[row.level]}</span>
+              <div class="line__ask">
+                <div class="line__level">
+                  <span class={`mark mark--${row.level}`} aria-hidden="true">
+                    {row.level === 'shown' && (
+                      <svg viewBox="0 0 44 44">
+                        <path d="M8 24 L18 35 L38 7" />
+                      </svg>
+                    )}
+                  </span>
+                  <span class="label">{LEVEL[row.level]}</span>
+                </div>
+                <p class="ask" data-quoted>{row.ask}</p>
               </div>
               <div class="line__body">
-                <p class="ask" data-quoted>{row.ask}</p>
                 <p class="answer">{row.answer}</p>
                 {row.points && (
                   <ul class="points">
@@ -187,7 +189,7 @@ const short = (ask: string) => ask.split(':')[0].split(' ').slice(0, 9).join(' '
 
   <section class="part close" aria-label="Next">
     <div class="line">
-      <div class="line__level"><span class="label">Next</span></div>
+      <div class="line__ask"><div class="line__level"><span class="label">Next</span></div></div>
       <div class="line__body">
         <p class="answer">The resume has the dates. To find anything else here, connect Claude to this site and ask it.</p>
         <ul class="evidence">
@@ -245,6 +247,16 @@ const short = (ask: string) => ask.split(':')[0].split(' ').slice(0, 9).join(' '
     display: block;
     padding: 4px;
     margin: -4px;
+  }
+  .tally .mark {
+    width: 30px;
+    height: 30px;
+  }
+  .tally .mark svg {
+    left: -6px;
+    top: -12px;
+    width: 44px;
+    height: 44px;
   }
   .tally a:hover .mark,
   .tally a:focus-visible .mark {
@@ -351,11 +363,12 @@ const short = (ask: string) => ask.split(':')[0].split(' ').slice(0, 9).join(' '
     margin: 0;
     padding: 0;
   }
+  /* A ledger: the posting's line on the left, my evidence beside it on the right. */
   .line {
     display: grid;
-    grid-template-columns: var(--cols);
-    gap: var(--col-gap);
-    padding: 28px 0;
+    grid-template-columns: minmax(0, 3.5fr) minmax(0, 6.5fr);
+    gap: clamp(22px, 3.6vw, 48px);
+    padding: 26px 0;
     border-bottom: var(--rule-dash);
     scroll-margin-top: 16px;
   }
@@ -373,19 +386,18 @@ const short = (ask: string) => ask.split(':')[0].split(' ').slice(0, 9).join(' '
     display: flex;
     align-items: center;
     gap: 12px;
-    align-self: start;
-    padding-top: 2px;
   }
   .line__body {
-    max-width: 68ch;
+    max-width: 62ch;
   }
   .ask {
+    margin-top: 10px;
     font-style: italic;
+    font-size: 1rem;
     color: var(--text-soft);
     line-height: 1.45;
   }
   .answer {
-    margin-top: 10px;
     font-size: 1.1875rem;
     line-height: 1.5;
   }
@@ -439,7 +451,7 @@ const short = (ask: string) => ask.split(':')[0].split(' ').slice(0, 9).join(' '
       border-top: 1.5px solid var(--over);
     }
   }
-  @media (max-width: 600px) {
+  @media (max-width: 760px) {
     .line {
       grid-template-columns: 1fr;
       gap: 12px;

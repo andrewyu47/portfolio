@@ -1,41 +1,49 @@
 ---
 /**
- * The two-day Claude Dojo intensive, drawn as a program: one spine per day, one node per
- * block, in the order the recordings index and Andrew's slot script show them.
- * Rendered from src/data/dojo.json. The blocks Andrew led or hosted get a pink node and
- * the word "Mine", so the mark never depends on color alone.
+ * The two-day Claude Dojo intensive, set as a run sheet: the days side by side, one line
+ * per block (number, name, one clause), in the order the recordings index and Andrew's
+ * slot script show them. Rendered from src/data/dojo.json (`brief` is the clause).
  *
- * Numbered because order matters. No clock times: the drafts disagree, and clip lengths
- * are not block lengths, so every node is the same size.
+ * The blocks marked `mine` are his sessions that are on video. They print as solid pink
+ * bars with navy type and the word "Mine", so the mark never depends on color alone.
+ * The capstone bar carries the link to the 55 second clip.
  *
- *   <RunOfShow />           full: both days stacked, each block with what happened in it
- *   <RunOfShow compact />   names only, the two days side by side (case study)
+ * No clock times: the drafts disagree, and clip lengths are not block lengths.
  *
- * Layout follows the width it is given (a container query), not the window, so the
- * same figure fits a full page row or a reading column.
+ *   <RunOfShow />           the teaching page
+ *   <RunOfShow compact />   the case study: the same drawing, no anchors, a link back
+ *
+ * Layout follows the width it is given (a container query), not the window:
+ *   wide (900px and up)  three columns, Day 1 across two of them, Day 2 in the third
+ *   middle               two columns, Day 1 above Day 2
+ *   narrow               one column; blocks that are not his drop to their names
+ *
+ * Prints on arrival: the day rules draw, then the two pink bars land.
  */
 import dojo from '../../data/dojo.json';
 
 interface Props {
   compact?: boolean;
-  /** Where "on video" links point. Pass false where no clip is on the page. */
+  /** Where the capstone bar's clip link points. Pass false where no clip is on the page. */
   clipHref?: string | false;
 }
 const { compact = false, clipHref = '#clip' } = Astro.props;
 
-type Block = { name: string; what: string; mine?: boolean; clip?: boolean };
+type Block = { name: string; brief: string; what: string; mine?: boolean; clip?: boolean };
 const days = dojo.days.map((d) => ({ ...d, blocks: d.blocks as Block[] }));
-const mineCount = days.reduce((n, d) => n + d.blocks.filter((b) => b.mine).length, 0);
 const DayTag = compact ? 'p' : 'h4';
-const NameTag = compact ? 'p' : 'h5';
 const capId = compact ? 'ros-cap-compact' : 'ros-cap';
 ---
 
-<figure class:list={['ros', { 'ros--compact': compact }]} aria-labelledby={capId}>
+<figure class:list={['ros', { 'ros--compact': compact }]} aria-labelledby={capId} data-print>
   <div class="ros__days">
     {
       days.map((d) => (
-        <section class="ros__day" aria-label={`Day ${d.day}, ${d.date}`}>
+        <section
+          class:list={['ros__day', { 'ros__day--long': d.blocks.length > 6 }]}
+          aria-label={`Day ${d.day}, ${d.date}`}
+          style={`--rows:${Math.ceil(d.blocks.length / 2)}`}
+        >
           <header class="ros__when">
             <DayTag class="ros__dayname">
               Day <span class="numeral">{d.day}</span>
@@ -44,29 +52,26 @@ const capId = compact ? 'ros-cap-compact' : 'ros-cap';
           </header>
           <ol class="ros__blocks">
             {d.blocks.map((b, i) => (
-              <li class:list={['block', { 'block--mine': b.mine }]} id={compact ? undefined : `block-${d.day}-${i + 1}`}>
-                <span class="block__n label" aria-hidden="true">
+              <li
+                class:list={['block', { 'block--mine': b.mine }]}
+                id={compact ? undefined : `block-${d.day}-${i + 1}`}
+              >
+                <span class="block__n" aria-hidden="true">
                   {String(i + 1).padStart(2, '0')}
                 </span>
-                <span class="block__node" aria-hidden="true">
-                  <i class:list={{ plate: b.mine }} />
-                </span>
-                <div class="block__body">
-                  <NameTag class="block__name">
-                    {b.name}
-                    {b.mine && (
-                      <span class="chip block__mine">
-                        Mine<span class="visually-hidden">: I presented this block, and it is on video</span>
-                      </span>
-                    )}
-                  </NameTag>
-                  {!compact && <p class="block__what">{b.what}</p>}
-                  {!compact && b.clip && clipHref && (
-                    <a class="more block__clip" href={clipHref}>
-                      Watch me open it, 55 seconds
-                    </a>
-                  )}
-                </div>
+                <p class="block__line">
+                  <span class="block__name">{b.name}</span>{' '}<span class="block__brief">{b.brief}</span>
+                </p>
+                {b.mine && (
+                  <span class="block__mine">
+                    Mine<span class="visually-hidden">: I presented this block, and it is on video</span>
+                  </span>
+                )}
+                {b.clip && clipHref && (
+                  <a class="more block__clip" href={clipHref}>
+                    Watch me open it, 55 seconds
+                  </a>
+                )}
               </li>
             ))}
           </ol>
@@ -75,15 +80,13 @@ const capId = compact ? 'ros-cap-compact' : 'ros-cap';
     }
   </div>
   <figcaption id={capId}>
-    The intensive on {dojo.record.dates}, block by block, in the order the session recordings and my run sheet show
-    them. The {mineCount} blocks marked Mine are my sessions that are on video. Clock times are left out, so every block
-    is drawn the same size.
+    {dojo.record.dates}, in the order the recordings show. The pink bars marked Mine are my sessions on video.
     {
       compact && (
         <>
           {' '}
           <a class="more" href="/teaching#intensive">
-            What happened in each block
+            More on the two days
           </a>
         </>
       )
@@ -94,21 +97,41 @@ const capId = compact ? 'ros-cap-compact' : 'ros-cap';
 <style>
   .ros {
     container-type: inline-size;
-    --node: 11px;
-    --node-mine: 16px;
-    --n-col: 2.2rem;
+    --gap: 28px;
   }
 
-  /* ---------- Shared parts ---------- */
+  .ros__days {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: var(--gap);
+    row-gap: 30px;
+  }
+
+  /* ---------- A day: its name over a solid rule, then the blocks ---------- */
 
   .ros__day {
-    border-top: var(--rule);
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    align-content: start;
   }
   .ros__when {
+    grid-column: 1 / -1;
     display: flex;
     align-items: baseline;
     gap: 14px;
-    padding: 12px 0 6px;
+    padding-bottom: 8px;
+    position: relative;
+  }
+  .ros__when::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-bottom: var(--rule);
+    transform-origin: left;
+    transition: transform 0.7s var(--ease-press);
   }
   .ros__dayname {
     margin: 0;
@@ -119,170 +142,187 @@ const capId = compact ? 'ros-cap-compact' : 'ros-cap';
     line-height: 1;
     display: flex;
     align-items: baseline;
-    gap: 8px;
+    gap: 6px;
   }
   .ros__dayname .numeral {
-    font-size: 3rem;
+    font-size: 2.5rem;
     color: var(--ink);
+  }
+  .ros__when .label {
+    margin: 0;
   }
 
   .ros__blocks {
+    grid-column: 1 / -1;
     list-style: none;
     margin: 0;
     padding: 0;
-  }
-  .block {
     display: grid;
-    grid-template-columns: var(--n-col) 22px minmax(0, 1fr);
-    column-gap: 10px;
+    grid-template-columns: subgrid;
+    align-content: start;
+  }
+
+  /* ---------- A block: one line of the run sheet ---------- */
+
+  .block {
     margin: 0;
+    position: relative;
+    isolation: isolate;
+    display: grid;
+    grid-template-columns: 2rem minmax(0, 1fr) auto;
+    column-gap: 10px;
+    align-items: baseline;
+    align-content: start;
+    padding: 11px 0 12px;
+    border-bottom: var(--rule-dash);
     scroll-margin-top: 24px;
   }
   .block__n {
-    padding-top: 13px;
-    text-align: right;
+    font-family: var(--font-mono);
+    font-size: var(--step-label);
+    font-weight: 500;
+    color: var(--ink);
     font-variant-numeric: tabular-nums;
+    text-align: right;
   }
-
-  /* The spine: one teal line per day, a node on it for each block. */
-  .block__node {
-    position: relative;
-  }
-  .block__node::before {
-    content: '';
-    position: absolute;
-    left: calc(50% - 0.75px);
-    width: 1.5px;
-    top: 0;
-    bottom: 0;
-    background: var(--ink);
-  }
-  .block:first-child .block__node::before {
-    top: 20px;
-  }
-  .block:last-child .block__node::before {
-    bottom: auto;
-    height: 20px;
-  }
-  .block__node i {
-    position: absolute;
-    left: calc(50% - var(--node) / 2);
-    top: calc(20px - var(--node) / 2);
-    width: var(--node);
-    height: var(--node);
-    border-radius: 50%;
-    background: var(--stock);
-    border: 2px solid var(--ink);
-  }
-  .block--mine .block__node i {
-    left: calc(50% - var(--node-mine) / 2);
-    top: calc(20px - var(--node-mine) / 2);
-    width: var(--node-mine);
-    height: var(--node-mine);
-    background: var(--pink);
-    border: 0;
-  }
-
-  .block__body {
-    padding: 9px 0 14px;
+  .block__line {
+    margin: 0;
+    font-size: 0.9375rem;
+    line-height: 1.4;
     min-width: 0;
   }
   .block__name {
-    margin: 0;
     font-family: var(--font-display);
     font-weight: 700;
     font-stretch: var(--w-title);
-    font-size: 1.1875rem;
-    line-height: 1.15;
+    font-size: 1.0625rem;
+    line-height: 1.2;
+    color: var(--text);
+  }
+  .block__name::after {
+    content: ',';
+  }
+  .block__brief {
+    color: var(--text-soft);
+  }
+
+  /* His sessions: a solid bar of pink with navy type. */
+  .block--mine {
+    color: var(--over);
+    border-bottom-color: transparent;
+    padding-left: 0;
+    padding-right: 10px;
+  }
+  .block--mine::before {
+    content: '';
+    position: absolute;
+    inset: -1px 0 0 0;
+    z-index: -1;
+    background: var(--pink);
+    -webkit-mask-image: url('/img/ink-mask.png');
+    mask-image: url('/img/ink-mask.png');
+    -webkit-mask-size: 512px 512px;
+    mask-size: 512px 512px;
+    transform-origin: left;
+    transition: transform 0.55s var(--ease-press) 0.6s;
+  }
+  .block--mine .block__n,
+  .block--mine .block__name,
+  .block--mine .block__brief {
+    color: var(--over);
+  }
+  .block--mine .block__name {
+    font-weight: 800;
   }
   .block__mine {
-    margin-left: 8px;
-    font-size: 0.8125rem;
-    line-height: 1.25;
-    font-stretch: normal;
-    vertical-align: 1px;
+    font-family: var(--font-mono);
+    font-size: var(--step-label);
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
     white-space: nowrap;
   }
-  .block__what {
-    margin-top: 5px;
-    font-size: var(--step-small);
-    line-height: 1.5;
-    max-width: 60ch;
-  }
   .block__clip {
-    margin-top: 8px;
+    grid-column: 2 / -1;
+    justify-self: start;
+    margin-top: 6px;
+    color: var(--over);
+    text-decoration-color: var(--over);
   }
 
   figcaption {
-    margin-top: 18px;
-    max-width: 72ch;
-    font-size: 0.8125rem;
+    margin-top: 16px;
+    font-family: var(--font-body);
+    letter-spacing: 0;
+    text-transform: none;
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    color: var(--text-soft);
   }
   figcaption .more {
-    font-size: inherit;
+    font-size: 0.8125rem;
   }
 
-  /* ---------- Full: the day in the label column, the program beside it ---------- */
+  /* ---------- Printing on arrival: the rules draw, then the pink lands ---------- */
 
-  @container (min-width: 820px) {
-    .ros:not(.ros--compact) .ros__day {
-      display: grid;
-      grid-template-columns: var(--cols);
-      gap: var(--col-gap);
-      padding-top: 6px;
-    }
-    .ros:not(.ros--compact) .ros__day + .ros__day {
-      margin-top: 36px;
-    }
-    .ros:not(.ros--compact) .ros__when {
-      display: block;
-      align-self: start;
-      position: sticky;
-      top: 16px;
-      padding-top: 12px;
-    }
-    .ros:not(.ros--compact) .ros__when .label {
-      margin-top: 8px;
-    }
-    .ros:not(.ros--compact) .ros__dayname .numeral {
-      font-size: 3.5rem;
-    }
-    .ros:not(.ros--compact) figcaption {
-      margin-left: calc((100% - var(--col-gap)) * 0.23 + var(--col-gap));
-    }
+  :global(.js) .ros:not([data-printed]) .ros__when::after {
+    transform: scaleX(0);
+  }
+  :global(.js) .ros:not([data-printed]) .block--mine::before {
+    transform: scaleX(0);
   }
 
-  /* ---------- Compact: names only, the two days side by side ---------- */
+  /* ---------- Middle: two columns, Day 1 above Day 2 ---------- */
 
-  .ros--compact .block__body {
-    padding: 10px 0 9px;
-  }
-  .ros--compact .block__name {
-    font-size: 1rem;
-  }
-  .ros--compact .block__n {
-    padding-top: 12px;
-  }
   @container (min-width: 560px) {
-    .ros--compact .ros__days {
-      display: grid;
-      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      column-gap: 28px;
-      align-items: start;
+    .ros__days {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-  }
-  @container (max-width: 559px) {
-    .ros--compact .ros__day + .ros__day {
-      margin-top: 20px;
+    .ros__blocks {
+      grid-template-rows: repeat(var(--rows), auto);
+      grid-auto-flow: column;
     }
   }
 
-  @container (max-width: 480px) {
-    .ros {
-      --n-col: 1.6rem;
+  /* ---------- Wide: three columns, Day 1 across two, Day 2 beside it ---------- */
+
+  @container (min-width: 900px) {
+    .ros__days {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+    .ros__day {
+      grid-column: span 1;
+    }
+    .ros__day--long {
+      grid-column: span 2;
+    }
+    .ros__day:not(.ros__day--long) .ros__blocks {
+      grid-template-rows: none;
+      grid-auto-flow: row;
     }
     .block {
-      column-gap: 8px;
+      min-height: 4.6rem;
+    }
+  }
+
+  /* ---------- Narrow: one column, and only his blocks keep their clause ---------- */
+
+  @container (max-width: 559px) {
+    /* Kept for screen readers, off the page. */
+    .block:not(.block--mine) .block__brief {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+    .block:not(.block--mine) .block__name::after {
+      content: none;
+    }
+    .block {
+      padding-top: 9px;
+      padding-bottom: 10px;
     }
   }
 </style>

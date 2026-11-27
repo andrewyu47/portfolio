@@ -2,8 +2,9 @@
 /**
  * /path: how an English major came to teach AI and build the labs.
  * The first screen draws the whole path once (PathChart). The sections under it are set
- * three different ways: roles with their result at the right, teaching as a two-column
- * set, builds one line each. Education closes the page as a single line.
+ * so the record reads as one ledger: roles with their result at the right; teaching led by
+ * the intensive as one full-width row, then the rest as rows in the same grammar as roles;
+ * builds one line each. Education closes the page as a single line.
  * Everything renders from src/data/timeline.json, which the site index and the MCP server also read.
  */
 import Base from '../layouts/Base.astro';
@@ -17,6 +18,9 @@ import timeline from '../data/timeline.json';
 
 const all = timeline as Entry[];
 const of = (kind: string) => all.filter((e) => e.kind === kind);
+const teaching = of('teaching');
+const feature = teaching.find((e) => e.feature)!;
+const ledger = teaching.filter((e) => !e.feature);
 const builds = of('build');
 const checked = builds.filter((b) => b.href && /^https?:/.test(b.href)).length;
 const degree = of('education')[0];
@@ -53,8 +57,26 @@ const courses = of('certification').map((c) => c.title);
   </section>
 
   <section class="sec" id="teaching" aria-labelledby="teaching-h">
-    <SectionHead title="Teaching" id="teaching-h">The rooms I have taught in.</SectionHead>
-    <RecordRows entries={of('teaching')} density="grid" label="Teaching" />
+    <SectionHead title="Teaching" id="teaching-h" />
+    <article class="feat" aria-labelledby="feat-h">
+      <p class="feat__when">Jul 11 and 12, 2026</p>
+      <div class="feat__main">
+        <figure class="feat__fig" data-print>
+          <p class="feat__n">{feature.figure?.value}</p>
+          <span class="feat__ink plate" aria-hidden="true"></span>
+          <figcaption class="feat__cap">{feature.figure?.caption}</figcaption>
+        </figure>
+        <div class="feat__body">
+          <h3 class="feat__title" id="feat-h">{feature.title}</h3>
+          <p class="feat__lede">{feature.lede ?? feature.detail}</p>
+          <p class="feat__links">
+            <a class="more" href={feature.href}>{feature.label}</a>
+            {feature.more?.map((m) => <a class="more" href={m.href}>{m.label}</a>)}
+          </p>
+        </div>
+      </div>
+    </article>
+    <RecordRows entries={ledger} label="Other teaching, most recent first" />
   </section>
 
   <section class="sec" id="built" aria-labelledby="built-h">
@@ -142,6 +164,80 @@ const courses = of('certification').map((c) => c.title);
     display: none;
   }
 
+  /* Teaching opens on the intensive, set once at full width on the page grid, with the ledger
+     under it in the same grammar as Work. */
+  .feat {
+    display: grid;
+    grid-template-columns: var(--cols);
+    gap: var(--col-gap);
+    padding: 30px 0 34px;
+    border-bottom: var(--rule-dash);
+  }
+  .feat__when {
+    font-family: var(--font-mono);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.6;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+    padding-top: 3px;
+  }
+  .feat__main {
+    display: grid;
+    grid-template-columns: minmax(0, 3fr) minmax(0, 5.4fr);
+    gap: var(--col-gap) clamp(24px, 4vw, 56px);
+    align-items: start;
+  }
+  .feat__fig {
+    margin: 0;
+    width: max-content;
+    max-width: 100%;
+    display: grid;
+    justify-items: start;
+    gap: 10px;
+  }
+  .feat__n {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-shout);
+    font-size: clamp(5rem, 9vw, 8rem);
+    line-height: 0.8;
+    font-variant-numeric: tabular-nums;
+  }
+  /* The same pink block the intensive is drawn with in the chart above. */
+  .feat__ink {
+    display: block;
+    width: 100%;
+    height: 14px;
+    background: var(--pink);
+  }
+  .feat__cap {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--ink);
+  }
+  .feat__title {
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-stretch: var(--w-title);
+    font-size: clamp(1.5rem, 2.4vw, 2rem);
+    line-height: 1.1;
+    text-wrap: balance;
+  }
+  .feat__lede {
+    margin-top: 10px;
+    max-width: 46ch;
+    font-size: var(--step-lede);
+    line-height: 1.4;
+    text-wrap: pretty;
+  }
+  .feat__links {
+    margin-top: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 24px;
+  }
+
   .checked {
     display: grid;
     grid-template-columns: var(--cols);
@@ -213,7 +309,18 @@ const courses = of('certification').map((c) => c.title);
     }
   }
 
+  @media (max-width: 900px) {
+    .feat__main {
+      grid-template-columns: 1fr;
+    }
+  }
+
   @media (max-width: 600px) {
+    .feat {
+      grid-template-columns: 1fr;
+      gap: 14px;
+      padding: 22px 0 28px;
+    }
     .checked,
     .edu {
       grid-template-columns: 1fr;

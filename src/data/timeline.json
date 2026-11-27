@@ -23,8 +23,7 @@
     "detail": "I am on a three-person innovation team that ships quickstarts, starter kits, agent skills, and demos for developers.",
     "kind": "role",
     "href": "/work/salesforce",
-    "label": "Read about the Salesforce work",
-    "figure": { "value": "3", "caption": "people on the innovation team" }
+    "label": "Read about the Salesforce work"
   },
   {
     "when": "2026 to present",
@@ -39,6 +38,7 @@
     "when": "Feb 2026 to Jul 2026",
     "title": "Technical Writer (contract), Pinecone",
     "detail": "I built an eval that runs 15 real developer tasks through coding agents. With a curated docs file, the small model went from 11% to 89%.",
+    "lede": "I built an eval that runs 15 real developer tasks through coding agents under four documentation conditions.",
     "kind": "role",
     "href": "/work/the-score-that-lied",
     "label": "Read The score that lied",
@@ -55,13 +55,13 @@
     "more": [
       { "label": "Read about SAGE", "href": "/work/sage" },
       { "label": "Read about the DocOps workbench", "href": "/work/docops-governance-workbench" }
-    ],
-    "figure": { "value": "6", "caption": "technical writers led" }
+    ]
   },
   {
     "when": "Sep 2020 to May 2024",
     "title": "Senior Staff Technical Writer, Splunk",
     "detail": "I moved the docs to docs-as-code, and deployment frequency went up 30%.",
+    "lede": "I moved the docs to docs-as-code.",
     "kind": "role",
     "figure": { "value": "+30%", "caption": "deployment frequency" }
   },
@@ -77,21 +77,29 @@
     "title": "Claude Dojo intensive",
     "detail": "About 70 people in one two-day hands-on Claude Code intensive on July 11 and 12, which I taught with the other instructors.",
     "kind": "teaching",
+    "feature": true,
+    "start": "2026-07-11",
+    "end": "2026-07-12",
+    "lede": "Two days of hands-on Claude Code on July 11 and 12, 2026, which I taught with the other instructors.",
     "href": "/teaching",
     "label": "See the teaching page",
-    "figure": { "value": "~70", "caption": "people, two days" }
+    "more": [{ "label": "Watch the capstone opening, 55 seconds", "href": "/work/claude-dojo#clip" }],
+    "figure": { "value": "~70", "caption": "people in one room" }
   },
   {
     "when": "Jul 2026 to present",
-    "title": "Salesforce",
+    "title": "Coworkers at Salesforce",
     "detail": "I teach AI to my coworkers and give lightning talks.",
-    "kind": "teaching"
+    "kind": "teaching",
+    "start": "2026-07"
   },
   {
     "when": "2022",
     "title": "The Limitations of Language",
     "detail": "A lightning talk I gave at Splunk.",
-    "kind": "teaching"
+    "kind": "teaching",
+    "href": "/writing/lecun-lewis-limits-of-language",
+    "label": "Read the essay it grew into"
   },
   {
     "when": "Undated",
@@ -103,7 +111,7 @@
   {
     "when": "Ongoing",
     "title": "Ministry",
-    "detail": "Years of teaching to live rooms.",
+    "detail": "For years I have taught live rooms as a minister.",
     "kind": "teaching"
   },
   {

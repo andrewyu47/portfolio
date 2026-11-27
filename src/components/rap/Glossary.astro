@@ -21,11 +21,8 @@ const terms = (rap.sections as Section[]).filter((s) => s.n);
         <div class="term__body">
           <p class="term__def">{t.definition}</p>
           <p class="term__verse">
-            {t.lines.map((l, i) => (
-              <>
-                {i > 0 && <br />}
-                {l.text}
-              </>
+            {t.lines.map((l) => (
+              <span class="term__line">{l.text}</span>
             ))}
           </p>
         </div>
@@ -52,9 +49,9 @@ const terms = (rap.sections as Section[]).filter((s) => s.n);
   }
   .term__name {
     display: grid;
-    grid-template-columns: 2.6rem minmax(0, 1fr);
+    grid-template-columns: 2.4rem minmax(0, 1fr);
     align-items: baseline;
-    gap: 8px;
+    gap: 16px;
     font-family: var(--font-display);
     font-weight: 700;
     font-stretch: var(--w-title);
@@ -62,6 +59,7 @@ const terms = (rap.sections as Section[]).filter((s) => s.n);
     line-height: 1.1;
   }
   .term__n {
+    text-align: right;
     font-size: 2rem;
     color: var(--ink);
   }
@@ -78,6 +76,13 @@ const terms = (rap.sections as Section[]).filter((s) => s.n);
     font-size: var(--step-small);
     line-height: 1.5;
     color: var(--text-soft);
+  }
+  /* One sung line per row. A line that wraps hangs its overflow, so each one still
+     starts at the left edge and reads as a unit. */
+  .term__line {
+    display: block;
+    padding-left: 1.25em;
+    text-indent: -1.25em;
   }
 
   @media (max-width: 900px) {

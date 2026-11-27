@@ -174,6 +174,15 @@ const words = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'E
     align-items: baseline;
     margin: 0;
     max-width: 66ch;
+    font-family: var(--font-body);
+    font-size: 0.9375rem;
+    line-height: 1.45;
+    color: var(--text-soft);
+  }
+  /* With the totals printed elsewhere on the page, the key takes the whole row. */
+  .ladder__key:only-child {
+    grid-column: 1 / -1;
+    max-width: 90ch;
   }
   .key {
     flex: none;
@@ -232,9 +241,25 @@ const words = ['Zero', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'E
     .rung__theme {
       font-size: 1.0625rem;
     }
+    /* On end, a bar per rung would only repeat the rung number, so the names get the
+       width. The top rung keeps a short piece of its pink tread. */
+    .rung {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+    .rung:not(.rung--live) .rung__step {
+      display: none;
+    }
+    .rung--live .rung__step .rung__fill {
+      display: none;
+    }
+    .rung--live .rung__step .rung__tread {
+      left: 0;
+      right: 0;
+      width: auto;
+    }
     .rung__step {
       height: 22px;
-      width: calc(var(--base) * 1.4 + var(--i) * (100% - var(--base) * 1.4) / var(--top));
+      width: 32px;
       border-top: 0;
       border-left: 0;
       border-right: 2.5px solid var(--ink);

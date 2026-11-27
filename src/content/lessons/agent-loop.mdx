@@ -27,7 +27,7 @@ A reply ends with `stop_reason` `tool_use`. Who runs the tool? Your code does, a
 
 ## If it fails
 
-The model did not run the search, and it cannot. Its reply only names a tool and an input, and if your code never runs it, the loop stalls. That holds for tools you define, like `search_portfolio`. Anthropic's server tools, such as web search and code execution, run on Anthropic's side and come back already done. The model still runs nothing itself.
+The model did not run the search, and it cannot. Its reply only names a tool and an input. If your code never runs it, the model never gets an answer: the next request must carry a `tool_result` for that id, or the API rejects it. That holds for tools you define, like `search_portfolio`. Anthropic's server tools, such as web search and code execution, run on Anthropic's side and come back already done. The model still runs nothing itself.
 
 The model does not remember the conversation either. On a plain request, the conversation lives in the list your code keeps. Drop a message from the list and, as far as the model knows, it never happened. Some platform features, such as message threads or Managed Agents, keep the list on Anthropic's side instead. Something still has to keep it.
 

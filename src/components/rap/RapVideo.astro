@@ -1,0 +1,175 @@
+---
+/**
+ * The original music video, shown the way the capstone clip is: first as a poster
+ * printed in the site's own inks, with a plain play label. Pressing play swaps the
+ * poster for the video itself, in its true colors, with native controls.
+ *
+ * The poster is HTML, not an image: the video's title and the fifteen numbers it
+ * counts off. It carries no information the page does not, so it is hidden from
+ * screen readers; the button and the caption say what the video is.
+ * Without JavaScript the poster stays, and the caption links to the file.
+ * Everything renders from src/data/rap.json.
+ */
+import rap from '../../data/rap.json';
+
+interface Props {
+  id?: string;
+}
+const { id = 'rap-video' } = Astro.props;
+
+// The words on the video's own title card, its first frame.
+const TITLE_CARD = 'The Claude Code Terms Rap';
+
+type Section = { n?: number };
+const numbers = (rap.sections as Section[]).filter((s) => s.n).map((s) => s.n as number);
+const length = `${Math.floor(rap.duration / 60)}:${String(Math.floor(rap.duration % 60)).padStart(2, '0')}`;
+---
+
+<figure class="rv" id={id} data-rap-video>
+  <div class="rv__stage">
+    <div class="rv__poster" aria-hidden="true">
+      <p class="rv__title">{TITLE_CARD}</p>
+      <ol class="rv__nums">
+        {numbers.map((n) => <li>{n}</li>)}
+      </ol>
+    </div>
+    <button class="rv__play" type="button" data-rap-play>
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5v15l12.5-7.5z"></path></svg>
+      <span>Play the video, {length}</span>
+    </button>
+    <video class="rv__video" controls playsinline preload="none" width="1280" height="720" hidden>
+      <source src={rap.video} type="video/mp4" />
+    </video>
+  </div>
+  <figcaption>
+    <slot />
+    <noscript> <a href={rap.video}>Open the video (MP4, 13 MB).</a></noscript>
+  </figcaption>
+</figure>
+
+<style>
+  .rv__stage {
+    position: relative;
+    container-type: inline-size;
+    aspect-ratio: 16 / 9;
+    background: var(--stock-2);
+    border-top: var(--rule-heavy);
+    border-bottom: var(--rule);
+  }
+
+  /* ---------- The poster ---------- */
+
+  .rv__poster {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    grid-template-rows: 1fr auto;
+    gap: clamp(8px, 3cqi, 22px);
+    padding: clamp(12px, 4.4cqi, 40px) clamp(14px, 4.4cqi, 40px) clamp(64px, 12cqi, 96px);
+  }
+  .rv__title {
+    margin: 0;
+    align-self: center;
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-shout);
+    font-size: clamp(1.625rem, 8cqi, 4.75rem);
+    line-height: 0.95;
+    max-width: 14ch;
+    color: var(--text);
+  }
+  .rv__nums {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(15, minmax(0, 1fr));
+    border-top: var(--rule);
+  }
+  .rv__nums li {
+    margin: 0;
+    padding-top: clamp(4px, 1.2cqi, 10px);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-shout);
+    font-size: clamp(0.8125rem, 2.6cqi, 1.5rem);
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    color: var(--ink);
+  }
+  .rv__nums li + li {
+    border-left: var(--rule-dash);
+  }
+
+  /* ---------- The play label, as on the capstone clip ---------- */
+
+  .rv__play {
+    position: absolute;
+    left: clamp(12px, 4.4cqi, 40px);
+    bottom: clamp(12px, 3cqi, 26px);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 16px 10px 12px;
+    background: var(--stock);
+    color: var(--text);
+    border: var(--rule);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .rv__play svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--pink);
+    stroke: var(--text);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+  .rv__play:hover {
+    background: var(--ink);
+    color: var(--stock);
+  }
+  /* Without script the button could do nothing, so it is not shown. */
+  :global(html:not(.js)) .rv__play {
+    display: none;
+  }
+
+  /* ---------- After play: the video itself ---------- */
+
+  .rv__video {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: var(--stock-2);
+  }
+  .rv__video[hidden] {
+    display: none;
+  }
+  .rv[data-playing] .rv__poster,
+  .rv[data-playing] .rv__play {
+    display: none;
+  }
+
+  figcaption {
+    margin-top: 12px;
+  }
+</style>
+
+<script>
+  for (const fig of document.querySelectorAll<HTMLElement>('[data-rap-video]')) {
+    const button = fig.querySelector<HTMLButtonElement>('[data-rap-play]');
+    const video = fig.querySelector<HTMLVideoElement>('video');
+    if (!button || !video) continue;
+    button.addEventListener('click', () => {
+      fig.dataset.playing = '';
+      video.hidden = false;
+      video.focus();
+      void video.play().catch(() => {});
+    });
+  }
+</script>

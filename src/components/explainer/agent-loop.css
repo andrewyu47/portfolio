@@ -4,8 +4,9 @@
  * stock both work by redefining the tokens around it.
  *
  * Desktop: the stage (counts, diagram, caption, controls) on the left, the list on the
- * right. Under 900px it stacks in that order. Under 600px the narrow drawing replaces
- * the wide one and older rows fold to one line.
+ * right. Under 900px it stacks in that order. Under 600px it is composed for the phone:
+ * diagram, the list as one-line entries, the step text, Back and Next pinned to the
+ * bottom edge while the figure is in view, then the tools and the raw JSON.
  */
 
 .al {
@@ -20,16 +21,16 @@
   display: flex;
   justify-content: space-between;
   align-items: baseline;
-  gap: 8px 32px;
+  gap: 6px 32px;
   flex-wrap: wrap;
-  padding: 12px 0;
+  padding: 10px 0;
   border-bottom: var(--rule-dash);
 }
 .al-head__name {
   margin: 0;
 }
 .al-prov {
-  max-width: 64ch;
+  max-width: 80ch;
   font-size: 0.875rem;
   line-height: 1.45;
   color: var(--text-soft);
@@ -58,7 +59,7 @@
   gap: 4px;
   align-content: start;
   text-align: left;
-  padding: 14px 0 14px;
+  padding: 10px 0 8px;
   background: none;
   border: 0;
   border-bottom: 1.5px solid transparent;
@@ -90,6 +91,17 @@
 .al-pick__b[aria-pressed='true'] .al-pick__t {
   text-decoration-color: var(--pink);
 }
+.al-pick__short {
+  display: none;
+}
+
+/* An optional sentence under the switcher, saying what to try. */
+.al-lead {
+  max-width: none;
+  padding: 12px 0 14px;
+  font-size: 1rem;
+  line-height: 1.5;
+}
 
 /* ---------- Body: stage | list ---------- */
 
@@ -103,10 +115,14 @@
   min-width: 0;
 }
 
+/* The two counters head the list column: they count what the list holds and sends. */
 .al-counts {
   display: flex;
-  gap: clamp(20px, 3vw, 44px);
-  margin-bottom: 6px;
+  flex-wrap: wrap;
+  gap: 8px clamp(20px, 3vw, 44px);
+  padding-bottom: 14px;
+  margin-bottom: 14px;
+  border-bottom: var(--rule);
 }
 .al-count {
   display: flex;
@@ -116,7 +132,7 @@
 .al-count__n {
   display: inline-block;
   min-width: 1.1ch;
-  font-size: clamp(2.25rem, 3.4vw, 3rem);
+  font-size: clamp(2.125rem, 3vw, 2.625rem);
   color: var(--ink);
   overflow: hidden;
   line-height: 0.95;
@@ -132,7 +148,7 @@
 /* ---------- Diagram ---------- */
 
 /*
- * The whole machine is drawn from step 1. The wide drawing needs about 540px of stage
+ * The whole machine is drawn from step 1. The wide drawing needs about 592px of stage
  * to keep every label at 13px or more on screen; below that the narrow one, with its
  * nodes stacked at full width, takes over. The stage's own width decides, not the
  * viewport, so the switch is right on the lesson page and inside the home page flood.
@@ -141,7 +157,7 @@
   container: al-stage / inline-size;
 }
 .al-dias {
-  margin: 10px 0 14px;
+  margin: 0 0 12px;
 }
 .al-dia {
   display: block;
@@ -154,7 +170,7 @@
   max-width: 460px;
   margin: 0 auto;
 }
-@container al-stage (max-width: 539px) {
+@container al-stage (max-width: 591px) {
   .al-dia--wide {
     display: none;
   }
@@ -192,11 +208,6 @@
   font-weight: 400;
   font-size: 14.5px;
   fill: var(--ink);
-}
-.al-person__mark {
-  fill: none;
-  stroke: var(--ink);
-  stroke-width: 1.75;
 }
 /* Not reached yet: a faint dashed outline, the words still legible in teal. */
 .al-st.is-ghost .al-st__box {
@@ -267,7 +278,7 @@
 .al-caps {
   display: grid;
   border-top: var(--rule-dash);
-  padding: 14px 0 16px;
+  padding: 12px 0 16px;
 }
 .al-cap {
   grid-area: 1 / 1;
@@ -291,7 +302,7 @@
   margin-top: 8px;
   font-size: 1rem;
   line-height: 1.5;
-  max-width: 56ch;
+  max-width: 66ch;
 }
 
 /* ---------- Controls ---------- */
@@ -343,6 +354,10 @@
 .al-track__b[aria-current='step'] {
   background: var(--ink);
   color: var(--stock);
+}
+.al-ctrl__at {
+  display: none;
+  margin: 0;
 }
 
 .al-under {
@@ -477,6 +492,10 @@
   font-weight: 600;
   color: var(--text);
 }
+.al-row__who,
+.al-row__said {
+  display: none;
+}
 .al-row__idx.chip {
   color: var(--over);
   padding: 0 6px;
@@ -522,38 +541,26 @@
   padding-top: 0;
 }
 
-/* A message not produced yet: a numbered dashed slot, as tall as the row that will fill it. */
+/* A message not produced yet: a one-line numbered dashed slot. It grows into the row
+   when its step arrives; the controls are in the other column, so they never move. */
 .al-slot {
-  position: relative;
-  padding: 12px 0 13px;
-}
-.al-slot::before {
-  content: '';
-  position: absolute;
-  inset: 5px 0;
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 0 12px;
+  margin-top: 8px;
+  padding: 8px 12px;
   border: 1px dashed color-mix(in srgb, var(--ink) 55%, transparent);
-}
-.al-answer .al-slot {
-  padding-top: 0;
-}
-.al-answer .al-slot::before {
-  top: -5px;
-}
-.al-slot__n {
-  position: absolute;
-  top: 14px;
-  left: 12px;
   font-family: var(--font-mono);
   font-size: 0.8125rem;
-  font-weight: 600;
   line-height: 1.5;
   color: var(--ink);
 }
-.al-answer .al-slot__n {
-  top: 2px;
+.al-answer .al-slot {
+  margin-top: 0;
 }
-.al-slot__body {
-  visibility: hidden;
+.al-slot__n {
+  font-weight: 600;
 }
 
 .al-think {
@@ -607,17 +614,85 @@
 /* ---------- Phone ---------- */
 
 @media (max-width: 600px) {
-  .al-stage {
-    padding-top: 12px;
+  /* Composed for the phone. The stage and the list give up their boxes, so their parts
+     can be set in one column in the order a reader needs them. */
+  .al-body {
+    display: flex;
+    flex-direction: column;
   }
+  .al-stage,
+  .al-list {
+    display: contents;
+  }
+  .al-dias {
+    order: 1;
+    margin: 14px 0 12px;
+  }
+  /* The counters head the list. The list's own caption only prints on a send step,
+     where it says that the whole list goes. */
   .al-counts {
-    margin-bottom: 0;
+    order: 2;
+    margin: 0;
+    padding: 10px 0 4px;
+    border-top: var(--rule-dash);
+    border-bottom: 0;
   }
-  .al-count__n {
-    font-size: 2.125rem;
+  .al-list > .al-list__cap {
+    order: 3;
+    margin: 0;
+    padding: 4px 0 6px;
+  }
+  .al-list:not(.is-sending) > .al-list__cap {
+    display: none;
+  }
+  .al-list > .al-rows {
+    order: 4;
+  }
+  .al-list > .al-slots {
+    order: 5;
+  }
+  .al-answer {
+    order: 6;
+    margin-top: 6px;
+    padding-top: 6px;
+    border-top: 0;
   }
   .al-caps {
-    padding: 10px 0 12px;
+    order: 7;
+    margin-top: 8px;
+    padding: 8px 0 14px;
+  }
+  .al-ctrl {
+    order: 8;
+  }
+  .al-under {
+    order: 9;
+  }
+  .al-raw {
+    order: 10;
+  }
+  .al-along {
+    order: 11;
+    margin: 14px 0 0;
+    padding: 12px 0 0;
+    border-top: var(--rule-dash);
+    border-bottom: 0;
+  }
+
+  /* The stage is no longer a box, so the viewport picks the narrow drawing. */
+  .al-dia--wide {
+    display: none;
+  }
+  .al-dia--narrow {
+    display: block;
+  }
+
+  .al-count__n {
+    font-size: 2rem;
+  }
+  /* The pinned bar says which step this is. */
+  .al-cap__n {
+    display: none;
   }
   .al-cap__h {
     font-size: 1.25rem;
@@ -626,62 +701,108 @@
     font-size: 0.9375rem;
     margin-top: 6px;
   }
+
+  /* Back and Next stay under the thumb while the figure is on screen: the bar sticks
+     to the bottom edge and lets go when the figure scrolls away. */
   .al-ctrl {
-    grid-template-columns: 1fr 1fr;
-    grid-template-areas:
-      'track track'
-      'back next';
-    gap: 10px;
+    position: sticky;
+    bottom: 0;
+    z-index: 2;
+    grid-template-columns: 1fr auto 1fr;
+    grid-template-areas: 'back at next';
+    gap: 12px;
+    margin: 0 calc(-1 * var(--gutter));
+    padding: 10px var(--gutter) calc(10px + env(safe-area-inset-bottom, 0px));
+    background: var(--stock);
+    border-top: var(--rule);
   }
   .al-track {
-    justify-content: flex-start;
-    gap: 4px;
+    display: none;
   }
-  .al-track__b {
-    width: 32px;
-    height: 32px;
+  .al-ctrl__at {
+    display: block;
+    grid-area: at;
+    text-align: center;
+    font-variant-numeric: tabular-nums;
   }
   .al-ctrl__back,
   .al-ctrl__next {
     width: 100%;
+    min-width: 0;
+    min-height: 44px;
   }
   .al-under {
-    padding-top: 10px;
+    padding-top: 12px;
   }
-  /* Three runs side by side; the question is messages[0] in the list anyway. */
+
+  /* Three equal cells, one short label each; the question is messages[0] in the list. */
   .al-pick {
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0 12px;
+    gap: 0;
+    padding: 0;
   }
   .al-pick__b {
-    padding: 10px 0;
+    padding: 12px 0 10px;
+    min-height: 44px;
+    text-align: center;
+    justify-items: center;
+  }
+  .al-pick__b + .al-pick__b {
+    border-left: var(--rule-dash);
   }
   .al-pick__t {
     font-size: 1.0625rem;
+    white-space: nowrap;
   }
+  .al-pick__long,
   .al-pick__q {
     display: none;
   }
+  .al-pick__short {
+    display: inline;
+  }
+  .al-lead {
+    padding: 10px 0 0;
+    font-size: 0.875rem;
+    line-height: 1.45;
+  }
 
-  /* Older rows fold to one line, so the newest message stays on screen. */
-  .al-row:not(.is-newest) {
+  /* Every row is one line: index, who sent it, what it does. The newest is printed on
+     pink, and its sentence is never cut. The wire text is one tap away in the raw JSON. */
+  .al-row,
+  .al-row:first-child {
     display: flex;
     align-items: baseline;
     gap: 10px;
-    padding: 7px 0;
+    padding: 6px 0;
+    scroll-margin-bottom: 84px;
   }
-  .al-row:not(.is-newest) .al-row__meta {
+  .al-row__meta {
     flex: none;
+    gap: 0 8px;
   }
-  .al-row:not(.is-newest) .al-row__role,
-  .al-row:not(.is-newest) .al-row__stop,
-  .al-row:not(.is-newest) .al-row__wire,
-  .al-row:not(.is-newest) .al-think,
-  .al-row:not(.is-newest) .al-row__usage,
-  .al-row:not(.is-newest) .al-row__aside {
+  .al-row__idx,
+  .al-row__idx.chip {
+    min-width: 8.4em;
+    padding: 0 6px;
+  }
+  .al-row.is-newest .al-row__idx {
+    background: var(--pink);
+    color: var(--over);
+  }
+  .al-row__who {
+    display: inline;
+    min-width: 5.4em;
+  }
+  .al-row__role,
+  .al-row__stop,
+  .al-row__wire,
+  .al-think,
+  .al-row__usage,
+  .al-row__aside {
     display: none;
   }
-  .al-row:not(.is-newest) .al-row__plain {
+  .al-row__plain {
     margin: 0;
     min-width: 0;
     font-size: 0.9375rem;
@@ -689,33 +810,35 @@
     overflow: hidden;
     text-overflow: ellipsis;
   }
-  .al-row:first-child:not(.is-newest) {
-    padding-top: 2px;
+  .al-row.is-newest .al-row__plain {
+    white-space: normal;
   }
-  /* On a phone a slot is one line: it says where the message will go, nothing more. */
-  .al-slot {
-    padding: 0;
-    height: 38px;
-    margin-top: 6px;
+  /* A message that is plain text (the question) shows its own words instead. */
+  .al-row__said {
+    display: block;
+    margin: 0;
+    min-width: 0;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  .al-slot::before {
-    inset: 0;
+  .al-row.is-newest .al-row__said {
+    white-space: normal;
   }
-  .al-slot__n {
-    top: 50%;
-    transform: translateY(-50%);
-  }
-  .al-answer .al-slot::before {
-    top: 0;
-  }
-  .al-answer .al-slot__n {
-    top: 50%;
-  }
-  .al-slot__body {
+  .al-row__said + .al-row__plain {
     display: none;
   }
-  .al-along {
-    padding-bottom: 12px;
-    margin-bottom: 10px;
+  .al-rows--answer .al-row {
+    padding-top: 0;
+  }
+  .al-slot {
+    margin-top: 6px;
+    padding: 6px 10px;
+  }
+  .al-answer .al-slot {
+    margin-top: 0;
   }
 }

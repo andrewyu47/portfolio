@@ -33,41 +33,44 @@ type Geo = {
   lanes: Record<Lane, LaneGeo>;
 };
 
+// Every edge label has at least 20 units of air on each side, so no label touches a box.
 const WIDE: Geo = {
   name: 'wide',
-  w: 600,
-  h: 250,
+  w: 660,
+  h: 224,
   title: 22,
-  person: { x: 0, y: 24, w: 92, h: 86 },
-  code: { x: 156, y: 24, w: 184, h: 86, sub: ['keeps the list', 'runs your tools'] },
-  model: { x: 470, y: 24, w: 130, h: 86, sub: ['only replies'] },
-  tool: { x: 156, y: 182, w: 184, h: 64 },
+  person: { x: 0, y: 24, w: 88, h: 86 },
+  code: { x: 180, y: 24, w: 184, h: 86, sub: ['keeps the list', 'runs your tools'] },
+  model: { x: 530, y: 24, w: 130, h: 86, sub: ['only replies'] },
+  tool: { x: 180, y: 160, w: 184, h: 62 },
   lanes: {
-    ask: { pts: [[92, 52], [156, 52]], label: 'asks', lx: 124, ly: 44, anchor: 'middle' },
-    answer: { pts: [[156, 84], [92, 84]], label: 'answer', lx: 124, ly: 103, anchor: 'middle' },
-    send: { pts: [[340, 52], [470, 52]], label: 'sends the list', lx: 405, ly: 44, anchor: 'middle' },
-    reply: { pts: [[470, 84], [340, 84]], label: 'replies', lx: 405, ly: 103, anchor: 'middle' },
-    run: { pts: [[210, 110], [210, 182]], label: 'runs it', lx: 202, ly: 151, anchor: 'end' },
-    result: { pts: [[286, 182], [286, 110]], label: 'result', lx: 294, ly: 151, anchor: 'start' },
+    ask: { pts: [[88, 52], [180, 52]], label: 'asks', lx: 134, ly: 44, anchor: 'middle' },
+    answer: { pts: [[180, 84], [88, 84]], label: 'answer', lx: 134, ly: 103, anchor: 'middle' },
+    send: { pts: [[364, 52], [530, 52]], label: 'sends the list', lx: 447, ly: 44, anchor: 'middle' },
+    reply: { pts: [[530, 84], [364, 84]], label: 'replies', lx: 447, ly: 103, anchor: 'middle' },
+    run: { pts: [[234, 110], [234, 160]], label: 'runs it', lx: 226, ly: 140, anchor: 'end' },
+    result: { pts: [[310, 160], [310, 110]], label: 'result', lx: 318, ly: 140, anchor: 'start' },
   },
 };
 
+// Stacked for a phone, with the vertical gaps cut to what the labels need. The four
+// lower labels share one baseline: each pair of arrows sits close, its labels outside it.
 const NARROW: Geo = {
   name: 'narrow',
   w: 360,
-  h: 330,
+  h: 246,
   title: 21,
-  person: { x: 0, y: 0, w: 360, h: 52 },
-  code: { x: 0, y: 110, w: 360, h: 80, sub: ['keeps the list, runs your tools'] },
-  model: { x: 0, y: 254, w: 168, h: 74, sub: ['only replies'] },
-  tool: { x: 192, y: 254, w: 168, h: 74 },
+  person: { x: 0, y: 0, w: 360, h: 42 },
+  code: { x: 0, y: 82, w: 360, h: 66, sub: ['keeps the list, runs your tools'] },
+  model: { x: 0, y: 188, w: 168, h: 58, sub: ['only replies'] },
+  tool: { x: 192, y: 188, w: 168, h: 58 },
   lanes: {
-    ask: { pts: [[130, 52], [130, 110]], label: 'asks', lx: 122, ly: 86, anchor: 'end' },
-    answer: { pts: [[230, 110], [230, 52]], label: 'answer', lx: 238, ly: 86, anchor: 'start' },
-    send: { pts: [[56, 190], [56, 254]], label: 'sends', lx: 48, ly: 214, anchor: 'end' },
-    reply: { pts: [[120, 254], [120, 190]], label: 'replies', lx: 128, ly: 214, anchor: 'start' },
-    run: { pts: [[228, 190], [228, 254]], label: 'runs it', lx: 220, ly: 241, anchor: 'end' },
-    result: { pts: [[300, 254], [300, 190]], label: 'result', lx: 308, ly: 214, anchor: 'start' },
+    ask: { pts: [[130, 42], [130, 82]], label: 'asks', lx: 122, ly: 67, anchor: 'end' },
+    answer: { pts: [[230, 82], [230, 42]], label: 'answer', lx: 238, ly: 67, anchor: 'start' },
+    send: { pts: [[54, 148], [54, 188]], label: 'sends', lx: 46, ly: 173, anchor: 'end' },
+    reply: { pts: [[86, 188], [86, 148]], label: 'replies', lx: 94, ly: 173, anchor: 'start' },
+    run: { pts: [[246, 148], [246, 188]], label: 'runs it', lx: 238, ly: 173, anchor: 'end' },
+    result: { pts: [[278, 188], [278, 148]], label: 'result', lx: 286, ly: 173, anchor: 'start' },
   },
 };
 
@@ -127,29 +130,20 @@ function Station({
   );
 }
 
-/** The person: a drawn node with a head-and-shoulders mark, never a loose word. */
+/** The person: a drawn node with its name, like the others. The word is enough. */
 function Person({ geo }: { geo: Geo }) {
   const b = geo.person;
-  if (geo.name === 'wide') {
-    const cx = b.x + b.w / 2;
-    return (
-      <g className="al-st al-person">
-        <Frame box={b} />
-        <circle className="al-person__mark" cx={cx} cy={b.y + 24} r={7.5} />
-        <path className="al-person__mark" d={`M${cx - 14} ${b.y + 48} a14 12 0 0 1 28 0`} />
-        <text className="al-st__title" x={cx} y={b.y + 70} fontSize={geo.title - 3} textAnchor="middle">
-          Person
-        </text>
-      </g>
-    );
-  }
-  const cy = b.y + b.h / 2;
+  const size = geo.name === 'wide' ? geo.title - 3 : geo.title;
   return (
     <g className="al-st al-person">
       <Frame box={b} />
-      <circle className="al-person__mark" cx={b.x + 28} cy={cy - 7} r={6.5} />
-      <path className="al-person__mark" d={`M${b.x + 16} ${cy + 14} a12 10 0 0 1 24 0`} />
-      <text className="al-st__title" x={b.x + b.w / 2} y={cy + 7} fontSize={geo.title} textAnchor="middle">
+      <text
+        className="al-st__title"
+        x={b.x + b.w / 2}
+        y={b.y + b.h / 2 + size * 0.36}
+        fontSize={size}
+        textAnchor="middle"
+      >
         Person
       </text>
     </g>

@@ -12,8 +12,12 @@
  * The diagram draws the whole machine from step 1 and the list shows a place for every
  * message the run will produce, so nothing grows into an empty panel as the steps advance.
  *
- * Order on a phone: diagram, caption, controls, then the list, with older rows folded
- * to one line so the newest message stays on screen.
+ * `lead` is an optional sentence printed under the run switcher.
+ *
+ * On a phone the figure is composed again rather than stacked: the diagram, then the
+ * list as one-line entries right under it, then the step text, with Back and Next held
+ * at the bottom of the screen while the figure is in view. The tools sent beside the
+ * list and the raw JSON come last.
  */
 import { useEffect, useId, useMemo, useRef, useState } from 'react';
 import { MotionConfig, motion } from 'motion/react';
@@ -66,7 +70,10 @@ function Count({ value, label }: { value: number; label: string }) {
   );
 }
 
-export default function AgentLoop({ traces, label }: { traces: Trace[]; label?: string }) {
+/** "Two tool calls" becomes "Two calls" for the three equal cells of the phone switcher. */
+const shortTitle = (title: string) => title.replace(/ tool (calls?)\b/i, ' $1');
+
+export default function AgentLoop({ traces, label, lead }: { traces: Trace[]; label?: string; lead?: string }) {
   const [which, setWhich] = useState(0);
   const [at, setAt] = useState(0);
   const [raw, setRaw] = useState(false);
@@ -123,19 +130,36 @@ export default function AgentLoop({ traces, label }: { traces: Trace[]; label?: 
     };
   });
 
-  // When the figure is stacked (phone, narrow tablet), keep the newest message on screen.
+  // When the figure is stacked (phone, narrow tablet), keep what the step changed on screen.
   useEffect(() => {
-    if (!touched.current || !root.current) return;
+    const el = root.current;
+    if (!touched.current || !el) return;
     if (!matchMedia('(max-width: 900px)').matches) return;
     const t = window.setTimeout(() => {
-      const rows = root.current?.querySelectorAll<HTMLElement>('.al-row');
-      const last = rows?.[rows.length - 1];
+      const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+      if (matchMedia('(max-width: 600px)').matches) {
+        // Phone: Back and Next are pinned to the bottom edge. Show the counters, the
+        // diagram, the list and the step text together when they fit above the bar;
+        // when they do not, keep the step text and the newest row, and let the top go.
+        const top = el.querySelector<HTMLElement>('.al-dias')?.getBoundingClientRect().top;
+        const cap = el.querySelector<HTMLElement>('.al-cap.is-on')?.getBoundingClientRect().bottom;
+        const bar = el.querySelector<HTMLElement>('.al-ctrl')?.offsetHeight ?? 0;
+        if (top === undefined || cap === undefined) return;
+        const room = window.innerHeight - bar - 12;
+        let by = 0;
+        if (cap - top <= room - 8) {
+          if (top < 8 || cap > room) by = top - 8;
+        } else if (cap > room || cap < 0) {
+          by = cap - room;
+        }
+        if (Math.abs(by) > 4) window.scrollBy({ top: by, behavior });
+        return;
+      }
+      const rows = el.querySelectorAll<HTMLElement>('.al-row');
+      const last = rows[rows.length - 1];
       if (!last) return;
       const r = last.getBoundingClientRect();
-      if (r.bottom > window.innerHeight - 8 || r.top < 0) {
-        const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-        last.scrollIntoView({ block: 'nearest', behavior: reduce ? 'auto' : 'smooth' });
-      }
+      if (r.bottom > window.innerHeight - 8 || r.top < 0) last.scrollIntoView({ block: 'nearest', behavior });
     }, 450);
     return () => window.clearTimeout(t);
   }, [at, which]);
@@ -184,12 +208,18 @@ export default function AgentLoop({ traces, label }: { traces: Trace[]; label?: 
               aria-pressed={i === which}
               onClick={() => pick(i)}
             >
-              <span className="al-pick__t">{t.title}</span>
+              <span className="al-pick__t">
+                <span className="al-pick__long">{t.title}</span>
+                {/* Only one of the two titles is displayed at any width, so the button's name is whichever one shows. */}
+                <span className="al-pick__short">{shortTitle(t.title)}</span>
+              </span>
               <span className="al-pick__q">{t.question}</span>
             </button>
           ))}
         </div>
       )}
+
+      {lead && <p className="al-lead">{lead}</p>}
 
       <p className="visually-hidden" id={summaryId}>
         A diagram of four parts: the person who asks, your code, the model, and a tool you define, which hangs off your
@@ -199,11 +229,6 @@ export default function AgentLoop({ traces, label }: { traces: Trace[]; label?: 
 
       <div className="al-body">
         <div className="al-stage">
-          <div className="al-counts">
-            <Count value={step.trips} label={step.trips === 1 ? 'Trip to the model' : 'Trips to the model'} />
-            <Count value={step.messages} label={step.messages === 1 ? 'Message in the list' : 'Messages in the list'} />
-          </div>
-
           <Diagram step={step} index={at + which * 100} />
 
           <div className="al-caps">
@@ -237,6 +262,9 @@ export default function AgentLoop({ traces, label }: { traces: Trace[]; label?: 
                 </li>
               ))}
             </ol>
+            <p className="al-ctrl__at label" aria-hidden="true">
+              Step {at + 1} of {n}
+            </p>
             <button
               type="button"
               className="btn btn--primary al-ctrl__next"
@@ -277,7 +305,19 @@ export default function AgentLoop({ traces, label }: { traces: Trace[]; label?: 
           </div>
         </div>
 
-        <MessageList step={step} along={along} />
+        <MessageList
+          step={step}
+          along={along}
+          head={
+            <div className="al-counts">
+              <Count value={step.trips} label={step.trips === 1 ? 'Trip to the model' : 'Trips to the model'} />
+              <Count
+                value={step.messages}
+                label={step.messages === 1 ? 'Message in the list' : 'Messages in the list'}
+              />
+            </div>
+          }
+        />
       </div>
 
       <p className="visually-hidden" aria-live="polite">

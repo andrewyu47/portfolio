@@ -9,9 +9,12 @@
  * the list, because in these requests they travel in their own fields, not as messages.
  *
  * Every message the run will produce has its place from step 1: the ones not sent yet
- * wait as numbered dashed slots, and fill in as the steps advance.
+ * wait as one-line numbered dashed slots, and grow into full rows as the steps advance.
+ *
+ * On a phone every row folds to one line (index, role, plain sentence), so the list
+ * sits right under the diagram and every tap shows in view. The newest row is marked.
  */
-import { useEffect, useState } from 'react';
+import { useEffect, useState, type ReactNode } from 'react';
 import { motion } from 'motion/react';
 import useStill from './useStill';
 import type { Block, Row, Step } from './trace';
@@ -114,10 +117,18 @@ function RowBody({ row, fresh, next }: { row: Row; fresh: boolean; next: number 
       <p className="al-row__meta">
         <span className={`al-row__idx${fresh ? ' chip' : ''}`}>{isAnswer ? 'the answer' : `messages[${row.index}]`}</span>
         <span className="al-row__role">role "{row.role}"</span>
+        <span className="al-row__who" aria-hidden="true">
+          {row.role}
+        </span>
         {row.role === 'assistant' && row.stopReason && (
           <span className="al-row__stop">stop_reason "{row.stopReason}"</span>
         )}
       </p>
+      {typeof blocks === 'string' && (
+        <p className="al-row__said" aria-hidden="true">
+          {JSON.stringify(blocks)}
+        </p>
+      )}
       <p className="al-row__plain">
         {row.plain}
         {isAnswer && (
@@ -177,17 +188,18 @@ function RowView({
 }
 
 /**
- * A message the run has not produced yet: a numbered dashed slot. On a wide screen the
- * slot holds the finished row, invisible, so it is exactly as tall as the message that
- * will fill it and the list keeps its final height from step 1. On a phone it is one line.
+ * A message the run has not produced yet: a one-line numbered dashed slot that says
+ * where the message will go and who will send it. It grows into the row when its
+ * step arrives. The controls sit in the other column, so nothing they do moves them.
  */
-function Slot({ row, next }: { row: Row; next: number }) {
+function Slot({ row }: { row: Row }) {
+  const isAnswer = row.index === null;
   return (
     <div className="al-slot">
-      <p className="al-slot__n">{row.index === null ? 'the answer' : `messages[${row.index}]`}</p>
-      <div className="al-slot__body">
-        <RowBody row={row} fresh={false} next={next} />
-      </div>
+      <p className="al-slot__n">{isAnswer ? 'the answer' : `messages[${row.index}]`}</p>
+      <p className="al-slot__w">
+        role "{row.role}", {isAnswer ? 'not back yet' : 'not sent yet'}
+      </p>
     </div>
   );
 }
@@ -195,9 +207,12 @@ function Slot({ row, next }: { row: Row; next: number }) {
 export default function MessageList({
   step,
   along,
+  head,
 }: {
   step: Step;
   along: { system: string | null; tools: string[] };
+  /** Printed at the top of the list column: the figure's two counters. */
+  head?: ReactNode;
 }) {
   const sending = step.kind === 'send';
   const listRows = step.rows.filter((r) => r.index !== null);
@@ -213,6 +228,7 @@ export default function MessageList({
 
   return (
     <div className={`al-list${sending ? ' is-sending' : ''}`}>
+      {head}
       <div className="al-along">
         <p className="al-list__cap label">Sent beside the list on every trip</p>
         <p className="al-along__items">
@@ -246,7 +262,7 @@ export default function MessageList({
       {waiting.length > 0 && (
         <div className="al-slots" aria-hidden="true">
           {waiting.map((r) => (
-            <Slot key={r.key} row={r} next={next} />
+            <Slot key={r.key} row={r} />
           ))}
         </div>
       )}
@@ -258,7 +274,7 @@ export default function MessageList({
         ) : (
           finalAnswer && (
             <div className="al-slots" aria-hidden="true">
-              <Slot row={finalAnswer} next={next} />
+              <Slot row={finalAnswer} />
             </div>
           )
         )}

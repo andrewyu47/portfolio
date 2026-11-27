@@ -18,28 +18,32 @@ import SectionHead from '../../components/SectionHead.astro';
 import DojoClip from '../../components/figures/DojoClip.astro';
 import RunOfShow from '../../components/teaching/RunOfShow.astro';
 import Ladder from '../../components/teaching/Ladder.astro';
+import LabSet, { type Lab } from '../../components/teaching/LabSet.astro';
 import dojo from '../../data/dojo.json';
 
 const lessons = (await getCollection('lessons', ({ data }) => !data.draft)).sort(
   (a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title),
 );
 
-const labs = [
+// Which drawing each lab shows of itself (see LabSet).
+const SKETCH: Record<string, Lab['sketch']> = { 'agent-loop': 'loop', connect: 'mcp', 'fifteen-terms': 'rap' };
+const labs: Lab[] = [
   {
     title: 'Who runs the tool?',
     idea: 'A model never runs a tool itself. It asks, and your code runs it.',
     minutes: 1,
     href: '/',
     where: 'on the home page',
+    sketch: 'tool' as const,
   },
   ...lessons.map((l) => ({
     title: l.data.title,
     idea: l.data.idea,
     minutes: l.data.minutes,
     href: `/teaching/${l.id}`,
-    where: undefined as string | undefined,
+    sketch: SKETCH[l.id] ?? ('tool' as const),
   })),
-].map((l, i) => ({ ...l, n: `Lab ${String(i + 1).padStart(2, '0')}` }));
+].map((l, i) => ({ ...l, n: i + 1 }));
 
 const r = dojo.record;
 const s = dojo.said;
@@ -67,14 +71,26 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
   <section class="sec" id="claude-dojo" aria-labelledby="dojo-h">
     <SectionHead title="Claude Dojo" id="dojo-h">A nonprofit where I am Director of AI Enablement. It is independent of Anthropic.</SectionHead>
 
-    <div class="split">
-      <div class="split__body">
-        <p class="outcome">
-          With the other instructors, I taught {r.people} people to build with Claude Code. About {r.intensive} of them came
-          to one two-day hands-on intensive on {r.dates}. I co-authored the curriculum.
-        </p>
-        <a class="more" href="/work/claude-dojo">Read the Claude Dojo case study</a>
-      </div>
+    <div class="tally">
+      <ul class="tally__band" aria-label="Claude Dojo on record">
+        <li>
+          <span class="numeral">{r.people}</span>
+          <span>people I taught to build with Claude Code, with the other instructors</span>
+        </li>
+        <li>
+          <span class="numeral"><small>about</small>{r.intensive}</span>
+          <span>of them in one two-day hands-on intensive, {r.dates}</span>
+        </li>
+        <li>
+          <span class="numeral">{r.lessons}</span>
+          <span>lessons in the curriculum I co-authored</span>
+        </li>
+        <li>
+          <span class="numeral">{r.videos}</span>
+          <span>lesson videos to go with them</span>
+        </li>
+      </ul>
+      <a class="more" href="/work/claude-dojo">Read the Claude Dojo case study</a>
     </div>
 
     <div class="sub" id="intensive">
@@ -99,7 +115,7 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
           } word write-up or a {dojo.capstone.video} demo video.
         </p>
       </div>
-      <Ladder />
+      <Ladder counts={false} />
     </div>
 
     <div class="sub" id="rap">
@@ -119,31 +135,7 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
 
   <section class="sec" id="labs" aria-labelledby="labs-h">
     <SectionHead title="Take a lab" id="labs-h">Each one teaches one idea, and you can finish it on this site.</SectionHead>
-    <ul class="labs">
-      {
-        labs.map((l) => (
-          <li>
-            <a class="lab" href={l.href}>
-              <span class="lab__mins">
-                <span class="numeral">{l.minutes}</span>
-                <span class="label">min</span>
-              </span>
-              <span class="lab__words">
-                <span class="label lab__n">
-                  {l.n}
-                  {l.where && <>, {l.where}</>}
-                </span>
-                <span class="lab__title">{l.title}</span>
-                <span class="lab__idea">{l.idea}</span>
-              </span>
-              <span class="lab__go label" aria-hidden="true">
-                Open
-              </span>
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+    <LabSet labs={labs} />
   </section>
 
   <section class="sec" id="method" aria-labelledby="method-h">
@@ -198,14 +190,16 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
 
   <section class="sec" id="rooms" aria-labelledby="rooms-h">
     <SectionHead title="Talks and workshops" id="rooms-h">Where else I have stood in front of people and taught.</SectionHead>
+    <div class="rooms-set">
+    <div class="workshop spot">
+      <p class="field">Workshop</p>
+      <p class="workshop__name">Mental Models for Decision Making</p>
+      <p>
+        I have given my workshop, Mental Models for Decision Making, to more than 200 conference attendees. The Dojo
+        curriculum puts a rung on mental models before anyone touches a tool.
+      </p>
+    </div>
     <ul class="rooms">
-      <li>
-        <p class="title">Mental Models for Decision Making</p>
-        <p>
-          I have given my workshop, Mental Models for Decision Making, to more than 200 conference attendees. The Dojo
-          curriculum puts a rung on mental models before anyone touches a tool.
-        </p>
-      </li>
       <li>
         <p class="title">Lightning talks</p>
         <div>
@@ -228,6 +222,7 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
         <p>For years I have taught live rooms as a minister.</p>
       </li>
     </ul>
+    </div>
   </section>
 </Base>
 
@@ -264,8 +259,48 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
   .rap__more {
     margin-top: 12px;
   }
-  .lab__n {
-    margin-bottom: 2px;
+
+  /* The record, printed on one flat band of teal with the type knocked out. */
+  .tally {
+    padding-top: 30px;
+  }
+  .tally__band {
+    list-style: none;
+    margin: 0;
+    padding: clamp(22px, 3vw, 34px) clamp(18px, 2.4vw, 30px);
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 22px clamp(18px, 2.4vw, 30px);
+    background: var(--band, var(--ink));
+    color: var(--band-text, var(--stock));
+  }
+  .tally__band li {
+    display: grid;
+    align-content: start;
+    gap: 10px;
+    margin: 0;
+    font-size: var(--step-small);
+    line-height: 1.4;
+  }
+  .tally__band li + li {
+    border-left: 1.5px solid currentColor;
+    padding-left: clamp(18px, 2.4vw, 30px);
+  }
+  .tally__band .numeral {
+    font-size: clamp(3.25rem, 6.4vw, 5.5rem);
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+  }
+  .tally__band small {
+    font-family: var(--font-mono);
+    font-size: var(--step-label);
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+  .tally > .more {
+    margin-top: 16px;
   }
 
   /* The page grid: label column, content column. */
@@ -273,18 +308,6 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
     display: grid;
     grid-template-columns: var(--cols);
     gap: var(--col-gap);
-  }
-  .split__body {
-    grid-column: 2;
-  }
-  #claude-dojo > .split {
-    padding: 30px 0 0;
-  }
-  .outcome {
-    max-width: 40ch;
-  }
-  .outcome + .more {
-    margin-top: 16px;
   }
 
   .sub {
@@ -315,69 +338,6 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
     padding-bottom: 28px;
   }
 
-  /* Labs */
-  .labs {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-  }
-  .labs li {
-    border-bottom: var(--rule-dash);
-  }
-  .labs li:last-child {
-    border-bottom: 0;
-  }
-  .lab {
-    display: grid;
-    grid-template-columns: var(--cols);
-    gap: var(--col-gap);
-    padding: 22px 0;
-    text-decoration: none;
-    position: relative;
-  }
-  .lab__mins {
-    display: flex;
-    align-items: baseline;
-    gap: 6px;
-  }
-  .lab__mins .numeral {
-    font-size: 2.75rem;
-    color: var(--ink);
-  }
-  .lab__words {
-    display: grid;
-    gap: 6px;
-    padding-right: 5rem;
-  }
-  .lab__title {
-    font-family: var(--font-display);
-    font-weight: 700;
-    font-stretch: var(--w-title);
-    font-size: var(--step-h3);
-    line-height: 1.1;
-  }
-  .lab__idea {
-    max-width: 58ch;
-  }
-  .lab__go {
-    position: absolute;
-    right: 0;
-    top: 28px;
-    text-decoration: underline;
-    text-decoration-color: var(--pink);
-    text-decoration-thickness: 2px;
-    text-underline-offset: 4px;
-  }
-  .lab__go::after {
-    content: ' \2192';
-  }
-  .lab:hover .lab__title {
-    text-decoration: underline;
-    text-decoration-color: var(--pink);
-    text-decoration-thickness: 3px;
-    text-underline-offset: 5px;
-  }
-
   /* How I teach */
   .practice {
     display: grid;
@@ -399,17 +359,58 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
     margin-top: 12px;
   }
 
-  /* Other rooms */
+  /* Other rooms: the workshop on a field of pink, the rest of the rooms beside it. */
+  .rooms-set {
+    display: grid;
+    grid-template-columns: minmax(0, 5fr) minmax(0, 5fr);
+    gap: clamp(28px, 4vw, 56px);
+    align-items: start;
+    padding-top: 30px;
+  }
+  .workshop {
+    display: grid;
+    gap: 10px;
+    padding: clamp(22px, 3vw, 36px);
+  }
+  .workshop .field {
+    margin: 0;
+  }
+  .workshop__name {
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-shout);
+    font-size: clamp(2rem, 3.6vw, 3rem);
+    line-height: 0.98;
+    max-width: 16ch;
+  }
+  .workshop__n {
+    display: flex;
+    align-items: flex-start;
+    margin: 6px 0 4px;
+  }
+  .workshop__n .numeral {
+    font-size: clamp(5rem, 10vw, 8.5rem);
+  }
+  .workshop__plus {
+    font-family: var(--font-display);
+    font-weight: 900;
+    font-stretch: var(--w-shout);
+    font-size: clamp(2.5rem, 4.6vw, 4rem);
+    line-height: 1;
+  }
+  .workshop p:last-child {
+    max-width: 44ch;
+  }
   .rooms {
     list-style: none;
     margin: 0;
     padding: 0;
+    border-top: var(--rule);
   }
   .rooms li {
     display: grid;
-    grid-template-columns: var(--cols);
-    gap: var(--col-gap);
-    padding: 20px 0;
+    gap: 8px;
+    padding: 20px 0 22px;
     border-bottom: var(--rule-dash);
   }
   .rooms li:last-child {
@@ -445,23 +446,25 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
   }
   @media (max-width: 600px) {
     .split,
-    .lab,
-    .practice,
-    .rooms li {
+    .practice {
       grid-template-columns: 1fr;
       gap: 10px;
     }
-    .split__body {
-      grid-column: 1;
+    .tally__band li + li {
+      border-left: 0;
+      padding-left: 0;
     }
-    .lab__words {
-      padding-right: 0;
+  }
+  @media (max-width: 860px) {
+    .tally__band {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
     }
-    .lab__mins .numeral {
-      font-size: 2.25rem;
+    .tally__band li:nth-child(3) {
+      border-left: 0;
+      padding-left: 0;
     }
-    .lab__go {
-      position: static;
+    .rooms-set {
+      grid-template-columns: minmax(0, 1fr);
     }
   }
 </style>

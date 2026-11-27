@@ -17,6 +17,10 @@ export interface Entry {
   label?: string;
   more?: { label: string; href: string }[];
   figure?: { value: string; caption: string };
+  feature?: boolean; // teaching: set once, full width, above the ledger (path.astro)
+  lede?: string; // the feature row's sentence, when the figure already carries the number
+  start?: string;
+  end?: string;
 }
 interface Props {
   entries: Entry[];
@@ -42,7 +46,8 @@ const undated = (e: Entry) => e.when === 'Undated';
         <div class="r__main">
         <div class="r__body">
           <p class="r__title">{e.title}</p>
-          {e.detail && <p class="r__detail">{e.detail}</p>}
+          {(e.lede ?? e.detail) && <p class="r__detail">{e.lede ?? e.detail}</p>}
+          {density === 'line' && !e.href && !e.more && <p class="r__links r__nolink">No public link</p>}
           {(e.href || e.more) && (
             <p class="r__links">
               {e.href && (
@@ -121,6 +126,11 @@ const undated = (e: Entry) => e.when === 'Undated';
     flex-wrap: wrap;
     gap: 6px 22px;
   }
+  .r__nolink {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    color: var(--text-soft);
+  }
   /* External links name the host instead of an arrow into the site. */
   .more--out::after {
     content: '\00a0\2197';
@@ -138,7 +148,8 @@ const undated = (e: Entry) => e.when === 'Undated';
     font-family: var(--font-display);
     font-weight: 800;
     font-stretch: var(--w-shout);
-    font-size: clamp(2.25rem, 3.6vw, 3.25rem);
+    /* No taller than the section heads, so a figure never outranks "Work" or "Teaching". */
+    font-size: clamp(1.875rem, 3vw, 2.625rem);
     line-height: 0.9;
     font-variant-numeric: tabular-nums;
     white-space: nowrap;
