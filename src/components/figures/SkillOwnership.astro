@@ -4,11 +4,17 @@
  *
  * Source: one piece of guidance, kept by one writer, feeds both the docs page and the
  * agent skill, so the two cannot drift apart.
- * Proof: the same developer task is run twice, once without the skill and once with it,
- * and the two outcomes are compared.
+ * Proof: the same realistic developer task is run twice, once without the docs and once
+ * with them, and the two outcomes are compared. The case study's deck and body name the
+ * control the same way: "with and without the docs".
  *
  * The outlines are dashed because this is a proposal. It describes the idea in general
  * terms and shows no internal detail.
+ *
+ * Wide: each row is its source on the left and a bracket that forks to its two outcomes.
+ * On a phone (600px and under): each row is a small tree. The source runs full width,
+ * and its two outcomes hang below it off a thin spine, indented, with a tick to each.
+ * The run with the docs is outlined in pink there, never filled.
  */
 interface Props {
   compact?: boolean;
@@ -16,7 +22,7 @@ interface Props {
 }
 const { compact = false, class: className } = Astro.props;
 const alt =
-  'The proposed model in two rows. Source: one piece of guidance, kept by one writer, feeds both the docs page and the agent skill. Proof: the same task is run without the skill and with the skill, and the outcomes are compared.';
+  'The proposed model in two rows. Source: one piece of guidance, kept by one writer, feeds both the docs page and the agent skill. Proof: the same realistic developer task is run without the docs and with the docs, and the outcomes are compared.';
 ---
 
 <figure class:list={['own', { 'own--compact': compact }, className]} data-print="wipe">
@@ -34,10 +40,10 @@ const alt =
     <div class="own__row" aria-hidden="true">
       <p class="field">Proof</p>
       <div class="own__flow">
-        <span class="own__box own__box--solid">One real developer task</span>
+        <span class="own__box own__box--solid">One realistic developer task</span>
         <span class="own__fork">
-          <span class="own__box">Run without the skill</span>
-          <span class="own__box own__box--key"><span class="own__plate plate"></span>Run with the skill</span>
+          <span class="own__box">Run without the docs</span>
+          <span class="own__box own__box--key"><span class="own__plate plate"></span>Run with the docs</span>
         </span>
       </div>
     </div>
@@ -46,9 +52,6 @@ const alt =
 </figure>
 
 <style>
-  .own {
-    container-type: inline-size;
-  }
   .own__rows {
     display: grid;
     border-top: var(--rule);
@@ -123,32 +126,67 @@ const alt =
     background: var(--pink);
   }
 
-  @container (max-width: 380px) {
-    .own__flow {
-      grid-template-columns: 1fr;
-      gap: 10px;
-    }
-    .own__fork::before,
-    .own__fork::after {
-      display: none;
-    }
-  }
+  /* A phone (the site's 600px break): each row becomes a tree. The source keeps the full
+     width; the outcomes are indented under it and hang off one thin spine, a tick to each,
+     so "one source, two outcomes" still reads without the bracket. */
   @media (max-width: 600px) {
     .own__row {
       grid-template-columns: 1fr;
       gap: 8px;
     }
     .own__flow {
-      gap: 26px;
+      grid-template-columns: 1fr;
+      gap: 0;
     }
-    .own__fork::before {
-      left: -26px;
-      width: 13px;
-      translate: 13px 0;
+    .own__fork {
+      /* --spine: where the spine drops from the source. --indent: spine to outcome. */
+      --spine: 14px;
+      --indent: 22px;
+      --drop: 12px;
+      margin-left: var(--spine);
+      padding: var(--drop) 0 0 var(--indent);
+      gap: 10px;
     }
+    .own__fork::before,
     .own__fork::after {
-      left: -26px;
-      width: 13px;
+      display: none;
+    }
+    .own__fork > .own__box {
+      --bw: 1.5px;
+    }
+    /* The spine, drawn a segment per outcome: from the gap above it down through it,
+       and for the last one only down to its tick. */
+    .own__fork > .own__box::before {
+      content: '';
+      position: absolute;
+      left: calc(-1 * (var(--indent) + var(--bw)));
+      top: calc(-1 * (10px + var(--bw)));
+      bottom: calc(-1 * var(--bw));
+      border-left: 1.5px solid var(--ink);
+    }
+    .own__fork > .own__box:first-child::before {
+      top: calc(-1 * (var(--drop) + var(--bw)));
+    }
+    .own__fork > .own__box:last-child::before {
+      bottom: calc(50% - 0.75px);
+    }
+    /* The tick from the spine to the outcome, centred on it. */
+    .own__fork > .own__box::after {
+      content: '';
+      position: absolute;
+      left: calc(-1 * (var(--indent) + var(--bw)));
+      width: var(--indent);
+      top: calc(50% - 0.75px);
+      border-top: 1.5px solid var(--ink);
+    }
+    /* The run that matters: a pink outline on paper, not a pink slab. */
+    .own__fork > .own__box--key {
+      --bw: 2px;
+      border: 2px solid var(--pink);
+      color: var(--text);
+    }
+    .own__box--key .own__plate {
+      display: none;
     }
   }
 </style>

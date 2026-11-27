@@ -2,7 +2,8 @@
 /**
  * Dated entries from src/data/timeline.json, set three ways so the page does not repeat one row.
  *
- *   record  date | title, one sentence, named links | the result set large at the right (roles)
+ *   record  date | title, one sentence, named links | a result set large at the right, only where
+ *           the sentence does not already carry it (roles)
  *   grid    two columns of short entries under a solid rule, the audience set large (teaching)
  *   line    one line per entry on wide screens: date | name | what it is | link (builds)
  *
@@ -18,7 +19,7 @@ export interface Entry {
   more?: { label: string; href: string }[];
   figure?: { value: string; caption: string };
   feature?: boolean; // teaching: set once, full width, above the ledger (path.astro)
-  lede?: string; // the feature row's sentence, when the figure already carries the number
+  lede?: string; // the sentence this page prints, when it differs from detail (the one the site index carries)
   start?: string;
   end?: string;
 }
@@ -159,7 +160,8 @@ const undated = (e: Entry) => e.when === 'Undated';
     font-size: 0.8125rem;
     line-height: 1.35;
     color: var(--ink);
-    max-width: 22ch;
+    max-width: 27ch;
+    text-wrap: balance;
   }
 
   /* ---------- record: date | entry | result ---------- */

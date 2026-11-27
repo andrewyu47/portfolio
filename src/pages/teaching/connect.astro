@@ -156,9 +156,12 @@ const questions = [
             </p>
           </div>
         </div>
-        <div class="cp__slot">
-          <span class="cp__empty label" aria-hidden="true">Stamp<br />goes here</span>
-          <Stamp lines={['Server', 'answered']} small="Lab 03" label="Checkpoint passed: the server answered" class="cp__stamp" />
+        <div class="cp__mark">
+          <div class="cp__slot">
+            <Stamp ghost class="cp__ghost" />
+            <Stamp lines={['Server', 'answered']} small="Lab 03" label="Checkpoint passed: the server answered" class="cp__stamp" />
+          </div>
+          <p class="stamp-how cp__how">Send tools/list to earn the stamp</p>
         </div>
       </div>
     </div>
@@ -449,37 +452,48 @@ const questions = [
     }
   }
 
+  /* The stamp's ghost, with how to earn it underneath. The real stamp lands on the ghost. */
+  .cp__mark {
+    display: grid;
+    justify-items: center;
+    gap: 14px;
+  }
   .cp__slot {
     position: relative;
     width: 150px;
     height: 150px;
   }
-  .cp__empty {
+  .cp :global(.cp__ghost) {
     position: absolute;
     inset: 0;
-    border-radius: 50%;
-    border: var(--rule-dash);
-    display: grid;
-    place-items: center;
-    text-align: center;
-    color: var(--ink);
-    transition: opacity 0.15s;
+    transition: opacity 0.12s 0.3s;
   }
+  .cp[data-state='right'] :global(.cp__ghost) {
+    opacity: 0;
+  }
+  /* The stamp is not there until the server has answered, for a screen reader too. */
   .cp :global(.cp__stamp) {
     position: absolute;
     inset: 0;
     opacity: 0;
     scale: 1.5;
+    visibility: hidden;
     transition:
-      opacity 0.12s 0.3s,
-      scale 0.28s var(--ease-stamp) 0.3s;
+      opacity 0.12s,
+      scale 0.28s var(--ease-stamp),
+      visibility 0s linear 0.28s;
   }
   .cp[data-state='right'] :global(.cp__stamp) {
     opacity: 1;
     scale: 1;
+    visibility: visible;
+    transition:
+      opacity 0.12s 0.3s,
+      scale 0.28s var(--ease-stamp) 0.3s,
+      visibility 0s 0.3s;
   }
-  .cp[data-state='right'] .cp__empty {
-    opacity: 0;
+  .cp[data-state='right'] .cp__how {
+    visibility: hidden;
   }
 
   /* The tools, as a definition list in the page grid. */
@@ -555,18 +569,20 @@ const questions = [
     }
     .cp__body {
       grid-template-columns: 1fr;
+      gap: 22px;
     }
-    .cp__slot {
-      display: none;
-      width: 124px;
-      height: 124px;
-    }
-    /* On a phone the stamp lands right under the result, where the eye already is. */
-    .cp[data-state='right'] .cp__slot {
-      display: block;
+    /* On a phone the ghost waits right under the result, where the eye already is. */
+    .cp__mark {
+      justify-items: start;
     }
     .cp__out {
       min-height: 0;
+    }
+  }
+  @media (max-width: 600px) {
+    .cp__slot {
+      width: 124px;
+      height: 124px;
     }
   }
 </style>

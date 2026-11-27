@@ -5,9 +5,18 @@
  * one-question lab the visitor can finish on the first screen.
  *
  * One grid runs through the sheet. The worksheet keeps the hero's lines: its step ends
- * where the claim ends, and its checkpoint hangs from the print's left edge. On a phone
- * the checkpoint has no cell of its own. Its ring sits at the top right of Step 1, and
- * the stamp lands there.
+ * where the claim ends, and its checkpoint hangs from the print's left edge.
+ *
+ * The print is a frame from the recording of that session, so the print itself opens the
+ * recording, and it carries the play mark and the running time to say so.
+ *
+ * The two answers look different. A right tick draws in pink and the pink stamp lands.
+ * A wrong tick draws nothing: the answer is struck out in navy, and a small navy ring in
+ * the checkpoint says Try again. Pink in this strip means a pass and nothing else.
+ *
+ * On a phone the job titles sit under the claim, the lab comes next, and the room follows
+ * the lab. The checkpoint ring stands at the right end of the answer boxes, so the stamp
+ * lands beside the answer and clear of every rule.
  *
  * The print's pink disc is the one pink field of this screen.
  */
@@ -25,13 +34,25 @@ const [salesforce, dojo] = profile.roles;
     <div class="hero__claim">
       <Overprint as="h1" id="thesis" text={profile.thesis} />
       <p class="lede">{profile.support}</p>
+      {/* Phones only: there the room comes after the lab, so who is making the claim is said
+          here. Wider screens say it in the room's caption. Hidden until the phone styles show it. */}
+      <p class="creds" hidden>
+        <span>{salesforce.title} at {salesforce.org}, and</span>
+        <span>{dojo.title} at {dojo.org}, a nonprofit.</span>
+      </p>
     </div>
 
     <figure class="room">
-      <Photo
-        print="room-capstone-tight"
-        alt="Andrew at a microphone beside a screen whose slide reads: Build a tool that proves you can already do the job."
-      />
+      <a class="room__plate" href="/work/claude-dojo#clip">
+        <span class="visually-hidden">Watch 55 seconds of the recording.</span>
+        <Photo
+          print="room-capstone-tight"
+          alt="Andrew at a microphone beside a screen whose slide reads: Build a tool that proves you can already do the job."
+        />
+        <span class="room__play" aria-hidden="true"
+          ><svg viewBox="0 0 24 24"><path d="M7 4.5v15l12.5-7.5z"></path></svg>0:55</span
+        >
+      </a>
       <figcaption>
         <p class="room__who">
           <span class="nowrap">{salesforce.title}</span> at {salesforce.org}, and <span class="nowrap"
@@ -39,8 +60,10 @@ const [salesforce, dojo] = profile.roles;
           > at {dojo.org}, a nonprofit.
         </p>
         <p class="room__when">
-          <a href="#teach">Teaching people to build with Claude Code</a> at its intensive, <span class="nowrap"
-            >July 11, 2026.</span
+          <a href="#teach">Teaching people to build with Claude Code</a> at <span class="room__its">its</span><span
+            class="room__named"
+            hidden>the Claude Dojo</span
+          > intensive, <span class="nowrap">July 11, 2026.</span
           > <a class="more" href="/work/claude-dojo#clip">Watch 55 seconds</a>
         </p>
       </figcaption>
@@ -62,12 +85,8 @@ const [salesforce, dojo] = profile.roles;
       </p>
       <div class="lab__choices" role="group" aria-label="Who runs the search?">
         <button class="check" type="button" data-pick="model" aria-pressed="false">
-          <span class="check__box"
-            ><svg class="check__mark" viewBox="0 0 44 44" aria-hidden="true"
-              ><path pathLength="1" d="M9 12 L35 36 M35 11 L10 37"></path></svg
-            ></span
-          >
-          The model
+          <span class="check__box"></span>
+          <span class="check__answer">The model</span>
         </button>
         <button class="check" type="button" data-pick="code" aria-pressed="false">
           <span class="check__box"
@@ -75,7 +94,7 @@ const [salesforce, dojo] = profile.roles;
               ><path pathLength="1" d="M8 24 L18 35 L38 7"></path></svg
             ></span
           >
-          Your code
+          <span class="check__answer">Your code</span>
         </button>
       </div>
       <div class="lab__result" aria-live="polite">
@@ -85,7 +104,7 @@ const [salesforce, dojo] = profile.roles;
           sends the result back. <a href="#lab-02">Lab 02</a> shows every message.
         </p>
         <p data-when="wrong">
-          <strong>If it fails.</strong> That is the common first guess. The model never runs anything on its own. Try the
+          <strong>Not quite.</strong> That is the common first guess. The model never runs anything on its own. Try the
           other box, or step through <a href="#lab-02">Lab 02</a> and watch who does what.
         </p>
       </div>
@@ -95,8 +114,9 @@ const [salesforce, dojo] = profile.roles;
       <h2 class="field">Checkpoint</h2>
       <div class="lab__stamp-slot">
         <span class="lab__stamp-empty label" aria-hidden="true"
-          ><span>Stamp<span class="lab__stamp-where"><br />goes here</span></span></span
+          ><span class="lab__stamp-words">Stamp<br />goes here</span></span
         >
+        <span class="lab__retry" aria-hidden="true"><span>Try<br />again</span></span>
         <Stamp lines={['Checkpoint', 'passed']} small="Lab 01" label="Checkpoint passed" class="lab__stamp" />
       </div>
     </div>
@@ -128,6 +148,10 @@ const [salesforce, dojo] = profile.roles;
   .lede {
     margin-top: clamp(18px, 2vw, 26px);
   }
+  /* The job titles under the claim, one to a line (phones only, see below). */
+  .creds span {
+    display: block;
+  }
 
   /* The print's top edge sits on the cap line of the headline, so the two read as one statement. */
   .room {
@@ -137,6 +161,52 @@ const [salesforce, dojo] = profile.roles;
   .room :global(.photo) {
     aspect-ratio: 1220 / 700;
   }
+
+  /* The print opens the recording it was pulled from. */
+  .room__plate {
+    position: relative;
+    display: block;
+    text-decoration: none;
+  }
+  /* The play mark is printed in the print's corner, the same mark the recording wears
+     where it plays, once the teal plate has been pulled. */
+  .room__play {
+    position: absolute;
+    left: 12px;
+    bottom: 12px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 13px 8px 9px;
+    background: var(--stock);
+    color: var(--text);
+    border: var(--rule);
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    line-height: 1;
+    font-variant-numeric: tabular-nums;
+    transition:
+      opacity 0.2s linear 0.9s,
+      translate 0.3s var(--ease-press) 0.9s;
+  }
+  .room__play svg {
+    width: 20px;
+    height: 20px;
+    fill: var(--pink);
+    stroke: var(--text);
+    stroke-width: 1.5;
+    stroke-linejoin: round;
+  }
+  .room__plate:hover .room__play {
+    background: var(--ink);
+    color: var(--stock);
+  }
+  :global(.js) .room__plate :global(.photo:not([data-printed])) ~ .room__play {
+    opacity: 0;
+    translate: 0 6px;
+  }
+
   .room figcaption {
     margin-top: 10px;
     color: var(--text);
@@ -203,6 +273,31 @@ const [salesforce, dojo] = profile.roles;
     margin-bottom: 12px;
   }
 
+  /* A wrong tick draws no mark. The answer is struck out in navy instead, drawn left to
+     right the way a pen would, and its box stays an empty outline even under the pointer. */
+  .check__answer {
+    position: relative;
+  }
+  .check__answer::after {
+    content: '';
+    position: absolute;
+    left: -3px;
+    right: -3px;
+    top: 50%;
+    height: 3px;
+    margin-top: -1px;
+    background: var(--text);
+    transform: scaleX(0);
+    transform-origin: left center;
+    transition: transform 0.26s cubic-bezier(0.5, 0, 0.2, 1);
+  }
+  .lab[data-state='wrong'] .check[aria-pressed='true'] .check__answer::after {
+    transform: scaleX(1);
+  }
+  .lab[data-state='wrong'] .check[aria-pressed='true'] .check__box {
+    background: var(--stock);
+  }
+
   /* The three replies share one cell, so the sheet always has the height of the longest
      and nothing under it moves when someone answers. */
   .lab__result {
@@ -224,8 +319,11 @@ const [salesforce, dojo] = profile.roles;
     color: var(--text-soft);
   }
 
+  /* The checkpoint: a dashed ring until something is printed in it. It sits above every
+     rule, so a stamp that reaches one prints over it. */
   .lab__stamp-slot {
     position: relative;
+    z-index: 1;
     width: 150px;
     height: 150px;
     margin-top: 6px;
@@ -240,6 +338,53 @@ const [salesforce, dojo] = profile.roles;
     text-align: center;
     transition: opacity 0.15s;
   }
+  .lab__stamp-words {
+    transition: opacity 0.15s;
+  }
+  .lab[data-state='wrong'] .lab__stamp-words {
+    opacity: 0;
+  }
+
+  /* A wrong answer: a small ring in navy lands inside the dashed one. Navy, because pink
+     is kept for the pass. */
+  .lab__retry {
+    position: absolute;
+    inset: 17%;
+    display: grid;
+    place-items: center;
+    border: 2px solid var(--text);
+    border-radius: 50%;
+    color: var(--text);
+    font-family: var(--font-display);
+    font-weight: 800;
+    font-stretch: var(--w-shout);
+    font-size: 1.25rem;
+    line-height: 0.95;
+    text-align: center;
+    text-transform: uppercase;
+    rotate: -9deg;
+    -webkit-mask-image: url('/img/ink-mask.png');
+    mask-image: url('/img/ink-mask.png');
+    -webkit-mask-size: 300px 300px;
+    mask-size: 300px 300px;
+    opacity: 0;
+    scale: 1.4;
+    visibility: hidden;
+    transition:
+      opacity 0.12s,
+      scale 0.28s var(--ease-stamp),
+      visibility 0s linear 0.28s;
+  }
+  .lab[data-state='wrong'] .lab__retry {
+    opacity: 1;
+    scale: 1;
+    visibility: visible;
+    transition:
+      opacity 0.12s,
+      scale 0.28s var(--ease-stamp),
+      visibility 0s;
+  }
+
   /* The stamp is not there until the checkpoint is passed, for a screen reader too. */
   .lab :global(.lab__stamp) {
     position: absolute;
@@ -331,8 +476,8 @@ const [salesforce, dojo] = profile.roles;
   /* ---------- Phones ---------- */
 
   @media (max-width: 600px) {
-    /* The question comes straight after the claim: the band at the top promises a lab,
-       so the lab is the next thing you reach. The room follows it. */
+    /* The claim, then who is making it, then the question: the band at the top promises
+       a lab, so the lab is the next thing you reach. The room follows it. */
     :global(.lab01) {
       display: flex;
       flex-direction: column;
@@ -347,10 +492,28 @@ const [salesforce, dojo] = profile.roles;
     .hero__claim :global(h1) {
       max-width: none;
     }
+    /* The job titles move up from the room's caption to sit under the claim. */
+    .creds[hidden] {
+      display: block;
+      margin-top: 14px;
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+    .room__who {
+      display: none;
+    }
+    /* Away from the titles, the caption names the intensive instead of saying "its". */
+    .room__its {
+      display: none;
+    }
+    .room__named[hidden] {
+      display: inline;
+    }
     .lab {
       order: 2;
-      margin-top: 20px;
-      grid-template-columns: minmax(0, 1fr);
+      margin-top: 22px;
+      grid-template-columns: minmax(0, 1fr) auto;
+      column-gap: 16px;
     }
     /* The worksheet's closing rule is the only rule between the lab and the room. */
     .room {
@@ -362,8 +525,6 @@ const [salesforce, dojo] = profile.roles;
       margin-top: 10px;
     }
 
-    /* The brief stacks. Its last line is short, which leaves the corner over the dashed
-       rule clear for the stamp. */
     .lab > .lab__brief {
       grid-template-columns: minmax(0, 1fr);
       gap: 0;
@@ -372,27 +533,41 @@ const [salesforce, dojo] = profile.roles;
     .lab__brief p + .field {
       margin-top: 8px;
     }
-    .lab > .lab__step {
-      padding: 14px 0 6px;
-    }
 
-    /* The checkpoint shares the Step 1 cell: its ring stands at the top right, level with
-       the label, and pokes a few pixels over the dashed rule above. The label leaves room
-       under it so the ring never touches the question. */
-    .lab > .lab__step,
-    .lab > .lab__checkpoint {
-      grid-column: 1;
+    /* The step opens into the sheet's grid, so the checkpoint can stand in the row of the
+       boxes: the boxes on the left, one above the other where the line is short, and the
+       ring at the right end. The stamp lands level with the answer, clear of the rules. */
+    .lab > .lab__step {
+      display: contents;
+    }
+    .lab__step > .field {
+      grid-column: 1 / -1;
       grid-row: 2;
+      padding-top: 14px;
+      margin-bottom: 8px;
+    }
+    .lab__q {
+      grid-column: 1 / -1;
+      grid-row: 3;
+    }
+    .lab__choices {
+      grid-column: 1;
+      grid-row: 4;
+      align-self: center;
+      margin: 0;
+    }
+    .lab__result {
+      grid-column: 1 / -1;
+      grid-row: 5;
+      margin-top: 14px;
+      padding-bottom: 6px;
     }
     .lab > .lab__checkpoint {
-      justify-self: end;
-      align-self: start;
+      grid-column: 2;
+      grid-row: 4;
+      align-self: center;
       padding: 0;
-      margin-top: -7px;
       border-left: 0;
-    }
-    .lab__step .field {
-      margin-bottom: 14px;
     }
     .lab__checkpoint .field {
       position: absolute;
@@ -403,37 +578,30 @@ const [salesforce, dojo] = profile.roles;
       white-space: nowrap;
     }
     .lab__stamp-slot {
-      width: 56px;
-      height: 56px;
+      width: 96px;
+      height: 96px;
       margin: 0;
     }
     .lab__stamp-empty {
       font-size: 0.6875rem;
     }
-    .lab__stamp-where {
-      display: none;
+    .lab__retry {
+      font-size: 1rem;
     }
-    /* The stamp is bigger than its ring, so its words stay legible. It lands on the corner
-       of the step, across the dashed rule, clear of the question under it. */
+    /* The stamp is a little bigger than its ring, so its words stay legible. Its right
+       edge stays on the ring's, which is the edge of the page's text. */
     .lab :global(.lab__stamp) {
-      inset: auto 2px -4px auto;
-      width: 94px;
-      height: 94px;
-      font-size: 0.8125rem;
+      inset: -6px auto auto -12px;
+      width: 108px;
+      height: 108px;
+      font-size: 0.9375rem;
     }
     .lab :global(.lab__stamp)::before {
-      inset: 5px;
+      inset: 6px;
     }
     .lab :global(.lab__stamp small) {
       margin-top: 4px;
       font-size: 0.625rem;
-    }
-  }
-
-  /* On the narrowest phones the two boxes still share a line. */
-  @media (max-width: 379px) {
-    .lab__choices {
-      column-gap: 12px;
     }
   }
 </style>

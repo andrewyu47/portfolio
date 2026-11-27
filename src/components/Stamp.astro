@@ -4,21 +4,41 @@
  * Reserved for things that were actually checked: a passed checkpoint, a verified result.
  *
  *   <Stamp lines={['Checkpoint', 'passed']} small="Lab 01" label="Checkpoint passed" />
+ *
+ * Before a checkpoint is passed, its slot holds the ghost: the same disc and ring printed
+ * faint, with no words, and hidden from screen readers. Put a one-line `.stamp-how` beside
+ * it that says how to earn the stamp. The real stamp lands on top of the ghost.
+ *
+ *   <Stamp ghost class="cp__ghost" />
  */
-interface Props {
-  lines: [string] | [string, string];
-  small?: string;
-  /** What a screen reader should announce. */
-  label: string;
-  class?: string;
-}
-const { lines, small, label, class: className } = Astro.props;
+type Props =
+  | {
+      ghost?: false;
+      lines: [string] | [string, string];
+      small?: string;
+      /** What a screen reader should announce. */
+      label: string;
+      class?: string;
+    }
+  | { ghost: true; class?: string };
+const props = Astro.props;
 ---
 
-<div class:list={['stamp', className]} role="img" aria-label={label}>
-  <span>
-    {lines[0]}
-    {lines[1] && <><br />{lines[1]}</>}
-    {small && <small>{small}</small>}
-  </span>
-</div>
+{
+  props.ghost ? (
+    <div class:list={['stamp', 'stamp--ghost', props.class]} aria-hidden="true" />
+  ) : (
+    <div class:list={['stamp', props.class]} role="img" aria-label={props.label}>
+      <span>
+        {props.lines[0]}
+        {props.lines[1] && (
+          <>
+            <br />
+            {props.lines[1]}
+          </>
+        )}
+        {props.small && <small>{props.small}</small>}
+      </span>
+    </div>
+  )
+}

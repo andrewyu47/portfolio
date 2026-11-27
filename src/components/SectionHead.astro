@@ -1,7 +1,11 @@
 ---
 /**
- * The heading row of a page section: a big condensed title in the label column,
- * one plain sentence beside it, and a solid rule underneath.
+ * The heading row of a page section: a big condensed title on one line across the page,
+ * one plain sentence under it in the content column, and a solid rule underneath.
+ *
+ * The title never sits in the label column, so the column cannot decide its line breaks.
+ * The sentence starts where the text below it starts. With no sentence, only the title
+ * and the rule print.
  */
 interface Props {
   title: string;
@@ -9,9 +13,10 @@ interface Props {
   as?: 'h1' | 'h2';
 }
 const { title, id, as: Tag = 'h2' } = Astro.props;
+const deck = Astro.slots.has('default');
 ---
 
 <div class="sec-head">
   <Tag id={id}>{title}</Tag>
-  <p><slot /></p>
+  {deck && <p><slot /></p>}
 </div>

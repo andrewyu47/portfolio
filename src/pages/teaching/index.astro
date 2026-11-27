@@ -7,9 +7,11 @@
  * src/data/dojo.json), the four labs a visitor can take now (Lab 01 on the home page
  * plus the lessons collection), how he teaches, and talks and workshops.
  *
- * Sentences about what happened at the intensive come from dojo.json `said`, so this
- * page and the case study use the same words. Their sources are the recordings index
- * and Andrew's slot script, never the planning document.
+ * The run of show says what happened on each day, so no paragraph retells it. The scope
+ * sentence under How I teach comes from dojo.json `said`, so this page and the case study
+ * use the same words. Their sources are the recordings index and Andrew's slot script,
+ * never the planning document. The Lab 01 teaser asks the question and leaves the answer
+ * to the lab.
  */
 import { getCollection } from 'astro:content';
 import Base from '../../layouts/Base.astro';
@@ -31,7 +33,8 @@ const SKETCH: Record<string, Lab['sketch']> = { 'agent-loop': 'loop', connect: '
 const labs: Lab[] = [
   {
     title: 'Who runs the tool?',
-    idea: 'A model never runs a tool itself. It asks, and your code runs it.',
+    // The question only: the answer is the lab's to give, after the guess.
+    idea: 'Tick the model or your code, then see which one does.',
     minutes: 1,
     href: '/',
     where: 'on the home page',
@@ -102,15 +105,7 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
     </div>
 
     <div class="sub" id="intensive">
-      <div class="split sub__head">
-        <h3 class="title">The two days</h3>
-        <div class="said">
-          <p>{s.setup}</p>
-          <p>{s.skill}</p>
-          <p>{s.agents}</p>
-          <p>{s.capstone}</p>
-        </div>
-      </div>
+      <h3 class="title sub__title">The two days</h3>
       <RunOfShow />
     </div>
 
@@ -176,9 +171,9 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
       <h3 class="title">Leave with something that runs</h3>
       <div>
         <p>
-          At the intensive the work was hands-on, on each person's own laptop: first the resume-tailoring Skill, then a
-          capstone started on mock data that evening. The top rung's standard rules out screenshots and slides. It has to work when someone
-          else clicks the link.
+          At the intensive the work was hands-on, on each person’s own laptop. The people who were job searching built a
+          resume-tailoring Skill with me, and that evening people started a capstone on mock data. The top rung’s standard
+          rules out screenshots and slides. It has to work when someone else clicks the link.
         </p>
         <a class="more" href="#intensive">See the two days</a>
       </div>
@@ -267,9 +262,6 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
     text-wrap: balance;
   }
 
-  .said p + p {
-    margin-top: 0.6em;
-  }
   .rap__more {
     margin-top: 12px;
   }
@@ -327,26 +319,26 @@ const essay = 'https://www.linkedin.com/pulse/lecun-studied-llms-i-cs-lewis-both
   .sub {
     margin-top: clamp(56px, 7vw, 88px);
   }
+  /* A sub-head stays in the label column, two lines at most, with its sentence beside the
+     first line. */
   .sub__head {
-    align-items: end;
+    align-items: start;
     padding-bottom: 18px;
   }
-  .sub__head .title {
+  .sub__head .title,
+  .sub__title {
     font-size: clamp(1.5rem, 2.4vw, 2rem);
+  }
+  .sub__head .title {
+    padding-top: 2px;
   }
   .sub__head p {
     max-width: 60ch;
     color: var(--text-soft);
   }
-  .sub__head .said p {
-    color: var(--text);
-  }
-  /* Four sentences of record: the title sits at their top, not their foot. */
-  #intensive .sub__head {
-    align-items: start;
-  }
-  #intensive .sub__head .title {
-    padding-top: 4px;
+  /* The run sheet says what happened on each day, so its title needs no sentence beside it. */
+  .sub__title {
+    padding-bottom: 28px;
   }
   #curriculum .sub__head {
     padding-bottom: 28px;

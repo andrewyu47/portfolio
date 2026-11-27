@@ -15,6 +15,7 @@
  *   .btn              a button;  .check  a worksheet checkbox choice
  *   .chip / .token    a value printed on pink / a name in an outlined box
  *   .stamp            a checkpoint stamp. Only for something that was actually checked.
+ *                     .stamp--ghost marks where it will land; .stamp-how says how to earn it.
  *   .prose            long-form reading (case studies, lessons)
  */
 
@@ -87,10 +88,11 @@ p {
   text-wrap: pretty;
 }
 
+/* Every link in running text: a teal hairline under it, inked pink on hover. */
 a {
   color: inherit;
   text-decoration-color: var(--ink);
-  text-decoration-thickness: 1.5px;
+  text-decoration-thickness: 1px;
   text-underline-offset: 4px;
 }
 a:hover {
@@ -166,20 +168,24 @@ samp {
   scroll-margin-top: 16px;
 }
 
+/* The title runs on one line across the page grid, so the label column never decides where
+   it breaks. The sentence under it starts in the content column, level with the text of the
+   section below. The label column beside the sentence stays free for mono labels. */
 .sec-head {
   display: grid;
-  /* The title column widens to fit its longest word, so a title never prints over the sentence beside it. */
-  grid-template-columns: minmax(min-content, 2.3fr) minmax(0, 7.7fr);
-  gap: var(--col-gap);
-  align-items: end;
-  padding-bottom: 16px;
+  grid-template-columns: var(--cols);
+  column-gap: var(--col-gap);
+  row-gap: 14px;
+  padding-bottom: 18px;
   border-bottom: var(--rule);
 }
 .sec-head h2,
 .sec-head h1 {
+  grid-column: 1 / -1;
   font-size: var(--step-h2);
 }
 .sec-head p {
+  grid-column: 2;
   max-width: 52ch;
   color: var(--text-soft);
 }
@@ -249,19 +255,15 @@ samp {
   font-variant-numeric: tabular-nums;
 }
 
-/* A named link under a claim: where to go to check it. */
+/* A named link under a claim: where to go to check it. It is underlined like every other
+   link, with no arrow. An arrow belongs only to a row that opens as a whole, and those
+   rows draw their own. */
 .more {
   display: inline-block;
   font-family: var(--font-mono);
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--ink);
-  text-decoration-color: var(--pink);
-  text-decoration-thickness: 2px;
-}
-/* A no-break space ties the arrow to the last word, so it never wraps onto a line alone. */
-.more::after {
-  content: '\00a0\2192';
 }
 
 /* ---------- Flat fields of ink ---------- */
@@ -466,8 +468,12 @@ main > *:has(> .band:first-child) {
   border: 2px solid var(--ink);
   background: var(--stock);
 }
-.check:hover .check__box {
-  background: var(--ink-tint);
+/* Only where a pointer can hover: on touch screens the tint would stay after a tap and make
+   an unticked box look chosen. */
+@media (hover: hover) {
+  .check:hover .check__box {
+    background: var(--ink-tint);
+  }
 }
 .check__mark {
   position: absolute;
@@ -572,6 +578,24 @@ figcaption {
   font-size: 0.65625rem;
   letter-spacing: 0.08em;
   margin-top: 6px;
+}
+/* Where a stamp will land, before it is earned: the same disc and ring, printed as a faint
+   screen of pink and with no words (Stamp.astro with `ghost`). The page says under it how to
+   earn the stamp, and the real one lands on top. */
+.stamp--ghost {
+  background: radial-gradient(var(--pink) 30%, transparent 33%) 0 0 / var(--dot) var(--dot);
+  opacity: 0.5;
+}
+.stamp--ghost::before {
+  border-color: color-mix(in srgb, var(--pink) 65%, transparent);
+}
+/* How to earn the stamp, in one line of mono under its ghost. */
+.stamp-how {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: var(--ink);
+  white-space: nowrap;
 }
 
 /* ---------- Long-form reading ---------- */
@@ -753,6 +777,9 @@ pre.astro-code {
   .row {
     grid-template-columns: 1fr;
     gap: 10px;
+  }
+  .sec-head p {
+    grid-column: 1;
   }
   .stamp {
     width: 124px;

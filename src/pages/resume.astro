@@ -1,9 +1,9 @@
 ---
 /**
  * /resume: the web resume, set as one sheet in the page grid.
- * Section names sit in the label column and stay in view while their section scrolls;
- * the two sections that carry a count print it large under the name.
+ * Section names sit in the label column and stay in view while their section scrolls.
  * Teaching comes first because it is the work this resume is for.
+ * Each number prints once: a count that sits in an entry's date column is not repeated in its bullet.
  * The print stylesheet at the bottom turns it into a one-page, black-on-white letter sheet.
  * scripts/make-resume-pdf.mjs prints this page to public/resume/andrew-yu-resume.pdf.
  *
@@ -25,12 +25,12 @@ const teaching: Entry[] = [
   {
     title: 'Claude Dojo two-day intensive',
     when: 'Jul 2026, about 70 people',
-    bullets: ['Co-taught a two-day hands-on Claude Code intensive to about 70 attendees, technical and non-technical'],
+    bullets: ['Co-taught hands-on Claude Code to technical and non-technical attendees'],
   },
   {
     title: 'Claude Dojo curriculum',
     when: '49 lessons, 46 videos',
-    bullets: ['Co-authored the Claude Dojo curriculum, 49 lessons with labs and prompts, and 46 lesson videos'],
+    bullets: ['Co-authored the lessons, with labs and prompts, and the lesson videos'],
   },
   {
     title: 'Mental Models for Decision Making',
@@ -42,7 +42,7 @@ const teaching: Entry[] = [
     title: 'Lightning talks',
     when: 'Splunk 2022, Salesforce now',
     bullets: [
-      'Presented “The Limitations of Language” at Splunk in 2022, and give lightning talks at Salesforce now',
+      'Presented “The Limitations of Language” at Splunk',
       'Train Salesforce coworkers to work with AI',
     ],
   },
@@ -184,7 +184,6 @@ const bare = (u: string) => u.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/,
     <section class="cv__sec" aria-labelledby="cv-teach">
       <div class="cv__side">
         <h2 id="cv-teach" class="cv__h">Teaching</h2>
-        <p class="cv__fig"><span class="cv__fig-n">103</span><span class="cv__fig-cap">people taught to build with Claude Code</span></p>
       </div>
       <div class="cv__body">
         {
@@ -211,7 +210,6 @@ const bare = (u: string) => u.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/,
     <section class="cv__sec" aria-labelledby="cv-exp">
       <div class="cv__side">
         <h2 id="cv-exp" class="cv__h">Experience</h2>
-        <p class="cv__fig"><span class="cv__fig-n">2015</span><span class="cv__fig-cap">first year in software</span></p>
       </div>
       <div class="cv__body">
         {
@@ -394,26 +392,6 @@ const bare = (u: string) => u.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/,
     color: var(--ink);
     padding-top: 4px;
   }
-  .cv__fig {
-    display: grid;
-    gap: 6px;
-    margin-top: 14px;
-  }
-  .cv__fig-n {
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-stretch: var(--w-shout);
-    font-size: clamp(3rem, 5.2vw, 4.5rem);
-    line-height: 0.85;
-    font-variant-numeric: tabular-nums;
-  }
-  .cv__fig-cap {
-    font-family: var(--font-mono);
-    font-size: 0.8125rem;
-    line-height: 1.35;
-    color: var(--ink);
-    max-width: 18ch;
-  }
   .cv__body {
     display: grid;
     gap: 22px;
@@ -545,24 +523,8 @@ const bare = (u: string) => u.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/,
     }
     .cv__side {
       position: static;
-      display: flex;
-      align-items: baseline;
-      justify-content: space-between;
-      gap: 16px;
       border-bottom: var(--rule-dash);
       padding-bottom: 12px;
-    }
-    .cv__fig {
-      margin-top: 0;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-    .cv__fig-n {
-      font-size: 2.25rem;
-    }
-    .cv__fig-cap {
-      max-width: 13ch;
     }
     /* The date or fact always gets its own line on a phone. */
     .job__head {

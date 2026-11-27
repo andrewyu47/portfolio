@@ -8,8 +8,9 @@
  *
  * The four conditions have no order, so they are rows, not points along a line.
  *
- * Numbers come only from the results table in src/content/work/the-score-that-lied.mdx.
- * Each value is the share of 45 runs that passed.
+ * This chart is the case study's only full record of the results: the page has no table,
+ * and its prose names the conditions with the labels used here (No docs, Curated docs
+ * file, MCP, Web fetch). Each value is the share of 45 runs that passed.
  *
  *   <EvalChart />            beside the case study title
  *   <EvalChart compact />    on the work index: no caption
@@ -22,7 +23,7 @@ const { compact = false, class: className } = Astro.props;
 
 const conditions = [
   { name: 'No docs', small: 11, large: 84 },
-  { name: 'Curated docs file', short: 'Curated file', small: 89, large: 100, key: true },
+  { name: 'Curated docs file', small: 89, large: 100, key: true },
   { name: 'Live docs through MCP', short: 'MCP', small: 4, large: 51 },
   { name: 'Live docs through web fetch', short: 'Web fetch', small: 18, large: 84 },
 ];
@@ -67,7 +68,7 @@ const summary =
   {
     !compact && (
       <figcaption>
-        Share of runs that passed. Each mark is 45 runs: 15 tasks, three runs each. MCP and web fetch both read the live
+        Each mark is the share of 45 runs that passed: 15 tasks, three runs each. MCP and web fetch both read the live
         docs.
       </figcaption>
     )
@@ -86,7 +87,8 @@ const summary =
     position: relative;
     isolation: isolate;
     display: grid;
-    grid-template-columns: minmax(7.5rem, 2.6fr) minmax(0, 5fr) 3.4rem 3.4rem;
+    /* The name column fits "Curated docs file" on one line, the longest label. */
+    grid-template-columns: minmax(8.75rem, 2.6fr) minmax(0, 5fr) 3.4rem 3.4rem;
     align-items: center;
     column-gap: 14px;
     min-height: 44px;

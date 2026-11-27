@@ -62,9 +62,10 @@ const questions: { answer: string; choices: string[]; prompt?: string }[] = [
   <div class="quiz__check">
     <p class="quiz__count label" aria-live="polite"><span data-count>0</span> of {questions.length} right</p>
     <div class="slot">
-      <span class="slot__empty label" aria-hidden="true">Stamp<br />goes here</span>
+      <Stamp ghost class="quiz__ghost" />
       <Stamp lines={['All five', 'right']} small="Lab 04" label="Checkpoint passed: all five right" class="quiz__stamp" />
     </div>
+    <p class="stamp-how quiz__how">{questions.length} of {questions.length} to stamp</p>
   </div>
 </div>
 
@@ -155,36 +156,46 @@ const questions: { answer: string; choices: string[]; prompt?: string }[] = [
   .quiz__count {
     font-variant-numeric: tabular-nums;
   }
+  /* The stamp's ghost, with how to earn it underneath. The real stamp lands on the ghost. */
   .slot {
     position: relative;
     width: 150px;
     height: 150px;
   }
-  .slot__empty {
+  .quiz :global(.quiz__ghost) {
     position: absolute;
     inset: 0;
-    border-radius: 50%;
-    border: var(--rule-dash);
-    display: grid;
-    place-items: center;
-    text-align: center;
-    transition: opacity 0.15s;
+    transition: opacity 0.12s 0.2s;
   }
+  .quiz[data-state='done'] :global(.quiz__ghost) {
+    opacity: 0;
+  }
+  /* The stamp is not there until all five are right, for a screen reader too. */
   .quiz :global(.quiz__stamp) {
     position: absolute;
     inset: 0;
     opacity: 0;
     scale: 1.5;
+    visibility: hidden;
     transition:
-      opacity 0.12s 0.2s,
-      scale 0.28s var(--ease-stamp) 0.2s;
+      opacity 0.12s,
+      scale 0.28s var(--ease-stamp),
+      visibility 0s linear 0.28s;
   }
   .quiz[data-state='done'] :global(.quiz__stamp) {
     opacity: 1;
     scale: 1;
+    visibility: visible;
+    transition:
+      opacity 0.12s 0.2s,
+      scale 0.28s var(--ease-stamp) 0.2s,
+      visibility 0s 0.2s;
   }
-  .quiz[data-state='done'] .slot__empty {
-    opacity: 0;
+  .quiz__how {
+    margin-top: 2px;
+  }
+  .quiz[data-state='done'] .quiz__how {
+    visibility: hidden;
   }
 
   @media (max-width: 700px) {
@@ -194,19 +205,17 @@ const questions: { answer: string; choices: string[]; prompt?: string }[] = [
     .q {
       grid-template-columns: 1.6rem minmax(0, 1fr);
     }
+    /* On a phone the ghost waits under the last answer, where the eye already is. */
     .quiz__check {
       position: static;
       justify-items: start;
       padding-left: calc(1.6rem + 8px);
     }
+  }
+  @media (max-width: 600px) {
     .slot {
-      display: none;
       width: 124px;
       height: 124px;
-    }
-    /* On a phone the stamp lands under the last answer, where the eye already is. */
-    .quiz[data-state='done'] .slot {
-      display: block;
     }
   }
 </style>

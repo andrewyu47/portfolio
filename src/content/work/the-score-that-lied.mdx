@@ -11,7 +11,10 @@ order: 2
 featured: true
 heroFigure: "EvalChart"
 stack: ["Claude Code", "Claude Haiku 4.5", "Claude Sonnet 4.6", "MCP"]
-verifyNote: "The tasks, the harness, and the 360 runs belong to Pinecone and are not public. The table on this page is the whole record I can show. The public rebuild is at github.com/andrewyu47/agent-docs-eval."
+verify:
+  - label: "Public rebuild: agent-docs-eval"
+    href: "https://github.com/andrewyu47/agent-docs-eval"
+verifyNote: "The tasks, the harness, and the 360 runs belong to Pinecone and are not public. The chart at the top of this page is the whole record I can show."
 ---
 
 ## The wrong first answer
@@ -26,33 +29,24 @@ An eval that asks coding agents to do real Pinecone work and checks whether the 
 
 There are 15 developer tasks, such as creating an index or migrating a legacy one. Each task runs under four conditions:
 
-1. No docs. The agent works from what it already knows.
-2. A curated docs file. One short page that shows the right way to do common tasks.
-3. The live docs, through MCP.
-4. The live docs, through web fetch, the way a browser would load them.
+1. **No docs.** The agent works from what it already knows.
+2. **Curated docs file.** One short page that shows the right way to do common tasks.
+3. **MCP.** The live docs, through MCP.
+4. **Web fetch.** The live docs, through web fetch, the way a browser would load them.
 
 Every task ran three times per condition on two models, Claude Haiku 4.5 (the small model) and Claude Sonnet 4.6 (the large model). That is 360 runs.
 
 ## What happened
 
-Each cell is the share of 45 runs that passed: 15 tasks, three runs each.
+The curated docs file was the only condition that clearly helped. The small model went from 5 passing runs out of 45 to 40 out of 45. The large model went from 84% to every run passing.
 
-| Condition | Small model | Large model |
-| :--- | ---: | ---: |
-| No docs | 11% | 84% |
-| **Curated docs file** | **89%** | **100%** |
-| Live docs through MCP | 4% | 51% |
-| Live docs through web fetch | 18% | 84% |
+Through MCP, both models did worse than with no docs at all, and the large model fell from 84% to 51%. Through web fetch, the small model went from 11% to 18%, and the large model scored 84%, the same as with no docs.
 
-The docs file was the only condition that clearly helped. The small model went from 5 passing runs out of 45 to 40 out of 45. The large model went from 84% to every run passing.
-
-The live docs did not help. Through MCP, both models did worse than with no docs at all. Through web fetch, the large model scored exactly what it scored with nothing, and the small model gained seven points.
-
-None of this says the live docs were badly written. They were written for people browsing a site, and they do that job. The docs file carries the same knowledge in a shape an agent can apply directly.
+None of this says the live docs were badly written. They were written for people browsing a site, and they do that job. The curated docs file carries the same knowledge in a shape an agent can apply directly.
 
 ## What it taught me
 
-The shape of what an agent reads mattered more than the channel it arrived through. The two channels did differ from each other, but the better one got the small model to 18%. The same knowledge in a different shape got it to 89%. My recommendation was to bring the patterns from the docs file into the regular docs, so an agent lands on them whatever route it takes.
+The shape of what an agent reads mattered more than the channel it arrived through. The two channels did differ from each other, but the better one got the small model to 18%. The same knowledge in a different shape got it to 89%. My recommendation was to bring the patterns from the curated docs file into the regular docs, so an agent lands on them whatever channel it takes.
 
 The small model gained the most. The large model already knew most of the answers. The small model knew almost none of them, and one page took it to nearly all. If more agent work runs on small models, that gap is where the writing pays off.
 
@@ -60,6 +54,6 @@ I built a score, liked it, and did not check it against real work until my manag
 
 I later presented this work in my Salesforce interviews.
 
-## The same measurement, in the open
+## The public rebuild
 
-That harness stays with the client, so I rebuilt the measurement from scratch on public material: [agent-docs-eval](https://github.com/andrewyu47/agent-docs-eval). It asks Claude checkable questions under the same four routes to the docs, on two models, and grades every answer with plain string and number checks, no model grader. Its first live run, on questions about this site, is in the repository with every graded answer.
+That harness stays with the client, so I rebuilt the measurement from scratch on public material: [agent-docs-eval](https://github.com/andrewyu47/agent-docs-eval). It asks Claude checkable questions under the same four conditions, on two models, and grades every answer with plain string and number checks, no model grader. Its first live run, on questions about this site, is in the repository with every graded answer.

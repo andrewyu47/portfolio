@@ -2,9 +2,11 @@
 /**
  * /path: how an English major came to teach AI and build the labs.
  * The first screen draws the whole path once (PathChart). The sections under it are set
- * so the record reads as one ledger: roles with their result at the right; teaching led by
- * the intensive as one full-width row, then the rest as rows in the same grammar as roles;
- * builds one line each. Education closes the page as a single line.
+ * so the record reads as one ledger: roles, newest first, with a result at the right only
+ * where the sentence does not already say it; teaching led by the intensive as one
+ * full-width row with a print of the room, then the rest, newest first, in the same grammar
+ * as roles; builds one line each. Education closes the page as a single line.
+ * Big numbers print once: 103 in the plate at the top, 11% to 89% on the Pinecone row.
  * Everything renders from src/data/timeline.json, which the site index and the MCP server also read.
  */
 import Base from '../layouts/Base.astro';
@@ -12,6 +14,7 @@ import RunHead from '../components/RunHead.astro';
 import Overprint from '../components/Overprint.astro';
 import SectionHead from '../components/SectionHead.astro';
 import Stamp from '../components/Stamp.astro';
+import Photo from '../components/Photo.astro';
 import RecordRows, { type Entry } from '../components/path/RecordRows.astro';
 import PathChart from '../components/path/PathChart.astro';
 import timeline from '../data/timeline.json';
@@ -20,7 +23,15 @@ const all = timeline as Entry[];
 const of = (kind: string) => all.filter((e) => e.kind === kind);
 const teaching = of('teaching');
 const feature = teaching.find((e) => e.feature)!;
-const ledger = teaching.filter((e) => !e.feature);
+
+// The teaching ledger runs newest first, like Work. "Jul 2024" sorts by its month, "2022" by
+// its year, and a row with no start on file ("Ongoing") goes last.
+const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+const startOf = (when: string) => {
+  const m = /^(?:([A-Z][a-z]{2}) )?(\d{4})/.exec(when);
+  return m ? Number(m[2]) + (m[1] ? MONTHS.indexOf(m[1]) / 12 : 0) : -Infinity;
+};
+const ledger = teaching.filter((e) => !e.feature).sort((a, b) => startOf(b.when) - startOf(a.when) || 0);
 const builds = of('build');
 const checked = builds.filter((b) => b.href && /^https?:/.test(b.href)).length;
 const degree = of('education')[0];
@@ -61,10 +72,12 @@ const courses = of('certification').map((c) => c.title);
     <article class="feat" aria-labelledby="feat-h">
       <p class="feat__when">Jul 11 and 12, 2026</p>
       <div class="feat__main">
-        <figure class="feat__fig" data-print>
-          <p class="feat__n">{feature.figure?.value}</p>
-          <span class="feat__ink plate" aria-hidden="true"></span>
-          <figcaption class="feat__cap">{feature.figure?.caption}</figcaption>
+        <figure class="feat__fig">
+          <Photo
+            print="room-capstone-tight"
+            alt="Andrew at a microphone beside a screen whose slide reads: Build a tool that proves you can already do the job."
+          />
+          <figcaption class="feat__cap">About 70 people, July 11, 2026</figcaption>
         </figure>
         <div class="feat__body">
           <h3 class="feat__title" id="feat-h">{feature.title}</h3>
@@ -182,39 +195,25 @@ const courses = of('certification').map((c) => c.title);
     font-variant-numeric: tabular-nums;
     padding-top: 3px;
   }
+  /* The print of the room takes the narrower share, about a third of the content column, and
+     the title starts one gutter to its right. */
   .feat__main {
     display: grid;
-    grid-template-columns: minmax(0, 3fr) minmax(0, 5.4fr);
-    gap: var(--col-gap) clamp(24px, 4vw, 56px);
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.62fr);
+    gap: 20px var(--col-gap);
     align-items: start;
   }
+  /* The print keeps its own proportions, so its pink disc stays on the instructor. */
   .feat__fig {
     margin: 0;
-    width: max-content;
-    max-width: 100%;
-    display: grid;
-    justify-items: start;
-    gap: 10px;
-  }
-  .feat__n {
-    font-family: var(--font-display);
-    font-weight: 800;
-    font-stretch: var(--w-shout);
-    font-size: clamp(5rem, 9vw, 8rem);
-    line-height: 0.8;
-    font-variant-numeric: tabular-nums;
-  }
-  /* The same pink block the intensive is drawn with in the chart above. */
-  .feat__ink {
-    display: block;
-    width: 100%;
-    height: 14px;
-    background: var(--pink);
   }
   .feat__cap {
+    margin-top: 10px;
     font-family: var(--font-mono);
     font-size: 0.8125rem;
+    line-height: 1.4;
     color: var(--ink);
+    font-variant-numeric: tabular-nums;
   }
   .feat__title {
     font-family: var(--font-display);
@@ -312,6 +311,9 @@ const courses = of('certification').map((c) => c.title);
   @media (max-width: 900px) {
     .feat__main {
       grid-template-columns: 1fr;
+    }
+    .feat__fig {
+      max-width: 460px;
     }
   }
 

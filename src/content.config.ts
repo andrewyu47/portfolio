@@ -35,6 +35,12 @@ const work = defineCollection({
     /** What someone can do after the lab, talk, or tool that they could not do before. */
     learnerOutcome: z.string().optional(),
     /**
+     * The heading set beside learnerOutcome. Defaults to "What a learner can do now". A case
+     * study with no record of what learners went on to do states its aim instead, such as
+     * "What the two days aimed for", and writes learnerOutcome as a goal.
+     */
+    learnerHeading: z.string().optional(),
+    /**
      * The figure shown beside the title: the name of a component in src/components/figures/
      * without its extension ("EvalChart", "DojoClip"). The case study page looks it up.
      */
@@ -43,6 +49,12 @@ const work = defineCollection({
     verify: z.array(link).default([]),
     /** One plain line for the Verify row when part of the work cannot be shown, saying why. */
     verifyNote: z.string().optional(),
+    /**
+     * Internal work with nothing public to open. The facts strip says so once, under Period
+     * ("Internal, no public artifact"), and the page carries no Verify row. Leave verify and
+     * verifyNote empty when this is set.
+     */
+    internal: z.boolean().default(false),
     /** Optional cover image in src/assets/work/, relative path. */
     cover: z.string().optional(),
     coverAlt: z.string().optional(),

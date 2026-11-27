@@ -16,7 +16,7 @@
   },
   "said": {
     "setup": "Setup happened in the room on Day 1: after the opening talks, everyone installed Claude Code and had Claude interview them to write a context file.",
-    "skill": "In my plenary I showed the resume-tailoring Skill I use myself, live in my own terminal, and gave the room the same build: have Claude interview you into one long master resume, pick an output format, and save that format as a Skill.",
+    "skill": "In my plenary I showed the resume-tailoring Skill I use myself, live in my own terminal. The people who were job searching then built the same Skill with me: have Claude interview you into one long master resume, pick an output format, and save that format as a Skill.",
     "agents": "Sub-agents and agent fleets were shown on Day 1 as a preview, and the hands-on build stayed with one agent.",
     "capstone": "For the capstone, people picked a real task, had Claude make mock data, and started building that evening in plan mode."
   },
@@ -71,8 +71,8 @@
         },
         {
           "name": "Build your first Skill",
-          "brief": "a live run of the resume-tailoring Skill I use, then the room built one",
-          "what": "My job-search numbers, then a live run of the resume-tailoring Skill I use myself on a real job description. Then the room got the same build: have Claude interview you into one long master resume, pick an output format, and save that format as a Skill.",
+          "brief": "a live run of the resume-tailoring Skill I use, then the job seekers built one",
+          "what": "My job-search numbers, then a live run of the resume-tailoring Skill I use myself on a real job description. Then the people who were job searching built the same Skill with me: have Claude interview you into one long master resume, pick an output format, and save that format as a Skill.",
           "mine": true
         },
         {

@@ -3,15 +3,18 @@
  * A case study, written up the way a lab report is. Top to bottom:
  * the running head; the hero, with the claim (H1) and the deck on the left and the
  * proof figure on the right, top-aligned with the H1; the plain facts (where, role,
- * period); the record (results, stack, and where to verify the work); the body;
- * what a learner can do now; and the previous and next case studies in `order` sequence.
+ * period, and for internal work one line saying there is nothing public to open);
+ * the record (results, stack, and where to verify the work); the body; the closing
+ * statement (learnerOutcome, under learnerHeading); and the previous and next case
+ * studies in `order` sequence.
  *
  * The hero figure is named in frontmatter (heroFigure) and looked up in
  * src/components/figures/. A case study that names none, or names one that is not
  * there yet, gets a one-column hero. On a phone the figure follows the deck.
  *
  * Every row under the hero sits in the page grid: a field name in the label column,
- * the content beside it, so left edges line up down the whole report.
+ * the content beside it, so left edges line up down the whole report. On a wide screen
+ * the body's section heads hang in the label column too, level with their text.
  */
 import type { ImageMetadata } from 'astro';
 import { render } from 'astro:content';
@@ -103,6 +106,14 @@ const jsonLd = {
           <dt class="field">Period</dt>
           <dd>{d.period}</dd>
         </div>
+        {
+          d.internal && (
+            <div class="facts__public">
+              <dt class="visually-hidden">Public record</dt>
+              <dd>Internal, no public artifact</dd>
+            </div>
+          )
+        }
       </dl>
     </div>
 
@@ -165,7 +176,7 @@ const jsonLd = {
     {
       d.learnerOutcome && (
         <section class="case__learner" aria-labelledby="learner-h">
-          <h2 id="learner-h">What a learner can do now</h2>
+          <h2 id="learner-h">{d.learnerHeading ?? 'What a learner can do now'}</h2>
           <p>{d.learnerOutcome}</p>
         </section>
       )
@@ -254,7 +265,7 @@ const jsonLd = {
   .facts {
     display: grid;
     grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: var(--col-gap);
+    gap: 6px var(--col-gap);
     margin: 0;
   }
   .facts dt {
@@ -264,6 +275,16 @@ const jsonLd = {
     margin: 0;
     font-size: var(--step-small);
     line-height: 1.4;
+  }
+  /* Internal work: said once, under Period, in place of a Verify row with nothing in it. */
+  .facts__public {
+    grid-column: 3;
+  }
+  .facts .facts__public dd {
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.45;
+    color: var(--ink);
   }
 
   /* ---------- Results, stack, verify ---------- */
@@ -417,22 +438,70 @@ const jsonLd = {
     margin-top: 0.6em;
   }
 
-  /* ---------- What a learner can do now ---------- */
+  /* On a wide screen each section head hangs in the label column, level with the first
+     line of its section, the way the closing statement does. The head leaves the flow and
+     keeps the top the flow gave it, so the reading column keeps its own spacing and the
+     figures and lists in it do not move. Narrower than this, heads sit above their text. */
+  @media (min-width: 1100px) {
+    .case__body {
+      position: relative;
+      --hang-gap: clamp(60px, 5.6vw, 84px);
+    }
+    /* Sized to the label column so the longest head breaks into two lines at most. The
+       extra top margin (22.8px less 0.8em) sets its first baseline on the first baseline
+       of the 18px reading text beside it, whatever size the clamp picks. */
+    .case__body .prose > :global(h2) {
+      position: absolute;
+      left: 0;
+      width: calc((100% - var(--col-gap)) * 0.23);
+      margin-top: calc(var(--hang-gap) + 22.8px - 0.8em);
+      padding-right: 8px;
+      font-size: clamp(1.5rem, 2.1vw, 1.75rem);
+      line-height: 1;
+    }
+    .case__body .prose > :global(h2:first-child) {
+      margin-top: calc(22.8px - 0.8em);
+    }
+    .case__body .prose > :global(h2 + p),
+    .case__body .prose > :global(h2 + *) {
+      margin-top: var(--hang-gap);
+    }
+    /* A subhead beside the head (line height 1.15): the same baseline, by its own metrics. */
+    .case__body .prose > :global(h2 + h3) {
+      margin-top: calc(var(--hang-gap) + 22.8px - 0.875em);
+    }
+    .case__body .prose > :global(h2:first-child + p),
+    .case__body .prose > :global(h2:first-child + *) {
+      margin-top: 0;
+    }
+    .case__body .prose > :global(h2:first-child + h3) {
+      margin-top: calc(22.8px - 0.875em);
+    }
+    /* A head takes its top from where the flow stands, after any bottom margin above it,
+       so nothing in the column carries one: lists, quotes, and an image at the end of
+       its paragraph. Each next block's top margin already sets the space between. */
+    .case__body .prose > :global(*),
+    .case__body .prose > :global(p > img:last-child) {
+      margin-bottom: 0;
+    }
+  }
 
+  /* ---------- The closing statement: what a learner can do, or what the work aimed for ---------- */
+
+  /* Its head is set like the hung section heads above it, on the statement's baseline. */
   .case__learner {
     display: grid;
     grid-template-columns: var(--cols);
     gap: var(--col-gap);
+    align-items: baseline;
     margin-top: var(--section);
     padding-top: 18px;
     border-top: var(--rule-heavy);
   }
   .case__learner h2 {
-    font-weight: 700;
-    font-stretch: var(--w-title);
-    font-size: clamp(1.25rem, 1.8vw, 1.5rem);
-    line-height: 1.1;
-    max-width: 16ch;
+    font-size: clamp(1.5rem, 2.1vw, 1.75rem);
+    line-height: 1;
+    max-width: 14ch;
   }
   .case__learner p {
     font-size: var(--step-outcome);
@@ -474,6 +543,10 @@ const jsonLd = {
     .facts > div:nth-child(2) {
       grid-column: 1 / -1;
       grid-row: 2;
+    }
+    .facts__public {
+      grid-column: 1 / -1;
+      grid-row: 3;
     }
     .back {
       order: 2;

@@ -3,7 +3,7 @@
  * The labs a visitor can take now, set two by two. Each lab shows a small drawing of a
  * piece of itself, so the set reads as four different exercises before a word is read:
  *
- *   tool  Lab 01: the model asks, your code runs the tool (the home page lab)
+ *   tool  Lab 01: two unticked boxes and the question, never the answer (the home page lab)
  *   loop  the agent loop: the message list your code keeps, the newest entry marked
  *   mcp   connect: the address with its pink underline, and the server's three tools
  *   rap   the song: fifteen terms on a strip, each cell as long as its verse; the pink
@@ -44,18 +44,15 @@ const pad = (n: number) => String(n).padStart(2, '0');
           <span class="lab__sketch" aria-hidden="true" data-print="wipe">
             {l.sketch === 'tool' && (
               <svg viewBox="0 0 360 96" class="sk">
-                <rect x="1" y="34" width="84" height="38" class="sk__box" />
-                <text x="43" y="58" class="sk__name">model</text>
-                <line x1="85" y1="53" x2="134" y2="53" class="sk__ask" />
-                <path d="M128 48 L136 53 L128 58" class="sk__head" />
-                <text x="110" y="40" class="sk__note">asks</text>
-                <rect x="138" y="34" width="104" height="38" class="sk__box" />
-                <text x="190" y="58" class="sk__name">your code</text>
-                <line x1="242" y1="53" x2="286" y2="53" class="sk__runs" />
-                <path d="M280 46 L292 53 L280 60" class="sk__runs-head" />
-                <text x="266" y="40" class="sk__note">runs</text>
-                <rect x="294" y="34" width="64" height="38" class="sk__box" />
-                <text x="326" y="58" class="sk__name">tool</text>
+                <rect x="1" y="12" width="24" height="24" class="sk__box" />
+                <text x="36" y="30" class="sk__name sk__name--start">the model</text>
+                <rect x="1" y="58" width="24" height="24" class="sk__box" />
+                <text x="36" y="76" class="sk__name sk__name--start">your code</text>
+                <line x1="160" y1="47" x2="284" y2="47" class="sk__ask" />
+                <path d="M278 42 L286 47 L278 52" class="sk__head" />
+                <text x="222" y="35" class="sk__note">who runs it?</text>
+                <rect x="294" y="28" width="64" height="38" class="sk__box" />
+                <text x="326" y="52" class="sk__name">tool</text>
               </svg>
             )}
             {l.sketch === 'loop' && (
@@ -195,6 +192,9 @@ const pad = (n: number) => String(n).padStart(2, '0');
     font-size: 15px;
     fill: var(--text);
     text-anchor: middle;
+  }
+  .sk__name--start {
+    text-anchor: start;
   }
   .sk__note {
     font-family: var(--font-mono);

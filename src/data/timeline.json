@@ -29,10 +29,10 @@
     "when": "2026 to present",
     "title": "Director of AI Enablement, Claude Dojo",
     "detail": "Claude Dojo is a nonprofit. With the other instructors I have taught 103 people to build with Claude Code.",
+    "lede": "Claude Dojo is a nonprofit. I co-authored its 49-lesson curriculum.",
     "kind": "role",
     "href": "/work/claude-dojo",
-    "label": "Read about Claude Dojo",
-    "figure": { "value": "49", "caption": "lessons, co-authored" }
+    "label": "Read about Claude Dojo"
   },
   {
     "when": "Feb 2026 to Jul 2026",
@@ -43,7 +43,7 @@
     "href": "/work/the-score-that-lied",
     "label": "Read The score that lied",
     "more": [{ "label": "Read the Search docs write-up", "href": "/work/pinecone-search-docs" }],
-    "figure": { "value": "11% to 89%", "caption": "small model, curated docs file" }
+    "figure": { "value": "11% to 89%", "caption": "task success, small model, with a curated docs file" }
   },
   {
     "when": "May 2024 to Jan 2026",
@@ -61,16 +61,13 @@
     "when": "Sep 2020 to May 2024",
     "title": "Senior Staff Technical Writer, Splunk",
     "detail": "I moved the docs to docs-as-code, and deployment frequency went up 30%.",
-    "lede": "I moved the docs to docs-as-code.",
-    "kind": "role",
-    "figure": { "value": "+30%", "caption": "deployment frequency" }
+    "kind": "role"
   },
   {
     "when": "Apr 2015 to Sep 2020",
     "title": "Workday",
     "detail": "I built content systems for 10,000+ users in Student Financials, a regulated product domain.",
-    "kind": "role",
-    "figure": { "value": "10,000+", "caption": "users in Student Financials" }
+    "kind": "role"
   },
   {
     "when": "Jul 2026",
@@ -80,11 +77,10 @@
     "feature": true,
     "start": "2026-07-11",
     "end": "2026-07-12",
-    "lede": "Two days of hands-on Claude Code on July 11 and 12, 2026, which I taught with the other instructors.",
+    "lede": "Two days of hands-on Claude Code, which I taught with the other instructors.",
     "href": "/teaching",
     "label": "See the teaching page",
-    "more": [{ "label": "Watch the capstone opening, 55 seconds", "href": "/work/claude-dojo#clip" }],
-    "figure": { "value": "~70", "caption": "people in one room" }
+    "more": [{ "label": "Watch the capstone opening, 55 seconds", "href": "/work/claude-dojo#clip" }]
   },
   {
     "when": "Jul 2026 to present",
@@ -94,19 +90,18 @@
     "start": "2026-07"
   },
   {
+    "when": "Jul 2024",
+    "title": "Mental Models for Decision Making",
+    "detail": "A workshop I gave to more than 200 attendees at the All-Team Training Retreat.",
+    "kind": "teaching"
+  },
+  {
     "when": "2022",
     "title": "The Limitations of Language",
     "detail": "A lightning talk I gave at Splunk.",
     "kind": "teaching",
     "href": "/writing/lecun-lewis-limits-of-language",
     "label": "Read the essay it grew into"
-  },
-  {
-    "when": "Jul 2024",
-    "title": "Mental Models for Decision Making",
-    "detail": "I gave my workshop, Mental Models for Decision Making, to more than 200 attendees at the All-Team Training Retreat in July 2024.",
-    "kind": "teaching",
-    "figure": { "value": "200+", "caption": "attendees" }
   },
   {
     "when": "Ongoing",

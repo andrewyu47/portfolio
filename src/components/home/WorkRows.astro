@@ -3,9 +3,11 @@
  * The four kinds of work on the home page. Each row states its outcome first,
  * shows the evidence as a figure, and names where to go to check it.
  *
- * The rows do not share one shape. Teach is a count drawn as dots. Speak is a short list
- * of dated rooms. Build is an index of things that exist and can be opened today, with the
- * planned labs on one line marked Next. Measure is a chart drawn to scale.
+ * The rows do not share one shape. Teach is a count drawn as dots. Speak leads with the
+ * sessions that are on video, and a short list carries the other rooms, each said once
+ * with its date. Build is an index of things that exist and can be opened today, with the
+ * planned labs on one line marked Next. Measure is a chart drawn to scale, set straight
+ * after the claim it proves.
  */
 import { getCollection } from 'astro:content';
 import SectionHead from '../SectionHead.astro';
@@ -30,6 +32,29 @@ const built = [
     where: l.id === 'connect' ? 'Over MCP' : (undefined as string | undefined),
     minutes: l.data.minutes,
   })),
+];
+// The Build paragraph says how many of those labs run here, in words, so it never drifts
+// from the index under it.
+const WORDS = ['No', 'One', 'Two', 'Three', 'Four', 'Five', 'Six', 'Seven', 'Eight', 'Nine', 'Ten', 'Eleven', 'Twelve'];
+const builtHere = WORDS[built.length] ?? String(built.length);
+
+// Speak: the rooms other than the intensive, oldest first. Each date is as exact as its
+// source allows (the Splunk talk has a year and no month), and each head count is the one
+// the site already prints. A month and its year never part across lines.
+const rooms = [
+  { when: '2022', what: 'Lightning talk at Splunk, “The Limitations of Language”' },
+  {
+    when: 'Jul 2024',
+    what: 'Workshop for 200+ attendees at the All-Team Training Retreat, “Mental Models for Decision Making”',
+  },
+  { when: 'Since Jul 2026', what: 'Lightning talks at Salesforce' },
+];
+
+// Measure: task success on the same 15 tasks, three runs each (The score that lied).
+// Teal bars print first, then the pink ones land.
+const evals = [
+  { model: 'Small model, Claude Haiku 4.5', none: 11, docs: 89, delays: [0.15, 0.6] },
+  { model: 'Large model, Claude Sonnet 4.6', none: 84, docs: 100, delays: [0.3, 0.75] },
 ];
 ---
 
@@ -60,18 +85,20 @@ const built = [
     <p class="verb">Speak</p>
     <div>
       <p class="outcome">
-        I gave my workshop, Mental Models for Decision Making, to more than 200 attendees at the All-Team Training
-        Retreat in July 2024.
+        I led sessions on Claude Code at the Claude Dojo intensive in July 2026. Three of them are on video.
       </p>
-      <p class="outcome-2">I gave a lightning talk at Splunk in 2022 and give lightning talks at Salesforce now.</p>
-      <a class="more" href="/teaching#rooms">Talks and workshops</a>
+      <a class="more" href="/teaching/fifteen-terms#walkthrough">Watch the rap walkthrough, 2 minutes 54 seconds</a>
     </div>
     <figure class="venues">
       <ul>
-        <li><span class="label">2022</span><span>Lightning talk at Splunk, “The Limitations of Language”</span></li>
-        <li><span class="label">Jul 2024</span><span>Workshop at the All-Team Training Retreat, 200+ attendees</span></li>
-        <li><span class="label">Jul 2026</span><span>Claude Dojo intensive, three sessions on video</span></li>
-        <li><span class="label">2026</span><span>Lightning talks at Salesforce</span></li>
+        {
+          rooms.map((r) => (
+            <li>
+              <span class="label">{r.when}</span>
+              <span>{r.what}</span>
+            </li>
+          ))
+        }
       </ul>
     </figure>
   </div>
@@ -80,10 +107,10 @@ const built = [
     <p class="verb">Build</p>
     <div class="build__say">
       <p class="outcome">
-        I build the labs I teach from. They run on this site, which is also an MCP server an agent can connect to. I
-        co-authored the Claude Dojo curriculum: 49 lessons and 46 lesson videos.
+        I build the labs I teach from. {builtHere} of them run on this site, which is also an MCP server an agent can
+        connect to. I co-authored the Claude Dojo curriculum: 49 lessons and 46 lesson videos.
       </p>
-      <p class="outcome-2">At Salesforce, I use Claude through Amazon Bedrock.</p>
+      <p class="outcome build__bedrock">At Salesforce, I use Claude through Amazon Bedrock.</p>
     </div>
     <div class="build__index">
       <ol class="built" aria-label="Labs you can open now">
@@ -122,51 +149,48 @@ const built = [
     </div>
   </div>
 
-  <div class="row" id="measure">
+  <div class="row row--measure" id="measure">
     <p class="verb">Measure</p>
-    <div>
-      <p class="outcome">
-        At Pinecone I first built a score that rated how agent-ready a doc looked. When my manager asked why I
-        trusted it, I scrapped it and built an eval that runs real developer tasks.
-      </p>
-      <a class="more" href="/work/the-score-that-lied">Read The score that lied</a>
-      <p class="outcome-2 council">
-        At Splunk I founded a council that moved 60+ technical writers onto approved AI tools, with a data policy and a
-        person reviewing every AI draft.
-      </p>
-      <a class="more" href="/work/ix-ai-council">Read about the IX AI Council</a>
-    </div>
-    <figure data-print>
+    <p class="outcome measure__say">
+      At Pinecone I first built a score that rated how agent-ready a doc looked. When my manager asked why I trusted it,
+      I scrapped it and built an eval that runs real developer tasks.
+    </p>
+    <figure class="measure__fig" data-print>
       <div
         class="bars"
         role="img"
         aria-label="Task success on 15 tasks, three runs each. Small model: 11 percent with no docs, 89 percent with the curated docs file. Large model: 84 percent with no docs, 100 percent with the docs file."
       >
-        <p class="bars__group label">Small model, Claude Haiku 4.5</p>
-        <div class="bar">
-          <span class="bar__name">No docs</span><span class="bar__track"
-            ><span class="bar__fill" style="--v:11%"></span></span
-          ><span class="bar__val">11%</span>
-        </div>
-        <div class="bar">
-          <span class="bar__name">Docs file</span><span class="bar__track"
-            ><span class="bar__fill bar__fill--pink" style="--v:89%"></span></span
-          ><span class="bar__val">89%</span>
-        </div>
-        <p class="bars__group label">Large model, Claude Sonnet 4.6</p>
-        <div class="bar">
-          <span class="bar__name">No docs</span><span class="bar__track"
-            ><span class="bar__fill" style="--v:84%"></span></span
-          ><span class="bar__val">84%</span>
-        </div>
-        <div class="bar">
-          <span class="bar__name">Docs file</span><span class="bar__track"
-            ><span class="bar__fill bar__fill--pink" style="--v:100%"></span></span
-          ><span class="bar__val">100%</span>
-        </div>
+        <p class="bars__key">
+          <span><i class="swatch"></i>No docs</span>
+          <span><i class="swatch swatch--docs"></i>Curated docs file</span>
+        </p>
+        {
+          evals.map((e) => (
+            <div class="bars__group">
+              <p class="label">{e.model}</p>
+              <div class="bar" style={`--v:${e.none}%;--d:${e.delays[0]}s`}>
+                <span class="bar__fill" />
+                <span class="bar__val">{e.none}%</span>
+              </div>
+              <div class="bar bar--docs" style={`--v:${e.docs}%;--d:${e.delays[1]}s`}>
+                <span class="bar__fill" />
+                <span class="bar__val">{e.docs}%</span>
+              </div>
+            </div>
+          ))
+        }
       </div>
       <figcaption>Same 15 tasks, three runs each. Only the docs changed.</figcaption>
     </figure>
+    <a class="more measure__more" href="/work/the-score-that-lied">Read The score that lied</a>
+    <div class="council">
+      <p>
+        At Splunk I founded a council that moved 60+ technical writers onto approved AI tools, with a data policy and a
+        person reviewing every AI draft.
+      </p>
+      <a class="more" href="/work/ix-ai-council">Read about the IX AI Council</a>
+    </div>
   </div>
 </section>
 
@@ -184,21 +208,8 @@ const built = [
     font-size: clamp(1.1875rem, 1.65vw, 1.4375rem);
     line-height: 1.32;
   }
-  .outcome + .more,
-  .outcome-2 + .more {
+  .outcome + .more {
     margin-top: 14px;
-  }
-  .outcome-2 {
-    margin-top: 12px;
-    font-size: var(--step-small);
-    line-height: 1.45;
-    max-width: 46ch;
-  }
-  .council {
-    max-width: none;
-    margin-top: 22px;
-    padding-top: 14px;
-    border-top: var(--rule-dash);
   }
 
   /* Teach: one dot per person, the grid as wide as the figure column. */
@@ -227,17 +238,22 @@ const built = [
     border-color: var(--ink);
   }
 
-  /* Speak: the claim, and beside it the rooms with a date on file. */
+  /* Speak: the recorded sessions, and beside them the other rooms, each with its date.
+     One date column for the whole list. A date too long for it ("Since Jul 2026") takes
+     two lines, so the rooms keep the width. */
   .venues ul {
     list-style: none;
     margin: 0;
     padding: 0;
     border-top: var(--rule);
+    display: grid;
+    grid-template-columns: fit-content(5.5rem) minmax(0, 1fr);
+    column-gap: 16px;
   }
   .venues li {
+    grid-column: 1 / -1;
     display: grid;
-    grid-template-columns: 5rem minmax(0, 1fr);
-    gap: 12px;
+    grid-template-columns: subgrid;
     align-items: baseline;
     padding: 9px 0;
     border-bottom: var(--rule-dash);
@@ -264,6 +280,10 @@ const built = [
   }
   .build__say .outcome {
     max-width: 52ch;
+  }
+  /* The Bedrock line is its own statement, at the same size as the one above it. */
+  .build__bedrock {
+    margin-top: 12px;
   }
   .build__index {
     grid-area: index;
@@ -329,29 +349,96 @@ const built = [
     color: var(--text-soft);
   }
 
-  /* Measure: bars drawn to scale, values set flush right on the figure's edge. */
+  /* Measure: the Pinecone claim with its chart and its case study, then the Splunk
+     council. On a wide screen the chart stands beside both; narrower, it comes straight
+     after the claim it proves, so its bars are never read as council data. */
+  .row--measure {
+    grid-template-areas:
+      'verb say  fig'
+      '.    more fig'
+      '.    next fig';
+    grid-template-rows: auto auto 1fr;
+    row-gap: 0;
+  }
+  .row--measure > .verb {
+    grid-area: verb;
+  }
+  .row--measure > .measure__say {
+    grid-area: say;
+  }
+  .row--measure > .measure__fig {
+    grid-area: fig;
+    align-self: start;
+  }
+  .row--measure > .measure__more {
+    grid-area: more;
+    justify-self: start;
+    margin-top: 14px;
+  }
+  .row--measure > .council {
+    grid-area: next;
+  }
+  .council {
+    margin-top: 22px;
+    padding-top: 14px;
+    border-top: var(--rule-dash);
+  }
+  .council p {
+    font-size: var(--step-small);
+    line-height: 1.45;
+  }
+  .council .more {
+    margin-top: 14px;
+  }
+
+  /* The chart: each bar on a faint track that runs from 0 to 100, its value set at the
+     end of the bar, and the two inks named once in the key. */
   .bars {
+    display: grid;
+    gap: 14px;
+  }
+  .bars__key {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 20px;
+    font-family: var(--font-mono);
+    font-size: 0.8125rem;
+    line-height: 1.4;
+  }
+  .swatch {
+    display: inline-block;
+    width: 13px;
+    height: 13px;
+    margin-right: 8px;
+    vertical-align: -2px;
+    background: var(--ink);
+  }
+  .swatch--docs {
+    background: var(--pink);
+    mix-blend-mode: var(--blend);
+  }
+  .bars__group {
     display: grid;
     gap: 8px;
   }
-  .bars__group {
-    margin-top: 6px;
-  }
-  .bars__group:first-child {
-    margin-top: 0;
-  }
   .bar {
-    display: grid;
-    grid-template-columns: 5.6em minmax(0, 1fr) 3.4em;
-    align-items: center;
-    gap: 10px;
-    font-family: var(--font-mono);
-    font-size: 0.8125rem;
-  }
-  .bar__track {
     position: relative;
     height: 24px;
+    /* Room past the end of the track for the largest value, 100%. */
+    margin-right: 3.5rem;
     border-left: var(--rule);
+  }
+  /* The rest of the track, from the end of the bar to 100. It is drawn only where the bar
+     is not, so a pink bar prints on bare stock and keeps the pink of the key. */
+  .bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: var(--v);
+    right: 0;
+    background: var(--ink-tint);
+    transition: left 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0.15s);
   }
   .bar__fill {
     position: absolute;
@@ -360,32 +447,38 @@ const built = [
     background: var(--ink);
     transition: width 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0.15s);
   }
-  /* Printing on arrival: each bar is drawn to its length, the pink one last. */
-  .bars .bar:nth-of-type(2) .bar__fill {
-    --d: 0.75s;
-  }
-  .bars .bar:nth-of-type(3) .bar__fill {
-    --d: 0.3s;
-  }
-  .bars .bar:nth-of-type(4) .bar__fill {
-    --d: 0.45s;
-  }
-  :global(.js) [data-print]:not([data-printed]) .bar__fill {
-    width: 0;
-  }
   /* Teal is a run with no docs. Pink is the same run with the curated docs file. */
-  .bar__fill--pink {
+  .bar--docs .bar__fill {
     background: var(--pink);
     mix-blend-mode: var(--blend);
   }
+  /* The value rides on the end of its bar as the bar is drawn. */
   .bar__val {
+    position: absolute;
+    top: 50%;
+    left: calc(var(--v) + 8px);
+    translate: 0 -50%;
     font-family: var(--font-display);
     font-weight: 800;
     font-stretch: var(--w-shout);
     font-size: 1.25rem;
     line-height: 1;
-    text-align: right;
+    white-space: nowrap;
     font-variant-numeric: tabular-nums;
+    transition:
+      left 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) var(--d, 0.15s),
+      opacity 0.2s linear var(--d, 0.15s);
+  }
+  /* Printing on arrival: each bar is drawn to its length, the pink ones last. */
+  :global(.js) [data-print]:not([data-printed]) .bar__fill {
+    width: 0;
+  }
+  :global(.js) [data-print]:not([data-printed]) .bar::before {
+    left: 0;
+  }
+  :global(.js) [data-print]:not([data-printed]) .bar__val {
+    left: 8px;
+    opacity: 0;
   }
 
   @media (max-width: 900px) {
@@ -397,8 +490,19 @@ const built = [
         'verb say'
         'index index';
     }
-    .big {
-      text-align: left;
+    /* The chart takes the full width under the Pinecone claim and its link, and the
+       council follows it. */
+    .row--measure {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: none;
+      grid-template-areas:
+        'verb say'
+        '.    more'
+        'fig  fig'
+        '.    next';
+    }
+    .row--measure > .measure__fig {
+      margin-top: 22px;
     }
   }
   @media (max-width: 600px) {
@@ -435,6 +539,26 @@ const built = [
       flex-wrap: wrap;
     }
     .row figure {
+      margin-top: 18px;
+    }
+    /* The Pinecone claim, its chart, its case study, then the council. */
+    .row--measure {
+      grid-template-columns: minmax(0, 1fr);
+      grid-template-areas:
+        'verb'
+        'say'
+        'fig'
+        'more'
+        'next';
+      row-gap: 0;
+    }
+    .row--measure > .verb {
+      margin-bottom: 10px;
+    }
+    .row--measure > .measure__fig {
+      margin-top: 22px;
+    }
+    .row--measure > .measure__more {
       margin-top: 18px;
     }
   }
