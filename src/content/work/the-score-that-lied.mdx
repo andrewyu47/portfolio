@@ -11,7 +11,7 @@ order: 2
 featured: true
 heroFigure: "EvalChart"
 stack: ["Claude Code", "Claude Haiku 4.5", "Claude Sonnet 4.6", "MCP"]
-verifyNote: "The tasks, the harness, and the 360 runs belong to Pinecone and are not public. The table on this page is the whole record I can show."
+verifyNote: "The tasks, the harness, and the 360 runs belong to Pinecone and are not public. The table on this page is the whole record I can show. The public rebuild is at github.com/andrewyu47/agent-docs-eval."
 ---
 
 ## The wrong first answer
@@ -59,3 +59,7 @@ The small model gained the most. The large model already knew most of the answer
 I built a score, liked it, and did not check it against real work until my manager asked the obvious question.
 
 I later presented this work in my Salesforce interviews.
+
+## The same measurement, in the open
+
+That harness stays with the client, so I rebuilt the measurement from scratch on public material: [agent-docs-eval](https://github.com/andrewyu47/agent-docs-eval). It asks Claude checkable questions under the same four routes to the docs, on two models, and grades every answer with plain string and number checks, no model grader. Its first live run, on questions about this site, is in the repository with every graded answer.
