@@ -1,0 +1,74 @@
+---
+title: "Six labs for the Claude platform, each built around one question"
+outcome: "Six hands-on labs for the Claude Developer Platform, from a first Messages API call to skills. On November 27, 2026, every lab passed its checks on the live API, and each ships a recording so a learner can run it with no key."
+summary: "I built a lab series for people who show customers how the Claude platform works. Each lab opens with a prediction, has you build one piece of a shop assistant, and ends with something that runs."
+org: "Personal project"
+role: "Author"
+period: "Nov 2026"
+year: 2026
+area: "build"
+order: 3
+featured: true
+draft: true
+heroFigure: "LabSheet"
+metrics:
+  - value: "6"
+    label: "labs, plus a setup check and a demo that runs one customer's story through all six"
+  - value: "27"
+    label: "checkpoints, all passed on the live API on November 27, 2026"
+  - value: "16"
+    label: "recordings, so every lab and the demo replay with no key and no network"
+stack: ["Claude API", "Python SDK", "MCP", "Agent SDK", "Agent Skills"]
+verify:
+  - label: "The repository: launch-day-labs"
+    href: "https://github.com/andrewyu47/launch-day-labs"
+  - label: "One lab sheet: Give Claude a tool"
+    href: "https://github.com/andrewyu47/launch-day-labs/blob/main/labs/02-first-tool/README.md"
+  - label: "One quick reference, written for a customer call"
+    href: "https://github.com/andrewyu47/launch-day-labs/blob/main/labs/02-first-tool/quickref.md"
+verifyNote: "One run, on one machine. No room of learners has taken these labs yet, so every time on the sheets is an estimate."
+learnerOutcome: "After lab 02 you can say where a tool runs, and show it: Claude asks, your code does the lookup, and your code decides what Claude sees."
+---
+
+## Who they are for
+
+I wrote these for the people who show customers how the platform works and then field the follow-up questions: solutions architects and sales engineers. They also suit a developer who is new to the Claude API or coming back to it after the changes of 2025 and 2026.
+
+I have taught writers and people new to AI. I have not taught a sales team. These labs are what I would bring to that room, and that room has not seen them yet.
+
+## One question per lab
+
+Every lab settles one question that people get wrong, and it uses the same made-up shop from start to finish, so nothing has to be relearned between labs.
+
+1. **Your first Messages API call.** Who holds the conversation?
+2. **Give Claude a tool.** Where does a tool run?
+3. **Give your assistant memory.** Where does an assistant's memory come from?
+4. **Serve tools over MCP.** What does the model see of MCP?
+5. **Build an agent with the Agent SDK.** What is an agent calling while it works?
+6. **Package know-how as a skill.** How much of a skill does Claude see, and when?
+
+The first three use only the plain Messages API. The last three bring in a local MCP server, the Agent SDK, and a skill that runs on Anthropic's side.
+
+## Predict first
+
+Each sheet opens with a question and three answers, before any explanation. You write your letter into the starter file, and the check refuses to run until you do. The answer prints only after your own code has produced the evidence for it, with one line that says what the request or the reply showed.
+
+I built it this way because an explanation lands better on a guess you already made. It is the same habit as the first lab on this site, carried through six labs.
+
+## A page for the call
+
+Every lab has a one-page quick reference for the person who has to answer a customer afterwards. It gives the answer in one sentence, the questions a customer will ask with the caveat that belongs to each, who sends what to whom, where the feature is available, and a short list of things not to say.
+
+## How I know they work
+
+On November 27, 2026, I ran every lab's finished code against the live API. All 27 checkpoints passed. The run saved a recording of each call, and a second pass replayed those recordings and compared every request my code sent with the one that was recorded.
+
+Replay goes through the real SDK. Only the network layer is swapped, so the SDK still validates the request and parses the reply. That is why a learner can do the labs with no key, and why a scheduled run against the newest SDK can catch a release that breaks a lab.
+
+## What is not done
+
+No one has taken these labs in a room yet. Every time on the sheets is an estimate until a pilot replaces it. The live run was on one Mac. Windows, the Codespace, and the Amazon Bedrock path are written from the documentation and have not been run.
+
+## How it was built
+
+I built the series with Claude Code. I set the teaching rules and the scenario, and Claude Code drafted the specification from the current documentation and wrote the code and the tests. Two review passes checked the work before the build, one through a trainer's eyes and one for platform accuracy, and an independent read checked it again before it went public.

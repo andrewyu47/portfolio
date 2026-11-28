@@ -141,7 +141,9 @@ const evals = [
           <p class="next">
             <span class="label">Next</span>
             <span>
-              Six labs for the Claude platform, from a first Messages API call to skills. Not published yet.
+              {labs.status === 'built'
+                ? 'Six labs for the Claude platform, from a first Messages API call to skills. All six passed on the live API on November 27, 2026. The repository is not public yet.'
+                : 'Six labs for the Claude platform, from a first Messages API call to skills. Not published yet.'}
             </span>
           </p>
         )
